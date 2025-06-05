@@ -898,7 +898,7 @@
         <div id="developers-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
             <button id="close-developers-panel-btn">&times;</button>
             <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y:auto pr-2 sm:pr-3 pl-1">
+            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y-auto pr-2 sm:pr-3 pl-1">
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">💻</span>
@@ -944,12 +944,13 @@
     </div>
     
     <script type="module">
-        // Import necessary Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, where, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase configuration: Use Canvas variables if available, otherwise use provided hardcoded values
+        // Firebase configuration
+        // NOTE: In a production GitHub repository, NEVER expose your API keys directly.
+        // Use environment variables or a secure backend to manage them.
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
             authDomain: "city-mafia.firebaseapp.com",
@@ -957,32 +958,31 @@
             storageBucket: "city-mafia.firebasestorage.app",
             messagingSenderId: "66458127103",
             appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-            measurementId: "G-8M0M6BJ0GG" // Measurement ID is optional for Firebase JS SDK v7.20.0 and later
+            measurementId: "G-8M0M6BJ0GG" // Added measurementId from your provided config
         };
-
-        // App ID: Use Canvas variable if available, otherwise a default for GitHub
+        // This `appId` is used for structuring Firestore paths (e.g., artifacts/mafia-game-default/users/...)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
 
-        let app; // Firebase app instance
-        let auth; // Firebase Auth instance
-        let db; // Firebase Firestore instance
-        let currentUserId = null; // Current authenticated user's UID
-        let isAuthReady = false; // Flag to indicate if authentication state has been determined
+        let app;
+        let auth;
+        let db;
+        let currentUserId = null; 
+        let isAuthReady = false; 
 
-        // Game state object to hold all user-specific data
+        // Game state object
         const gameState = {
             displayName: '',
-            publicUserId: '', // User-friendly 5-digit ID
+            publicUserId: '', 
             coins: 0,
             currentStage: 1,
             currentQuestionData: null,
             isQuestionActive: false, 
             isLoadingNextQuestion: false, 
-            avatarUrl: '', // URL for user's avatar image
-            nameChangeCount: 0, // Number of times the display name has been changed
+            avatarUrl: '', 
+            nameChangeCount: 0, 
         };
 
-        // DOM Element Selectors (initialized in initializeGame)
+        // DOM Element Selectors
         let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen, 
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage, 
@@ -1000,45 +1000,26 @@
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn;
         
-        let modalConfirmCallback = null; // Callback for modal confirm button
-        let modalCancelCallback = null; // Callback for modal cancel button
-        let selectedAvatarForConfirmation = null; // Stores the URL of the selected avatar before confirmation
+        let modalConfirmCallback = null; 
+        let modalCancelCallback = null; 
+        let selectedAvatarForConfirmation = null; 
 
         // --- Utility Functions ---
 
-        /**
-         * Shows a specific screen by adding 'active' class and hiding others.
-         * Adjusts body overflow for scrolling if needed.
-         * @param {HTMLElement} screenElement The DOM element of the screen to show.
-         */
         function showScreen(screenElement) {
             if (!screenElement) return;
-            // Hide all screens first
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Show the target screen
             screenElement.classList.add('active');
             
-            // Manage body overflow for screens that should control it
             const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
             document.body.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
             document.documentElement.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
             
-            screenElement.scrollTop = 0; // Scroll to top of the screen
-            updateUI(); // Update UI elements based on current game state
+            screenElement.scrollTop = 0; 
+            updateUI(); 
         }
 
-        /**
-         * Displays a custom modal with dynamic content and actions.
-         * @param {string} title The title of the modal.
-         * @param {string} message The main message content of the modal.
-         * @param {string} confirmText The text for the confirm button.
-         * @param {string|null} cancelText The text for the cancel button (null to hide).
-         * @param {Function|null} onConfirm Callback function for confirm button.
-         * @param {Function|null} onCancel Callback function for cancel button.
-         * @param {string} modalType Specific type of modal (e.g., "changeName", "avatar", "generic").
-         */
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") { 
-            // Check if essential modal elements exist to prevent errors
             if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
                 console.error("[showModal] Modal elements not found, cannot show modal.");
                 return;
@@ -1046,101 +1027,81 @@
 
             modalTitle.textContent = title;
             
-            // Hide all dynamic content containers initially
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
             
-            // Hide user profile area if main screen is active and a modal is shown
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) { 
                 userProfileArea.classList.add('profile-area-hidden'); 
             }
 
-            // Show specific content based on modal type
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
-                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName; // Pre-fill with current name
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = ''; // Clear previous errors
-                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid'); // Clear invalid styling
-                if (message && message.trim() !== "") { // Display additional message if provided
+                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName; 
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = ''; 
+                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
+                if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
                 avatarGenerationContainer.classList.remove('hidden');
-                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = ''; // Clear old suggestions
-                if(avatarErrorMessage) avatarErrorMessage.textContent = ''; // Clear previous errors
-                if(avatarAiLoading) avatarAiLoading.classList.add('hidden'); // Hide loading initially
-                 if (message && message.trim() !== "") { // Display additional message if provided
+                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = ''; 
+                if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
+                 if (message && message.trim() !== "") { 
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
-            } else { // Generic modal
+            } else { 
                 modalMessage.innerHTML = message; 
                 modalMessage.classList.remove('hidden');
             }
             
-            // Set button text and callbacks
             modalConfirmBtn.textContent = confirmText;
             modalConfirmCallback = onConfirm; 
             modalCancelCallback = onCancel;
 
-            // Show/hide cancel button based on presence of cancelText or modal type
             if (cancelText || modalType === "changeName" || modalType === "avatar") { 
                 modalCancelBtn.textContent = cancelText || "لغو";
                 modalCancelBtn.classList.remove('hidden');
             } else {
                 modalCancelBtn.classList.add('hidden');
             }
-            
-            // Make the modal visible
             modalContainer.classList.remove('panel-hidden');
             modalContainer.classList.add('panel-visible');
         }
 
-        /**
-         * Hides the custom modal and resets its state.
-         */
         function hideModal() {
-            // Check if essential modal elements exist
             if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
                 return;
             }
             modalContainer.classList.add('panel-hidden');
             modalContainer.classList.remove('panel-visible');
-            modalConfirmCallback = null; // Clear callbacks
+            modalConfirmCallback = null; 
             modalCancelCallback = null;
-            changeNameInputContainer.classList.add('hidden'); // Hide dynamic content
+            changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
-            modalMessage.classList.add('hidden'); // Hide message
-            // Restore user profile area visibility if main screen is active and no other panels are visible
+            modalMessage.classList.add('hidden'); 
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && 
                (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) { 
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
         
-        /**
-         * Handles the click event for the modal's confirm button.
-         * Executes the stored confirm callback.
-         */
         function handleModalConfirm() {
             if (modalConfirmCallback) {
                 try {
                     modalConfirmCallback(); 
                 } catch (e) {
                     console.error("[handleModalConfirm] Error in modal confirm callback:", e);
-                    hideModal(); // Hide modal even if callback fails
+                    hideModal(); 
                 }
             } else {
-                hideModal(); // If no callback, just hide modal
+                hideModal(); 
             }
         }
 
-        /**
-         * Handles the click event for the modal's cancel button.
-         * Executes the stored cancel callback.
-         */
         function handleModalCancel() {
             if (modalCancelCallback) {
                 try {
@@ -1149,40 +1110,28 @@
                     console.error("[handleModalCancel] Error in modal cancel callback:", e);
                 }
             }
-            hideModal(); // Always hide modal on cancel
+            hideModal(); 
         }
 
-        /**
-         * Shows the developers panel.
-         */
         function showDevelopersPanel() {
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.remove('panel-hidden');
             developersPanelContainer.classList.add('panel-visible');
-            // Hide user profile area when developers panel is active
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) { 
                 userProfileArea.classList.add('profile-area-hidden'); 
             }
         }
 
-        /**
-         * Hides the developers panel.
-         */
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.add('panel-hidden');
             developersPanelContainer.classList.remove('panel-visible');
-            // Restore user profile area visibility if main screen is active and no other panels are visible
              if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && 
                (!modalContainer || modalContainer.classList.contains('panel-hidden'))) { 
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
 
-        /**
-         * Updates the UI elements based on the current gameState.
-         * This includes display name, user ID, coins, stage, and avatar.
-         */
         function updateUI() {
             if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان"; 
             if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---"; 
@@ -1190,40 +1139,34 @@
             if(gameCoinsDisplay) gameCoinsDisplay.textContent = gameState.coins; 
             if(stageDisplay) stageDisplay.textContent = gameState.currentStage; 
 
-            // Update avatar image source
             if(avatarImage && gameState.avatarUrl) {
                 avatarImage.src = gameState.avatarUrl;
             } else if (avatarImage) {
-                // Fallback to placeholder if no avatar URL
                 avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`; 
             }
 
-            // Determine which UI elements to show/hide based on authentication and user data
             let showRegistration = true;
             let showActionButtons = false;
             let showUserInfoAndAvatar = false;
 
-            // If authenticated and display name/public ID exist, user is registered
             if (isAuthReady && gameState.displayName && gameState.publicUserId) { 
                 showRegistration = false;
                 showActionButtons = true;
-                // Only show user info if main screen is active (not game or shop screen)
                 if (mainScreen && mainScreen.classList.contains('active')) { 
                     showUserInfoAndAvatar = true;
                 }
             } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) { 
-                // If authenticated but display name or public ID is missing, show registration
+                // User is authenticated, but hasn't completed registration (display name/public ID)
                 showRegistration = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false; 
             } else { 
-                // Not authenticated yet, show registration
+                // Not authenticated or other states, fallback to registration
                 showRegistration = true; 
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
             }
 
-            // Apply visibility changes to registration form
             if(registrationForm){
                 if (showRegistration) {
                     registrationForm.classList.remove('panel-hidden');
@@ -1234,7 +1177,6 @@
                 }
             }
             
-            // Apply visibility changes to main screen action buttons
             if(mainScreenButtonsLayout){ 
                 if (showActionButtons) {
                     mainScreenButtonsLayout.classList.remove('hidden');
@@ -1243,17 +1185,14 @@
                 }
             }
             
-            // Apply visibility changes to user profile area
             if(userProfileArea){ 
-                // Check if any modal or developer panel is currently visible
                 const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) || 
                                         (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
-                
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) { 
                     userProfileArea.classList.remove('profile-area-hidden'); 
                     userProfileArea.classList.remove('hidden'); 
                     if(avatarContainer){
-                        // Hide avatar on mobile devices to prevent overlap with title
+                        // Only show avatar on larger screens to save space on mobile
                         if(window.innerWidth >= 768) { 
                             avatarContainer.classList.remove('hidden');
                         } else {
@@ -1267,105 +1206,92 @@
                     if(avatarContainer) avatarContainer.classList.add('hidden');
                     if(userInfoBox) userInfoBox.classList.add('hidden');
                 } else if (isAnyPanelVisible) { 
-                    // If a modal or dev panel is active, hide the user profile area
                     userProfileArea.classList.add('profile-area-hidden');
                 }
             }
         }
 
         // --- Firebase Functions ---
-
-        /**
-         * Initializes Firebase app, authentication, and Firestore.
-         * Sets up an auth state listener to load user data.
-         */
         async function initFirebase() {
             try {
-                app = initializeApp(firebaseConfig); // Initialize Firebase app
-                auth = getAuth(app); // Get Auth service
-                db = getFirestore(app); // Get Firestore service
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
                 console.log("Firebase initialized.");
 
-                // Listen for authentication state changes
                 onAuthStateChanged(auth, async (user) => {
-                    if (user) { // User is signed in
-                        currentUserId = user.uid; // Set current user ID
-                        await loadUserData(); // Load user-specific data from Firestore
-                    } else { // User is signed out or not yet signed in
-                        // Try to sign in with a custom token if available (for Canvas environment)
+                    if (user) { 
+                        currentUserId = user.uid;
+                        await loadUserData(); 
+                    } else { 
+                        // Try custom token first for persistence if available, otherwise anonymous sign-in
                         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                             try {
                                 await signInWithCustomToken(auth, __initial_auth_token);
                             } catch (error) {
                                 console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
-                                await signInAnonymously(auth); // Fallback to anonymous sign-in
+                                await signInAnonymously(auth);
                             }
                         } else {
-                            await signInAnonymously(auth); // Sign in anonymously for GitHub or if no token
+                            await signInAnonymously(auth);
                         }
-                        // Reset game state for a new or anonymous user
+                        // Reset gameState if no user or anonymous sign-in failed
                         gameState.displayName = ''; 
                         gameState.publicUserId = ''; 
                         gameState.coins = 0; 
                         gameState.avatarUrl = ''; 
                         gameState.nameChangeCount = 0; 
                     }
-                    isAuthReady = true; // Mark authentication as ready
-                    updateUI(); // Update UI after auth state is determined
+                    isAuthReady = true; 
+                    updateUI(); 
                     
-                    // Transition from loading screen to main screen once auth is ready
                     if (loadingScreen && loadingScreen.classList.contains('active')) { 
                         if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
                             if(mainScreen) showScreen(mainScreen); 
-                        }, 500); // Short delay for smoother transition
+                        }, 500); 
                     }
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
                 if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
-                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden'); // Hide buttons on error
+                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden'); 
             }
         }
         
-        /**
-         * Loads user data from Firestore for the current authenticated user.
-         * If no data exists, initializes default values.
-         */
         async function loadUserData() {
-            if (!currentUserId || !db) { // Ensure user ID and Firestore are available
-                // Reset state if not authenticated or db not ready
+            if (!currentUserId || !db) {
+                // If no user or db not ready, ensure gameState is reset to default values
                 gameState.displayName = ''; 
                 gameState.publicUserId = ''; 
                 gameState.coins = 0; 
                 gameState.avatarUrl = ''; 
-                gameState.nameChangeCount = 0;
+                gameState.nameChangeCount = 0; 
                 return;
             }
-            // Construct Firestore document reference for user profile
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             try {
-                const docSnap = await getDoc(userDocRef); // Fetch the document
-                if (docSnap.exists()) { // If document exists, load data
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) { 
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
                     gameState.publicUserId = data.publicUserId || ""; 
-                    // If display name exists, coins start at 0, otherwise 500 for new users
-                    gameState.coins = data.coins !== undefined ? data.coins : (gameState.displayName ? 0 : 500);
+                    gameState.coins = data.coins !== undefined ? data.coins : 0; // Default to 0 if exists but no coins field
                     gameState.currentStage = data.currentStage || 1;
-                    gameState.nameChangeCount = data.nameChangeCount || 0; 
+                    gameState.nameChangeCount = data.nameChangeCount !== undefined ? data.nameChangeCount : 0; 
                     gameState.avatarUrl = data.avatarUrl || ''; 
-                } else { // If document doesn't exist, set initial default values
+                } else { 
+                    // New profile for an authenticated but unregistered user
                     gameState.displayName = ""; 
                     gameState.publicUserId = ""; 
-                    gameState.coins = 500; // Give 500 coins to new users
+                    gameState.coins = 0; // Coins will be granted on first registration
                     gameState.avatarUrl = ''; 
                     gameState.nameChangeCount = 0;
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-                // Reset state on error to prevent inconsistent data
+                // Fallback to empty state if load fails
                 gameState.displayName = ''; 
                 gameState.publicUserId = '';
                 gameState.coins = 0;
@@ -1374,15 +1300,10 @@
             }
         }
 
-        /**
-         * Saves the current gameState to Firestore for the authenticated user.
-         */
         async function saveUserData() {
-            if (!currentUserId || !db) return; // Ensure user ID and Firestore are available
-            // Construct Firestore document reference
+            if (!currentUserId || !db) return; 
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             try {
-                // Use setDoc with { merge: true } to update fields without overwriting the entire document
                 await setDoc(userDocRef, {
                     displayName: gameState.displayName,
                     publicUserId: gameState.publicUserId, 
@@ -1390,58 +1311,50 @@
                     currentStage: gameState.currentStage,
                     nameChangeCount: gameState.nameChangeCount, 
                     avatarUrl: gameState.avatarUrl, 
-                    lastUpdated: serverTimestamp() // Add a timestamp for last update
-                }, { merge: true }); 
+                    lastUpdated: serverTimestamp() 
+                }, { merge: true }); // Use merge: true to only update specified fields
             } catch (error) {
                 console.error("Error saving user data:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
 
-        /**
-         * Updates the user's coin balance and persists it to Firestore.
-         * @param {number} amount The amount of coins to add or subtract.
-         * @param {boolean} bypassModal If true, does not show a modal for insufficient funds.
-         * @returns {boolean} True if coins were updated, false otherwise (e.g., insufficient funds).
-         */
         async function updateCoins(amount, bypassModal = false) {
             const newCoins = gameState.coins + amount;
-            if (newCoins < 0) { // Check for insufficient funds
+            if (newCoins < 0) { 
                 if (!bypassModal) showModal("اعتبار ناکافی", "سکه کافی برای این عملیات ندارید.", "باشه", null, () => hideModal());
                 return false; 
             }
             gameState.coins = newCoins; 
-            updateUI(); // Update UI immediately
-            await saveUserData(); // Persist changes to Firestore
+            updateUI(); 
+            await saveUserData(); 
             return true; 
         }
 
         // --- Gemini API Functions ---
-        // Leave GEMINI_API_KEY empty. Canvas will automatically provide it in runtime.
+        // IMPORTANT: Replace this with your actual Gemini API Key.
+        // For production, never expose API keys directly in client-side code.
+        // Use environment variables or a secure backend proxy.
         const GEMINI_API_KEY = ""; 
         const GEMINI_TEXT_MODEL = "gemini-2.0-flash"; 
         const IMAGEN_MODEL = "imagen-3.0-generate-002"; 
 
-        /**
-         * Calls the Gemini API for text generation.
-         * @param {string} prompt The prompt to send to the AI.
-         * @param {boolean} isJsonOutput If true, expects and parses JSON output.
-         * @param {object|null} schema Optional JSON schema for structured output.
-         * @returns {Promise<string|object|null>} The AI's response text or parsed JSON object, or null on error.
-         */
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
-            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden'); // Show loading indicator
-            
+            if (!GEMINI_API_KEY) {
+                showModal("خطای API", "کلید Gemini API تنظیم نشده است. قابلیت‌های هوش مصنوعی فعال نیستند.", "باشه", null, () => hideModal());
+                return null;
+            }
+            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden'); 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory };
 
-            if (isJsonOutput) { // Configure for JSON output if requested
+            if (isJsonOutput) { 
                 payload.generationConfig = {
                     responseMimeType: "application/json",
                 };
-                if (schema) { // Add schema if provided
+                if (schema) {
                     payload.generationConfig.responseSchema = schema;
                 }
             }
@@ -1452,41 +1365,38 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) { // Handle HTTP errors
+                if (!response.ok) { 
                     const errorBody = await response.text();
                     throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
                 }
                 const result = await response.json();
-                // Check if response structure is as expected
                 if (result.candidates && result.candidates.length > 0 &&
                     result.candidates[0].content && result.candidates[0].content.parts &&
                     result.candidates[0].content.parts.length > 0) {
                     const text = result.candidates[0].content.parts[0].text;
-                    return isJsonOutput ? JSON.parse(text) : text; // Parse JSON or return raw text
+                    return isJsonOutput ? JSON.parse(text) : text; 
                 } else {
                     throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
                 }
             } catch (error) {
                 console.error("Error calling Gemini API:", error);
-                // Avoid showing error modal for "offensive content" messages which are often internal API errors
-                if (!prompt.includes("offensive, hateful, or contain profanity")) { 
+                // Avoid showing error modal for "offensive content" as it's a safety feature response
+                if (!error.message.includes("offensive, hateful, or contain profanity")) { 
                     showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد: ${error.message}`, "باشه", null, () => hideModal());
                 }
                 return null;
             } finally {
-                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden'); // Hide loading indicator
+                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden'); 
             }
         }
 
-        /**
-         * Calls the Imagen API to generate images.
-         * @param {string} prompt The prompt for image generation.
-         * @param {number} sampleCount Number of images to generate (default 1).
-         * @returns {Promise<string[]|null>} An array of base64 image URLs, or null on error.
-         */
         async function callImagenAPI(prompt, sampleCount = 1) {
-            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden'); // Show avatar loading indicator
-            if(avatarErrorMessage) avatarErrorMessage.textContent = ''; // Clear previous errors
+            if (!GEMINI_API_KEY) {
+                if(avatarErrorMessage) avatarErrorMessage.textContent = "کلید Gemini API تنظیم نشده است. قابلیت‌های هوش مصنوعی فعال نیستند.";
+                return null;
+            }
+            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden'); 
+            if(avatarErrorMessage) avatarErrorMessage.textContent = '';
             
             const payload = { 
                 instances: [{ prompt: prompt }], 
@@ -1500,12 +1410,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) { // Handle HTTP errors
+                if (!response.ok) { 
                     const errorBody = await response.text();
                     throw new Error(`API request failed: ${response.status} ${errorBody}`);
                 }
                 const result = await response.json();
-                // Check if predictions exist and contain base64 encoded bytes
                 if (result.predictions && result.predictions.length > 0) {
                     return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
                 } else {
@@ -1516,23 +1425,19 @@
                 if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
                 return null;
             } finally {
-                if(avatarAiLoading) avatarAiLoading.classList.add('hidden'); // Hide avatar loading indicator
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden'); 
             }
         }
         
         // --- Game Logic Functions ---
 
-        /**
-         * Generates a new Mafia-themed multiple-choice question using Gemini API
-         * and updates the UI to display it.
-         */
         async function generateQuestion() {
-            if (gameState.isLoadingNextQuestion) return; // Prevent multiple simultaneous calls
+            if (gameState.isLoadingNextQuestion) return; 
             gameState.isLoadingNextQuestion = true;
-            if(questionText) questionText.textContent = "در حال تولید سوال جدید..."; // Show loading message
-            if(optionsContainer) optionsContainer.innerHTML = ""; // Clear old options
-            if(questionExplanation) questionExplanation.classList.add('hidden'); // Hide old explanation
-            if(gameFeedback) gameFeedback.textContent = ""; // Clear old feedback
+            if(questionText) questionText.textContent = "در حال تولید سوال جدید...";
+            if(optionsContainer) optionsContainer.innerHTML = "";
+            if(questionExplanation) questionExplanation.classList.add('hidden');
+            if(gameFeedback) gameFeedback.textContent = "";
 
             const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن. سوال باید دارای 4 گزینه باشد و گزینه صحیح مشخص شود. پاسخ را در قالب JSON با ساختار زیر ارائه بده:
             {
@@ -1544,54 +1449,46 @@
             مطمئن شو که ایندکس پاسخ صحیح معتبر و بین 0 تا 3 باشد.`;
             
             try {
-                // Call Gemini API expecting JSON output
                 const data = await callGeminiAPI(prompt, true); 
-                // Validate the structure of the received data
-                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined && data.correctAnswerIndex >= 0 && data.correctAnswerIndex <= 3) {
-                    gameState.currentQuestionData = data; // Store the question data
-                    displayQuestion(); // Display the question in the UI
+                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
+                    gameState.currentQuestionData = data;
+                    displayQuestion(); 
                 } else {
                     throw new Error("ساختار سوال از AI معتبر نیست.");
                 }
             } catch (error) {
                 console.error("Error generating question:", error);
-                if(questionText) questionText.textContent = "خطا در بارگذاری سوال."; // Show error message
-                // Show a modal to retry or go back to main screen on error
+                if(questionText) questionText.textContent = "خطا در بارگذاری سوال.";
                 showModal("خطا در سوال", `مشکلی در تولید سوال جدید پیش آمد. (${error.message}) آیا میخواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی", 
-                    () => { hideModal(); generateQuestion(); }, // Retry
-                    () => { hideModal(); if(mainScreen) showScreen(mainScreen); } // Go back to main
+                    () => { hideModal(); generateQuestion(); }, 
+                    () => { hideModal(); if(mainScreen) showScreen(mainScreen); }
                 );
             } finally {
-                gameState.isLoadingNextQuestion = false; // Reset loading flag
-                gameState.isQuestionActive = true; // Mark question as active for interaction
+                gameState.isLoadingNextQuestion = false;
+                gameState.isQuestionActive = true; 
             }
         }
 
-        /**
-         * Generates a hint for the current question using Gemini API, costing coins.
-         */
         async function generateHint() {
-            if (!gameState.currentQuestionData) return null; // No question to hint for
+            if (!gameState.currentQuestionData) return null; 
             
             const hintCost = 100;
-            if (gameState.coins < hintCost) { // Check if user has enough coins
+            if (gameState.coins < hintCost) { 
                 showModal("سکه ناکافی", `برای دریافت راهنمایی ${hintCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
                 return null;
             }
 
-            // Confirm with the user before deducting coins
             showModal(
                 "درخواست راهنمایی",
                 `آیا مایلید ${hintCost} سکه برای دریافت راهنمایی خرج کنید؟`,
                 "بله، راهنمایی بده",
                 "خیر",
-                async () => { // On confirm
+                async () => { 
                     hideModal(); 
-                    const coinUpdateSuccess = await updateCoins(-hintCost); // Deduct coins
-                    if (coinUpdateSuccess) { // If coins deducted successfully
+                    const coinUpdateSuccess = await updateCoins(-hintCost); 
+                    if (coinUpdateSuccess) {
                         const { question, options, correctAnswerIndex } = gameState.currentQuestionData;
                         const correctAnswerText = options[correctAnswerIndex];
-                        // Prompt AI for a non-direct hint
                         const prompt = `برای سوال مافیایی زیر یک راهنمایی کوتاه و غیر مستقیم به زبان فارسی ارائه بده. راهنمایی نباید پاسخ را مستقیما لو بدهد.
                         سوال: "${question}"
                         گزینه ها: ${options.join(", ")}
@@ -1599,49 +1496,40 @@
                         راهنمایی شما:`;
 
                         const hintText = await callGeminiAPI(prompt);
-                        if (hintText) { // Display hint if received
+                        if (hintText) { 
                             showModal("راهنمایی ✨", hintText.replace(/\n/g, '<br>'), "متوجه شدم", null, () => hideModal());
-                        } else { // If hint generation fails, refund coins
-                            await updateCoins(hintCost); 
+                        } else { 
+                            await updateCoins(hintCost); // Refund coins if API call fails
                             showModal("خطا", "متاسفانه دستیار نتوانست راهنمایی ارائه دهد. سکه‌های شما بازگردانده شد.", "باشه", null, () => hideModal());
                         }
                     }
                 },
-                () => hideModal() // On cancel, just hide modal
+                () => hideModal() 
             );
         }
 
-        /**
-         * Displays the current question and its options in the UI.
-         */
         function displayQuestion() {
             if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
             const { question, options } = gameState.currentQuestionData;
             questionText.textContent = question;
-            optionsContainer.innerHTML = ""; // Clear previous options
-            // Create a button for each option
+            optionsContainer.innerHTML = ""; 
             options.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.className = 'option-btn w-full p-3 rounded-md text-lg text-right'; 
                 button.textContent = `${index + 1}. ${option}`;
-                button.dataset.index = index; // Store index for later comparison
-                button.addEventListener('click', handleAnswerSelection); // Attach event listener
+                button.dataset.index = index; 
+                button.addEventListener('click', handleAnswerSelection);
                 optionsContainer.appendChild(button);
             });
-            if(questionExplanation) questionExplanation.classList.add('hidden'); // Hide explanation
-            if(questionExplanation) questionExplanation.textContent = ""; // Clear explanation
-            if(gameFeedback) gameFeedback.textContent = ""; // Clear feedback
-            gameState.isQuestionActive = true; // Allow user to select answer
+            if(questionExplanation) questionExplanation.classList.add('hidden');
+            if(questionExplanation) questionExplanation.textContent = "";
+            if(gameFeedback) gameFeedback.textContent = "";
+            gameState.isQuestionActive = true; 
         }
 
-        /**
-         * Handles the user's answer selection, checks correctness, and provides feedback.
-         * @param {Event} event The click event.
-         */
         async function handleAnswerSelection(event) {
-            // Prevent multiple selections or interaction during loading
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
-            gameState.isQuestionActive = false; // Disable further interaction for this question
+            gameState.isQuestionActive = false; 
 
             const selectedOptionButton = event.target.closest('.option-btn');
             if (!selectedOptionButton) return;
@@ -1649,25 +1537,23 @@
             const selectedIndex = parseInt(selectedOptionButton.dataset.index);
             const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData; 
 
-            // Disable all option buttons after selection
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
-            if (selectedIndex === correctAnswerIndex) { // Correct answer
+            if (selectedIndex === correctAnswerIndex) { 
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح! +۵ سکه";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
-                await updateCoins(5); // Add coins
-                gameState.currentStage++; // Advance stage
-                await saveUserData(); // Save updated game state
-                setTimeout(() => { generateQuestion(); updateUI(); }, 2000); // Generate next question after a delay
-            } else { // Incorrect answer
+                await updateCoins(5); 
+                gameState.currentStage++; 
+                await saveUserData(); 
+                setTimeout(() => { generateQuestion(); updateUI(); }, 2000); 
+            } else { 
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-                if (correctButton) correctButton.classList.add('correct'); // Highlight correct answer
+                if (correctButton) correctButton.classList.add('correct'); 
                 
                 const selectedOptionText = options[selectedIndex];
                 const correctAnswerText = options[correctAnswerIndex];
-                // Prompt AI for a playful taunt for incorrect answer
                 const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
                 سوال: "${question}"
                 پاسخ اشتباه بازیکن: "${selectedOptionText}"
@@ -1675,49 +1561,44 @@
                 یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد. همچنین ۵ سکه از او کم کن.`;
 
                 const taunt = await callGeminiAPI(tauntPrompt);
-                if (taunt) { // Display AI taunt if available
+                if (taunt) { 
                     gameFeedback.innerHTML = `${taunt.replace(/\n/g, '<br>')} <br> (-۵ سکه)`;
-                } else { // Fallback message
+                } else { 
                     gameFeedback.textContent = "پاسخ اشتباه! -۵ سکه";
                 }
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400'; 
-                await updateCoins(-5); // Deduct coins
-                setTimeout(() => { generateQuestion(); updateUI(); }, 4000); // Generate next question after a longer delay
+                await updateCoins(-5); 
+                setTimeout(() => { generateQuestion(); updateUI(); }, 4000); 
             }
             if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden'); // Show explanation
+                questionExplanation.classList.remove('hidden');
             }
         }
 
-        /**
-         * Allows the user to skip the current game stage for a coin cost.
-         */
         async function skipStage() {
-            if (gameState.isLoadingNextQuestion) return; // Prevent skipping during question loading
+            if (gameState.isLoadingNextQuestion) return;
             const skipCost = 250;
-            if (gameState.coins < skipCost) { // Check for sufficient coins
+            if (gameState.coins < skipCost) { 
                 showModal("سکه ناکافی", `برای رد کردن مرحله ${skipCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
                 return;
             }
             
-            // Confirm with user before skipping
             showModal("رد کردن مرحله", `آیا مطمئن هستید که می‌خواهید این مرحله را با ${skipCost} سکه رد کنید؟`, "بله، رد کن", "خیر", 
-            async () => { // On confirm
+            async () => { 
                 hideModal(); 
-                const coinUpdateSuccess = await updateCoins(-skipCost); // Deduct coins
+                const coinUpdateSuccess = await updateCoins(-skipCost); 
                 if (coinUpdateSuccess) {
-                    gameState.currentStage++; // Advance stage
-                    await saveUserData(); // Save updated game state
+                    gameState.currentStage++; 
+                    await saveUserData();
                     updateUI();
-                    generateQuestion(); // Generate a new question
+                    generateQuestion(); 
                 }
             }, 
-            () => hideModal() // On cancel
+            () => hideModal() 
             );
         }
         
-        // Data for shop items
         const shopItems = [
             { id: 'coins_1000', name: '۱۰۰۰ سکه', price: '۱۰,۰۰۰ تومان', icon: '🪙', description: 'یک شروع خوب برای تازه واردها!' },
             { id: 'coins_5000', name: '۵۵۰۰ سکه', price: '۵۰,۰۰۰ تومان', icon: '💰', description: 'بسته ویژه با ۵۰۰ سکه اضافه!' },
@@ -1725,13 +1606,9 @@
             { id: 'respect_pack', name: 'بسته احترام', price: '۲۵,۰۰۰ تومان', icon: '🎩', description: '۲۵۰۰ سکه + نشان افتخار (نمایشی)' }
         ];
 
-        /**
-         * Displays the shop items in the shop screen.
-         */
         function displayShopItems() {
             if(!shopItemsContainer) return;
-            shopItemsContainer.innerHTML = ''; // Clear existing items
-            // Create and append a div for each shop item
+            shopItemsContainer.innerHTML = ''; 
             shopItems.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = `shop-item panel panel-visible p-3 sm:p-5 rounded-lg text-center flex flex-col items-center justify-between shadow-md bg-[rgba(40,40,40,0.9)]`;
@@ -1745,32 +1622,26 @@
                 shopItemsContainer.appendChild(itemDiv);
             });
 
-            // Add event listeners to "Buy" buttons
             document.querySelectorAll('.buy-item-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const itemId = e.target.dataset.itemId;
                     const selectedItem = shopItems.find(i => i.id === itemId);
-                    // Show a modal indicating that purchases are simulated
                     showModal("خرید آیتم", `شما در حال خرید "${selectedItem.name}" به قیمت ${selectedItem.price} هستید.<br><br><strong class="text-yellow-400">توجه: این بخش در حال حاضر کاملاً نمایشی است و هیچ تراکنش مالی واقعی انجام نخواهد شد.</strong>`, "متوجه شدم", null, () => hideModal());
                 });
             });
         }
         
-        /**
-         * Generates and displays avatar suggestions using Imagen API.
-         */
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
-            avatarAiLoading.classList.remove('hidden'); // Show loading indicator
-            // Prompt for AI image generation
+            avatarAiLoading.classList.remove('hidden'); 
+            // Generic prompt for mafia-themed avatars
             const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons";
-            const suggestions = await callImagenAPI(prompt, 4); // Request 4 avatar suggestions
+            const suggestions = await callImagenAPI(prompt, 4); // Request 4 suggestions
 
-            avatarSuggestionsContainer.innerHTML = ''; // Clear previous suggestions
-            selectedAvatarForConfirmation = null; // Reset selected avatar
+            avatarSuggestionsContainer.innerHTML = ''; 
+            selectedAvatarForConfirmation = null; 
 
             if (suggestions && suggestions.length > 0) {
-                // Create image elements for each suggestion
                 suggestions.forEach(base64Url => { 
                     const imgWrapper = document.createElement('div');
                     imgWrapper.className = 'avatar-suggestion-item';
@@ -1779,34 +1650,30 @@
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
                     imgWrapper.addEventListener('click', () => {
-                        // Handle selection of an avatar
                         const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
                         if (currentSelected) {
                             currentSelected.classList.remove('selected');
                         }
                         imgWrapper.classList.add('selected');
-                        selectedAvatarForConfirmation = base64Url; // Store selected avatar URL
-                        modalConfirmBtn.disabled = false; // Enable confirm button
+                        selectedAvatarForConfirmation = base64Url; 
+                        modalConfirmBtn.disabled = false; // Enable confirm button once an avatar is selected
                     });
                     avatarSuggestionsContainer.appendChild(imgWrapper);
                 });
                 modalConfirmBtn.textContent = "انتخاب این آواتار"; 
-                modalConfirmBtn.disabled = true; // Initially disable confirm until an avatar is selected
+                modalConfirmBtn.disabled = true; // Disable until an avatar is selected
             } else { 
                 if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
-                modalConfirmBtn.textContent = "تایید"; // Change button text
-                modalConfirmBtn.disabled = true; // Disable confirm button
+                modalConfirmBtn.textContent = "تایید"; // Reset button text
+                modalConfirmBtn.disabled = true; // Keep disabled if no avatars
             }
         }
         
-        /**
-         * Confirms the selected avatar and saves it to user data.
-         */
         async function confirmAvatarSelection() {
             if (selectedAvatarForConfirmation) {
-                gameState.avatarUrl = selectedAvatarForConfirmation; // Update avatar URL in game state
-                await saveUserData(); // Save to Firestore
-                updateUI(); // Update UI
+                gameState.avatarUrl = selectedAvatarForConfirmation; 
+                await saveUserData(); 
+                updateUI(); 
                 hideModal();
                 showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
             } else {
@@ -1814,18 +1681,11 @@
             }
         }
         
-        /**
-         * Validates and sanitizes the display name input.
-         * @param {string} nameValue The raw input value.
-         * @param {HTMLElement} errorElement The element to display error messages.
-         * @param {HTMLInputElement} inputElement The input field itself.
-         * @returns {string|null} The sanitized name if valid, otherwise null.
-         */
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
             if (!inputElement || !errorElement) return null; 
-            // Regex to allow only English letters, numbers, underscore, and hyphen
+            // Allow only English letters, numbers, underscore, hyphen, and period
             const regex = /[^a-zA-Z0-9_.-]/g;
-            let sanitizedValue = nameValue.replace(regex, ''); // Remove invalid characters
+            let sanitizedValue = nameValue.replace(regex, '');
             
             if (nameValue !== sanitizedValue) {
                 inputElement.value = sanitizedValue; // Update input field with sanitized value
@@ -1833,7 +1693,6 @@
             
             const trimmedName = sanitizedValue.trim();
 
-            // Validation checks
             if (trimmedName === '') {
                 errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
                 inputElement.classList.add('invalid');
@@ -1850,70 +1709,57 @@
                 return null;
             }
             errorElement.textContent = ''; // Clear error message
-            inputElement.classList.remove('invalid'); // Remove invalid styling
+            inputElement.classList.remove('invalid');
             return trimmedName;
         }
         
-        /**
-         * Handles the display name change, including cost and saving to Firestore.
-         */
         async function handleChangeDisplayName() {
             if(!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
-            if (!newName) return; // If name is not valid, stop
+            if (!newName) return; 
 
-            if (newName === gameState.displayName) { // Check if new name is different
+            if (newName === gameState.displayName) { 
                 if(changeNameErrorMessage) changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
-            // Calculate change name cost (free for first change, then 900 coins)
-            const changeNameCost = gameState.nameChangeCount === 0 ? 0 : 900; 
+            const changeNameCost = gameState.nameChangeCount === 0 ? 0 : 900; // First change is free, subsequent cost 900 coins
             
-            if (gameState.coins < changeNameCost) { // Check for sufficient coins
+            if (gameState.coins < changeNameCost) { 
                 if(changeNameErrorMessage) changeNameErrorMessage.textContent = `برای تغییر نام ${changeNameCost === 0 ? ' (بار اول رایگان)' : changeNameCost + ' سکه'} نیاز دارید. سکه شما: ${gameState.coins}`;
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
-            if (changeNameCost > 0) { // Deduct coins if not free
-                const coinDeducted = await updateCoins(-changeNameCost, true); // Bypass modal as we're already in one
-                if (!coinDeducted) { // If coin deduction failed (e.g., race condition)
+            if (changeNameCost > 0) { 
+                const coinDeducted = await updateCoins(-changeNameCost, true); // true to bypass modal for insufficient funds as we already checked
+                if (!coinDeducted) {
                     if(changeNameErrorMessage) changeNameErrorMessage.textContent = "خطا در کسر سکه. لطفاً دوباره تلاش کنید.";
                     return; 
                 }
             }
             
-            gameState.displayName = newName; // Update display name
-            gameState.nameChangeCount++; // Increment change count
-            await saveUserData(); // Save to Firestore
-            updateUI(); // Update UI
+            gameState.displayName = newName;
+            gameState.nameChangeCount++; 
+            await saveUserData();
+            updateUI();
             hideModal();
             showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
         
-        /**
-         * Generates and displays a random Mafia fact using Gemini API.
-         */
         async function generateMafiaFact() {
             const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
-            // Show loading modal while fetching fact
             showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
             
-            const fact = await callGeminiAPI(prompt); // Get fact from AI
-            if (fact) { // Display fact if successful
+            const fact = await callGeminiAPI(prompt);
+            if (fact) { 
                 showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
-            } else { // Show error if failed
+            } else { 
                 showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
             }
         }
 
-        /**
-         * Generates a random alphanumeric string for public user ID.
-         * @param {number} length The desired length of the ID.
-         * @returns {string} The generated ID.
-         */
         function generateAlphanumericPublicUserId(length = 5) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
             let result = '';
@@ -1925,39 +1771,32 @@
         }
 
         // --- Event Listener Setup ---
-
-        /**
-         * Sets up all necessary event listeners for UI interactions.
-         */
         function setupEventListeners() {
-            // Modal button listeners
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
-            // Display name input validation and Enter key handling
             if (displayNameInput) {
                 displayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
                 });
                 displayNameInput.addEventListener('keydown', (event) => { 
                     if (event.key === 'Enter') {
-                        event.preventDefault(); // Prevent form submission
-                        if(registerBtn) registerBtn.click(); // Trigger register button click
+                        event.preventDefault(); 
+                        if(registerBtn) registerBtn.click(); 
                     }
                 });
             }
 
-            // Generate User ID button
             if (generateUserIdBtn) {
                 generateUserIdBtn.addEventListener('click', () => {
                     const newPublicId = generateAlphanumericPublicUserId();
                     if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
-                    gameState.publicUserId = newPublicId; // Update game state with new ID
-                    if (userIdErrorMessage) userIdErrorMessage.textContent = ''; // Clear error
+                    gameState.publicUserId = newPublicId; 
+                    if (userIdErrorMessage) userIdErrorMessage.textContent = ''; 
                 });
             }
 
-            // New display name input validation and Enter key handling in modal
+
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
@@ -1965,7 +1804,6 @@
                 newDisplayNameInput.addEventListener('keydown', (event) => { 
                     if (event.key === 'Enter') {
                         event.preventDefault();
-                        // If the current modal is for changing name, trigger its confirm action
                         if (modalConfirmCallback === handleChangeDisplayName && modalTitle && modalTitle.textContent.includes("تغییر نام نمایشی")) {
                             if(modalConfirmBtn) modalConfirmBtn.click();
                         }
@@ -1973,17 +1811,16 @@
                 });
             }
 
-            // Register button click handler
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
                     
                     let isPublicIdValid = false;
-                    if (!gameState.publicUserId) { // Check if public ID is generated
+                    if (!gameState.publicUserId) {
                         if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
                         isPublicIdValid = false;
                     } else if (userIdDisplayInput && userIdDisplayInput.value !== gameState.publicUserId) {
-                        // This case should ideally not happen if generateUserIdBtn sets gameState.publicUserId directly
+                        // This case should ideally not happen if generateUserIdBtn sets gameState.publicUserId correctly
                         if(userIdErrorMessage) userIdErrorMessage.textContent = "خطا: شناسه کاربری نمایش داده شده با شناسه ساخته شده مغایرت دارد.";
                         isPublicIdValid = false;
                     }
@@ -1992,11 +1829,9 @@
                         isPublicIdValid = true;
                     }
 
-                    if (!validatedName || !isPublicIdValid) return; // Stop if validation fails
+                    if (!validatedName || !isPublicIdValid) return; 
 
-                    gameState.displayName = validatedName; // Update display name in game state
-                    
-                    // Check if user already has a profile with name and ID (for initial coins)
+                    // Check if user already has a profile with name and ID (existing Firebase user)
                     let userHadProfileWithNameAndId = false;
                     if(isAuthReady && currentUserId && db){ 
                         const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
@@ -2004,66 +1839,86 @@
                             const docSnap = await getDoc(userDocRef);
                             if (docSnap.exists()) {
                                 const data = docSnap.data();
+                                // If display name AND public ID existed, then it's not a "first time" registration
                                 if (data.displayName && data.publicUserId) { 
                                      userHadProfileWithNameAndId = true;
                                 }
                             }
-                        } catch(e) { console.error("Error checking existing profile:", e); }
+                        } catch(e) { 
+                            console.error("Error checking existing profile during registration:", e); 
+                            // Treat as no existing profile for safety in case of error
+                            userHadProfileWithNameAndId = false;
+                        }
                     }
 
-                    if (!userHadProfileWithNameAndId) { // Only set initial coins/nameChangeCount for truly new registrations
-                        gameState.coins = 500;
+                    gameState.displayName = validatedName; 
+                    
+                    // Only grant initial coins and reset nameChangeCount if this is the first time a name/ID is set for this user
+                    if (!userHadProfileWithNameAndId) { 
+                        gameState.coins = 500; // Initial coins for new registration
                         gameState.nameChangeCount = 0; 
                     }
-                    await saveUserData(); // Save user data to Firestore
-                    updateUI(); // Update UI
+                    await saveUserData(); 
+                    updateUI(); 
                 });
             }
 
-            // Edit Name button click handler
             if (editNameBtn) {
                 editNameBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return; // Ensure user is logged in
+                    if (!isAuthReady || !gameState.displayName) return; // Must be authenticated and have a name to edit
                     
                     let modalMessageText = "";
-                    let confirmButtonText = `تغییر نام (${gameState.nameChangeCount === 0 ? "رایگان" : "900 سکه"})`;
+                    let confirmButtonText = `تغییر نام`; // Base text
 
-                    if (gameState.nameChangeCount === 0) { // First change is free
+                    if (gameState.nameChangeCount === 0) {
                         modalMessageText = "اولین تغییر نام شما رایگان است. تغییرات بعدی شامل هزینه سکه خواهد بود.";
                         confirmButtonText = "تغییر نام (رایگان - فقط یکبار)";
+                    } else {
+                        modalMessageText = `تغییر نام ${900} سکه هزینه دارد. سکه‌های شما: ${gameState.coins}.`;
+                        confirmButtonText = `تغییر نام (${900} سکه)`;
+                        // Add warning if not enough coins
+                        if (gameState.coins < 900) {
+                             modalMessageText += `<br><span class="text-red-400">سکه کافی برای تغییر نام ندارید.</span>`;
+                             confirmButtonText = "تغییر نام (سکه ناکافی)";
+                        }
                     }
+
 
                     showModal(
                         "تغییر نام نمایشی",
                         modalMessageText, 
                         confirmButtonText,
                         "لغو",
-                        handleChangeDisplayName, // Callback for changing name
+                        handleChangeDisplayName, // The function to call on confirm
                         hideModal, 
-                        "changeName" // Indicate modal type for specific content
+                        "changeName" // Custom modal type for name change
                     );
+                    // Disable confirm button if not enough coins
+                    if (gameState.nameChangeCount > 0 && gameState.coins < 900) {
+                        if(modalConfirmBtn) modalConfirmBtn.disabled = true;
+                    } else {
+                        if(modalConfirmBtn) modalConfirmBtn.disabled = false;
+                    }
                 });
             }
             
-            // Avatar container click handler
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return;
-                    selectedAvatarForConfirmation = null; // Reset selection
+                    if (!isAuthReady || !gameState.displayName) return; // Must be authenticated and registered to change avatar
+                    selectedAvatarForConfirmation = null; 
                     showModal(
                         "تغییر آواتار",
-                        "", // No initial message, message will be generated by AI
-                        "انتخاب این آواتار", // Confirm button text
+                        "یک آواتار از لیست زیر انتخاب کنید یا یک آواتار جدید بسازید.", 
+                        "انتخاب این آواتار", // This text will be updated after suggestions are generated
                         "لغو",
-                        confirmAvatarSelection, // Callback for avatar selection confirmation
+                        confirmAvatarSelection, 
                         hideModal,  
-                        "avatar" // Indicate modal type
+                        "avatar"    // Custom modal type for avatar selection
                     );
-                    if(modalConfirmBtn) modalConfirmBtn.disabled = true; // Disable confirm until avatar is chosen
+                    if(modalConfirmBtn) modalConfirmBtn.disabled = true; // Initially disable confirm button
                 });
             }
 
-            // Generate Avatar button click handler (inside modal)
             if (generateAvatarBtn) {
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
@@ -2071,9 +1926,10 @@
             // Centralized check for main action buttons to ensure user is registered
             const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null); 
             allActionButtons.forEach(button => {
+                // Use capture phase for the event listener to intercept clicks before they reach the button's own handler
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) { 
-                        event.stopPropagation(); // Prevent default action
+                        event.stopPropagation(); // Stop the event from propagating to the button's own click handler
                         showModal(
                             "ثبت نام لازم است",
                             "برای دسترسی به این بخش، ابتدا باید با وارد کردن نام نمایشی و ساخت شناسه کاربری، ثبت نام خود را کامل کنید.",
@@ -2082,14 +1938,14 @@
                             () => hideModal()
                         );
                     }
-                }, true); // Use capture phase to ensure this runs before specific button listeners
+                }, true); // The 'true' argument makes it a capturing listener
             });
 
 
-            // Start Game button
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; // Already handled by common listener
+                    // Actual game start logic, this part runs IF the centralized check above passed
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
                     showModal(
                         "هشدار VPN", 
                         "دوست عزیز، برای تجربه بهتر و بدون اختلال در بازی، پیشنهاد می‌شود VPN خود را روشن کنید. اتصال پایدار برای بازی آنلاین ضروری است.",
@@ -2097,71 +1953,61 @@
                         () => { 
                             hideModal();
                             if(gameScreen) showScreen(gameScreen);
-                            // Generate new question if none exists or stage changed
+                            // Generate new question or display current one based on state
                             if (!gameState.currentQuestionData || gameState.currentQuestionData.stage !== gameState.currentStage) {
                                 generateQuestion();
                             } else {
-                                displayQuestion(); // Just display existing question
+                                displayQuestion(); 
                             }
                         }
                     );
                 });
             }
             
-            // Shop button
             if (shopBtn) {
                 shopBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    displayShopItems(); // Display shop items
-                    if(shopScreen) showScreen(shopScreen); // Show shop screen
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
+                    displayShopItems(); 
+                    if(shopScreen) showScreen(shopScreen);
                 });
             }
 
-            // Mafia Fact button
             if (mafiaFactBtn) { 
                 mafiaFactBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    generateMafiaFact(); // Generate and show Mafia fact
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
+                    generateMafiaFact();
                 });
             }
             
-            // Developer Intro button in header
             if (devIntroBtnHeader) { 
                 devIntroBtnHeader.addEventListener('click', () => {
-                    if (isAuthReady && gameState.displayName && gameState.publicUserId) { // Only show if registered
+                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
                         showDevelopersPanel();
                     }
                 });
             }
 
-            // Close Developers Panel button
             if (closeDevelopersPanelBtn) { 
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
-            // Back to Main from Shop button
+
             if(backToMainFromShopBtn) {
                 backToMainFromShopBtn.addEventListener('click', () => {
                     if(mainScreen) showScreen(mainScreen);
                 });
             }
-
-            // Hint button
             if(hintBtn) {
                 hintBtn.addEventListener('click', generateHint);
             }
-
-            // Skip Stage button
             if(skipStageBtn) {
                 skipStageBtn.addEventListener('click', skipStage);
             }
-
-            // Back to Main from Game button
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
                     try {
-                        await saveUserData(); // Save game state before leaving
-                        gameState.currentQuestionData = null; // Clear current question
+                        await saveUserData(); // Save game state before returning to main
+                        gameState.currentQuestionData = null; // Clear question data to ensure a new one is loaded next time
                         if(mainScreen) {
                             showScreen(mainScreen);
                         }
@@ -2172,20 +2018,14 @@
                 });
             }
 
-            // Window resize listener to update UI (e.g., show/hide avatar on responsive breakpoints)
             window.addEventListener('resize', () => {
-                updateUI();
+                updateUI(); // Update UI on resize, especially for avatar visibility
             });
         }
 
         // --- Game Initialization ---
-
-        /**
-         * Initializes the game by getting DOM elements, checking internet connection,
-         * setting up event listeners, and initializing Firebase.
-         */
         async function initializeGame() {
-            // Get all necessary DOM elements
+            // Get all DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
@@ -2241,10 +2081,10 @@
             developersPanelContainer = document.getElementById('developers-panel-container'); 
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn'); 
 
-            if(userProfileArea) userProfileArea.classList.add('hidden'); // Hide profile initially
+            // Initially hide user profile area
+            if(userProfileArea) userProfileArea.classList.add('hidden'); 
 
             if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال به اینترنت...";
-            // Check for internet connection before proceeding
             if (!navigator.onLine) {
                 showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
                     hideModal();
@@ -2255,15 +2095,15 @@
             if(loadingMessage) loadingMessage.textContent = "در حال آماده سازی اولین ورود...";
             
             try {
-                setupEventListeners(); // Set up all event listeners
-                await initFirebase(); // Initialize Firebase
+                setupEventListeners(); // Setup all event listeners first
+                await initFirebase(); // Initialize Firebase and authentication
             } catch (error) {
                 console.error("Error during initializeGame:", error);
                 if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
             }
         }
         
-        // Ensure initializeGame runs after DOM content is loaded
+        // Start game initialization when the DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
@@ -2273,4 +2113,3 @@
     </script>
 </body>
 </html>
-
