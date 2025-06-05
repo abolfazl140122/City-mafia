@@ -185,7 +185,7 @@
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; } 
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
         ::-webkit-scrollbar-thumb { background: #c49730; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a57c1a; }
 
@@ -221,9 +221,9 @@
         .screen.active {
             opacity: 1;
             visibility: visible;
-            position: relative; 
+            position: relative;
             z-index: 1;
-            overflow-y: auto; 
+            overflow-y: auto;
         }
         .screen-content-wrapper {
             width: 100%;
@@ -287,7 +287,7 @@
             #user-profile-area {
                 top: 20px;
                 right: 20px; /* Changed from left: auto to ensure it's on the right */
-                left: auto; 
+                left: auto;
                 transform: translateY(0);
                 align-items: center;
             }
@@ -301,25 +301,25 @@
             background-color: rgba(15, 15, 15, 0.85);
             border: 1px solid #c49730;
             border-radius: 10px;
-            padding: 8px 10px; 
+            padding: 8px 10px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
             display: flex;
-            flex-direction: row; 
+            flex-direction: row;
             align-items: center;
-            gap: 8px; 
+            gap: 8px;
             width: max-content;
             min-width: 0;
         }
-        @media (min-width: 768px) { 
+        @media (min-width: 768px) {
             #user-info-box {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 10px; 
+                gap: 10px;
                 border-width: 2px;
                 border-radius: 12px;
-                padding: 12px 15px; 
-                min-width: 180px; 
-                max-width: 200px; 
+                padding: 12px 15px;
+                min-width: 180px;
+                max-width: 200px;
                 width: auto;
             }
         }
@@ -338,58 +338,58 @@
 
         .user-info-item {
             background-color: rgba(40, 40, 40, 0.7);
-            padding: 4px 7px; 
+            padding: 4px 7px;
             border-radius: 6px;
-            border-left: 0px solid #c49730; 
+            border-left: 0px solid #c49730;
             display: flex;
             align-items: center;
-            gap: 4px; 
+            gap: 4px;
         }
         @media (min-width: 768px) {
             .user-info-item {
-                padding: 6px 10px; 
+                padding: 6px 10px;
                 border-radius: 8px;
-                border-left-width: 3px; 
-                display: block; 
+                border-left-width: 3px;
+                display: block;
             }
         }
 
         .user-info-item .label {
-            font-size: 0.7em; 
+            font-size: 0.7em;
             color: #a0a0a0;
-            margin-bottom: 0; 
+            margin-bottom: 0;
         }
         @media (min-width: 768px) {
             .user-info-item .label {
-                font-size: 0.85em; 
-                margin-bottom: 1px; 
+                font-size: 0.85em;
+                margin-bottom: 1px;
             }
         }
 
         .user-info-item .value {
-            font-size: 0.85em; 
+            font-size: 0.85em;
             font-weight: bold;
         }
         @media (min-width: 768px) {
             .user-info-item .value {
-                font-size: 1em; 
+                font-size: 1em;
             }
         }
 
         #display-name-output-container {
             display: flex;
             align-items: center;
-            gap: 6px; 
+            gap: 6px;
         }
         @media (max-width: 767px) {
              #display-name-output-container {
-                flex-direction: row-reverse; 
+                flex-direction: row-reverse;
             }
         }
 
         #edit-name-btn {
             cursor: pointer;
-            font-size: 0.85em; 
+            font-size: 0.85em;
             color: #c49730;
             transition: color 0.3s ease;
         }
@@ -398,17 +398,17 @@
         }
         @media (min-width: 768px) {
             #edit-name-btn {
-                font-size: 0.95em; 
+                font-size: 0.95em;
             }
         }
 
         #display-name-output-box .value {
             color: #e0e0e0;
-            text-shadow: 0 0 5px rgba(200, 150, 50, 0.5); 
+            text-shadow: 0 0 5px rgba(200, 150, 50, 0.5);
         }
         @media (min-width: 768px) {
             #display-name-output-box .value {
-                text-shadow: 0 0 7px rgba(200, 150, 50, 0.6); 
+                text-shadow: 0 0 7px rgba(200, 150, 50, 0.6);
             }
         }
         #coins-output-box .value {
@@ -417,11 +417,11 @@
         #public-user-id-output-box .value {
             color: #a0a0a0;
             font-family: monospace;
-            font-size: 0.95em; 
+            font-size: 0.95em;
         }
         @media (min-width: 768px) {
             #public-user-id-output-box .value {
-                font-size: 1em; 
+                font-size: 1em;
             }
         }
 
@@ -441,9 +441,9 @@
         }
         @media (min-width: 768px) {
             #avatar-container {
-                width: 70px; 
-                height: 70px; 
-                margin-right: 10px; 
+                width: 70px;
+                height: 70px;
+                margin-right: 10px;
             }
         }
 
@@ -454,12 +454,12 @@
         }
 
         #avatar-placeholder-icon {
-            font-size: 1.8rem; 
+            font-size: 1.8rem;
             color: #777;
         }
         @media (min-width: 768px) {
             #avatar-placeholder-icon {
-                font-size: 2.2rem; 
+                font-size: 2.2rem;
             }
         }
 
@@ -492,12 +492,12 @@
         /* Main Screen Header Styling */
         #main-screen-header {
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between;
             align-items: center;
             width: 100%;
             padding-top: 0.5rem; /* Reduced top padding for header itself */
-            padding-bottom: 1rem; 
-            margin-bottom: 1rem; 
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
         }
          @media (min-width: 768px) { /* md */
              #main-screen-header {
@@ -508,7 +508,7 @@
 
         #main-title {
             text-align: center;
-            flex-grow: 1; 
+            flex-grow: 1;
             font-size: 2.25rem; /* text-4xl */
             font-weight: bold;
             color: #c49730;
@@ -526,22 +526,22 @@
                 font-size: 3.75rem; /* text-6xl */
             }
         }
-        
+
         /* Developer Intro Icon Button - Header Position */
         #dev-intro-icon-btn-header {
-            background-color: transparent; 
+            background-color: transparent;
             color: #c49730;
             border: 2px solid #c49730;
-            padding: 0.5rem; 
-            border-radius: 50%; 
+            padding: 0.5rem;
+            border-radius: 50%;
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px; 
-            height: 40px; 
+            width: 40px;
+            height: 40px;
             flex-shrink: 0; /* Prevent shrinking */
         }
         #dev-intro-icon-btn-header:hover {
@@ -568,40 +568,40 @@
         }
 
         /* Bottom Action Buttons Layout */
-        #main-screen-buttons-layout { 
+        #main-screen-buttons-layout {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: auto; 
-            padding-top: 1rem; 
+            margin-top: auto;
+            padding-top: 1rem;
         }
 
         #top-action-buttons {
             display: flex;
-            flex-wrap: wrap; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 0.5rem; 
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
             width: 100%;
-            padding-bottom: 5px; 
+            padding-bottom: 5px;
         }
         @media (min-width: 640px) {
             #top-action-buttons {
-                gap: 0.75rem; 
-                flex-wrap: nowrap; 
-                overflow-x: auto; 
+                gap: 0.75rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
             }
         }
         @media (min-width: 768px) {
             #top-action-buttons {
-                gap: 1rem; 
+                gap: 1rem;
             }
         }
 
         #top-action-buttons .btn-mafia:not(#start-game-btn) {
-            font-size: 0.8rem; 
-            padding: 0.4rem 0.8rem; 
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
         }
         @media (min-width: 640px) {
             #top-action-buttons .btn-mafia:not(#start-game-btn) {
@@ -615,11 +615,11 @@
                 padding: 0.6rem 1.2rem;
             }
         }
-        
+
         #start-game-btn {
-             padding: 0.6rem 1.2rem !important; 
-             font-size: 0.95rem !important; 
-             order: 0; 
+             padding: 0.6rem 1.2rem !important;
+             font-size: 0.95rem !important;
+             order: 0;
         }
         @media (min-width: 640px) {
             #start-game-btn {
@@ -654,24 +654,24 @@
 
         /* Styles for Developers Panel */
         #developers-panel-container {
-            background-color: rgba(10, 10, 10, 0.92); 
+            background-color: rgba(10, 10, 10, 0.92);
         }
         #developers-panel {
             background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
             border: 2px solid #c49730;
             box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
-            max-height: 85vh; 
-            overflow-y: auto; 
-            border-radius: 15px; 
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 15px;
         }
         #close-developers-panel-btn {
             position: absolute;
-            top: 18px; 
-            right: 18px; 
+            top: 18px;
+            right: 18px;
             width: 34px;
             height: 34px;
-            background-color: rgba(196, 151, 48, 0.85); 
-            color: #101010; 
+            background-color: rgba(196, 151, 48, 0.85);
+            color: #101010;
             border-radius: 50%;
             border: none;
             display: flex;
@@ -686,20 +686,20 @@
             z-index: 10;
         }
         #close-developers-panel-btn:hover {
-            background-color: #d4a840; 
+            background-color: #d4a840;
             transform: scale(1.1) rotate(180deg);
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         }
-        
+
         .developer-item {
             background-color: rgba(28, 28, 35, 0.92);
-            padding: 1.2rem 1.5rem; 
-            border-radius: 12px; 
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
             border: 1px solid rgba(196, 151, 48, 0.25);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); 
-            text-align: right; 
-            margin-bottom: 1rem; 
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: right;
+            margin-bottom: 1rem;
         }
         .developer-item:last-child {
             margin-bottom: 0;
@@ -709,7 +709,7 @@
             box-shadow: 0 10px 28px rgba(196, 151, 48, 0.45);
             border-color: rgba(196, 151, 48, 0.6);
         }
-        
+
         .dev-header {
             display: flex;
             align-items: center;
@@ -718,30 +718,30 @@
             padding-bottom: 0.6rem;
         }
         .dev-role-icon {
-            font-size: 1.7em; 
+            font-size: 1.7em;
             color: #c49730;
-            margin-left: 10px; 
-            width: 28px; 
+            margin-left: 10px;
+            width: 28px;
             text-align: center;
-            line-height: 1; 
+            line-height: 1;
         }
-        .dev-role { 
-            font-size: 1.15rem; 
-            font-weight: 700; 
-            color: #e8e8e8; 
+        .dev-role {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #e8e8e8;
         }
-        .dev-username { 
-            color: #efbe5a; 
-            font-family: 'Vazirmatn', 'Courier New', Courier, monospace; 
+        .dev-username {
+            color: #efbe5a;
+            font-family: 'Vazirmatn', 'Courier New', Courier, monospace;
             font-weight: bold;
             font-size: 1.25rem;
-            display: block; 
-            margin-bottom: 0.5rem; 
-            margin-top: 0.2rem; 
+            display: block;
+            margin-bottom: 0.5rem;
+            margin-top: 0.2rem;
         }
-        .dev-description { 
-            font-size: 0.9rem; 
-            color: #b8b8b8; 
+        .dev-description {
+            font-size: 0.9rem;
+            color: #b8b8b8;
             line-height: 1.65;
         }
 
@@ -750,6 +750,7 @@
 <body>
     <div class="mafia-animated-bg"></div>
 
+    <!-- User Profile Area: Displays user avatar and information -->
     <div id="user-profile-area" class="hidden">
         <div id="avatar-container" class="hidden" title="تغییر آواتار">
             <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
@@ -773,6 +774,7 @@
         </div>
     </div>
 
+    <!-- Loading Screen: Shown during initial game load and authentication -->
     <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
         <div class="screen-content-wrapper justify-center">
             <h1 class="text-3xl sm:text-4xl font-bold mb-6 text-[#c49730]">بارگذاری بازی مافیا...</h1>
@@ -781,11 +783,11 @@
         </div>
     </div>
 
+    <!-- Main Screen: Registration for new users or main menu for existing users -->
     <div id="main-screen" class="screen">
-        <div class="screen-content-wrapper"> <!-- Increased padding-top here -->
-            <div> 
+        <div class="screen-content-wrapper">
+            <div>
                 <div id="main-screen-header">
-                    <!-- Developer Intro Icon Button - Moved to the left (visual right in RTL) -->
                     <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -795,15 +797,15 @@
                         </svg>
                     </button>
                     <h1 id="main-title">شهر مافیا</h1>
-                     <!-- Spacer on the right (visual left in RTL) to balance the icon button -->
-                    <div style="width: 40px; flex-shrink: 0;"></div>
+                    <div style="width: 40px; flex-shrink: 0;"></div> <!-- Spacer for balance -->
                 </div>
 
+                <!-- Registration Form: For new users to set display name and generate user ID -->
                 <div id="registration-form" class="mb-4 panel panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
                     <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center text-[#c49730]">ثبت نام / ورود</h2>
                     <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
                     <p id="input-error-message" class=""></p>
-                    
+
                     <div class="mt-3 mb-2">
                         <label for="user-id-display" class="block text-sm font-medium text-gray-300 mb-1">شناسه کاربری (5 رقمی):</label>
                         <div class="flex items-center gap-2">
@@ -812,23 +814,25 @@
                         </div>
                         <p id="user-id-error-message" class=""></p>
                     </div>
-                    
+
                     <button id="register-btn" class="btn-mafia w-full p-2 sm:p-3 text-base sm:text-lg mt-3">ورود به شهر</button>
                 </div>
             </div>
-            
+
+            <!-- Main Action Buttons: Start game, shop, etc. Shown after registration/login -->
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
                 <div id="top-action-buttons" class="">
-                    <button id="shop-btn" class="btn-mafia" style="order: -1;">فروشگاه</button> 
-                    <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button> 
-                    <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button> 
+                    <button id="shop-btn" class="btn-mafia" style="order: -1;">فروشگاه</button>
+                    <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button>
+                    <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Game Screen: Where the actual mafia game (Q&A) takes place -->
     <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start"> <!-- Default padding-top for game screen -->
+        <div class="screen-content-wrapper justify-start">
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
                 <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
                 <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
@@ -840,7 +844,7 @@
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4"></div>
                 <p id="question-explanation" class="text-xs sm:text-sm mt-3 sm:mt-4 text-gray-400 text-center hidden"></p>
             </div>
-            
+
             <div id="game-feedback" class="text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-8"></div>
 
             <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-4 sm:mt-6">
@@ -854,27 +858,31 @@
         </div>
     </div>
 
+    <!-- Shop Screen: For purchasing in-game items (currently demonstrative) -->
     <div id="shop-screen" class="screen">
-        <div class="screen-content-wrapper justify-start"> <!-- Default padding-top for shop screen -->
+        <div class="screen-content-wrapper justify-start">
             <div class="flex justify-between items-center mb-6 sm:mb-8 p-2 sm:p-3 bg-[rgba(0,0,0,0.4)] rounded-lg shadow-lg">
                 <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">فروشگاه سکه</h1>
                 <button id="back-to-main-from-shop-btn" class="btn-mafia-secondary">بازگشت</button>
             </div>
             <div id="shop-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                </div>
+                <!-- Shop items will be dynamically inserted here -->
+            </div>
         </div>
     </div>
 
-
+    <!-- Modal Container: For displaying pop-up messages, confirmations, and inputs -->
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-3 sm:p-4 panel-hidden z-50">
         <div class="panel panel-visible p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
             <h3 id="modal-title" class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#c49730]">توجه</h3>
             <div id="modal-content-dynamic">
-                <p id="modal-message" class="mb-2 sm:mb-3 text-sm sm:text-base"></p> 
+                <p id="modal-message" class="mb-2 sm:mb-3 text-sm sm:text-base"></p>
+                <!-- Container for changing display name input -->
                 <div id="change-name-input-container" class="hidden mb-2">
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
                     <p id="change-name-error-message" class=""></p>
                 </div>
+                <!-- Container for avatar generation -->
                 <div id="avatar-generation-container" class="hidden">
                     <button id="generate-avatar-btn" class="btn-mafia my-4">ساخت آواتار جدید با AI</button>
                     <div id="avatar-ai-loading" class="my-4 hidden">
@@ -882,7 +890,8 @@
                         <p class="mt-2 text-sm text-gray-400">در حال ساخت آواتارهای پیشنهادی... (ممکن است کمی طول بکشد)</p>
                     </div>
                     <div id="avatar-suggestions-container">
-                        </div>
+                        <!-- Avatar suggestions will be loaded here -->
+                    </div>
                     <p id="avatar-error-message" class="text-red-400 text-sm mt-2"></p>
                 </div>
             </div>
@@ -893,7 +902,7 @@
         </div>
     </div>
 
-    <!-- Developers Panel -->
+    <!-- Developers Panel: Information about the game developers -->
     <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[51]">
         <div id="developers-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
             <button id="close-developers-panel-btn">&times;</button>
@@ -925,7 +934,7 @@
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
-                        <span class="dev-role-icon">⚙️</span> 
+                        <span class="dev-role-icon">⚙️</span>
                         <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
                     <p class="dev-username">SinaCloud</p>
@@ -933,7 +942,7 @@
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
-                        <span class="dev-role-icon">🚀</span> 
+                        <span class="dev-role-icon">🚀</span>
                         <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
                     </div>
                     <p class="dev-username">ParsaDevOps</p>
@@ -942,127 +951,143 @@
             </div>
         </div>
     </div>
-    
+
     <script type="module">
+        // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase configuration
-        // NOTE: In a production GitHub repository, NEVER expose your API keys directly.
-        // Use environment variables or a secure backend to manage them.
+        // Firebase configuration - uses injected config or fallback placeholders
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-            authDomain: "city-mafia.firebaseapp.com",
-            projectId: "city-mafia",
-            storageBucket: "city-mafia.firebasestorage.app",
-            messagingSenderId: "66458127103",
-            appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-            measurementId: "G-8M0M6BJ0GG" // Added measurementId from your provided config
+            apiKey: "YOUR_FALLBACK_API_KEY", // Replace with your actual API key if not injected
+            authDomain: "YOUR_FALLBACK_AUTH_DOMAIN", // Replace with your actual auth domain
+            projectId: "YOUR_FALLBACK_PROJECT_ID", // Replace with your actual project ID
+            storageBucket: "YOUR_FALLBACK_STORAGE_BUCKET", // Replace with your actual storage bucket
+            messagingSenderId: "YOUR_FALLBACK_MESSAGING_SENDER_ID", // Replace with your actual sender ID
+            appId: "YOUR_FALLBACK_APP_ID" // Replace with your actual app ID
         };
-        // This `appId` is used for structuring Firestore paths (e.g., artifacts/mafia-game-default/users/...)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default'; // Uses injected app ID or a default
 
+        // Firebase app, auth, and db instances
         let app;
         let auth;
         let db;
-        let currentUserId = null; 
-        let isAuthReady = false; 
+        let currentUserId = null; // Stores the UID of the authenticated user
+        let isAuthReady = false; // Flag to track if Firebase auth has initialized
 
-        // Game state object
+        // Game state object to hold player data and game status
         const gameState = {
             displayName: '',
-            publicUserId: '', 
+            publicUserId: '',
             coins: 0,
             currentStage: 1,
-            currentQuestionData: null,
-            isQuestionActive: false, 
-            isLoadingNextQuestion: false, 
-            avatarUrl: '', 
-            nameChangeCount: 0, 
+            currentQuestionData: null, // Stores the current question fetched from AI
+            isQuestionActive: false, // Tracks if a question is currently being answered
+            isLoadingNextQuestion: false, // Prevents multiple question fetches
+            avatarUrl: '', // URL for the user's avatar
+            nameChangeCount: 0, // Tracks how many times the user has changed their name
         };
 
-        // DOM Element Selectors
-        let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen, 
+        // DOM Element Selectors (cached for performance)
+        let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
-            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage, 
-            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput, 
-            publicUserIdOutput, 
-            editNameBtn, coinsOutput, 
-            mainScreenButtonsLayout, 
-            startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader, 
-            stageDisplay, gameCoinsDisplay, questionText, 
+            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
+            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
+            publicUserIdOutput,
+            editNameBtn, coinsOutput,
+            mainScreenButtonsLayout,
+            startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader,
+            stageDisplay, gameCoinsDisplay, questionText,
             optionsContainer, questionExplanation, hintBtn, skipStageBtn, backToMainBtn,
             gameFeedback, aiThinkingIndicator, backToMainFromShopBtn, shopItemsContainer,
-            modalContainer, modalTitle, modalContentDynamic, modalMessage, 
+            modalContainer, modalTitle, modalContentDynamic, modalMessage,
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
-            avatarGenerationContainer, generateAvatarBtn, avatarAiLoading, 
+            avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn;
-        
-        let modalConfirmCallback = null; 
-        let modalCancelCallback = null; 
-        let selectedAvatarForConfirmation = null; 
+
+        let modalConfirmCallback = null; // Callback for modal confirm button
+        let modalCancelCallback = null; // Callback for modal cancel button
+        let selectedAvatarForConfirmation = null; // Stores URL of avatar selected in modal
 
         // --- Utility Functions ---
 
+        /**
+         * Shows a specific screen and hides others. Also manages body overflow.
+         * @param {HTMLElement} screenElement - The screen element to show.
+         */
         function showScreen(screenElement) {
             if (!screenElement) return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
-            
+
+            // Control body scroll based on the active screen
             const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
             document.body.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
             document.documentElement.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
-            
-            screenElement.scrollTop = 0; 
-            updateUI(); 
+
+            screenElement.scrollTop = 0; // Scroll to top of the new screen
+            updateUI(); // Refresh UI elements based on current game state
         }
 
-        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") { 
+        /**
+         * Displays a modal dialog with customizable content and actions.
+         * @param {string} title - The title of the modal.
+         * @param {string} message - The main message/content of the modal (can be HTML).
+         * @param {string} [confirmText="تایید"] - Text for the confirm button.
+         * @param {string|null} [cancelText=null] - Text for the cancel button. If null, cancel button is hidden (unless type is 'changeName' or 'avatar').
+         * @param {Function|null} [onConfirm=null] - Callback function when confirm button is clicked.
+         * @param {Function|null} [onCancel=null] - Callback function when cancel button is clicked.
+         * @param {string} [modalType="generic"] - Type of modal ("generic", "changeName", "avatar") to show specific input fields.
+         */
+        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
             if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
                 console.error("[showModal] Modal elements not found, cannot show modal.");
                 return;
             }
 
             modalTitle.textContent = title;
-            
+
+            // Hide all dynamic content areas first
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
-            
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) { 
-                userProfileArea.classList.add('profile-area-hidden'); 
+
+            // Hide user profile if modal is shown on main screen to prevent overlap
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
             }
 
+            // Show specific content based on modalType
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
-                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName; 
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = ''; 
+                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
                 if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
-                if (message && message.trim() !== "") {
+                if (message && message.trim() !== "") { // Show additional message if provided
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
                 avatarGenerationContainer.classList.remove('hidden');
-                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = ''; 
+                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = '';
                 if(avatarErrorMessage) avatarErrorMessage.textContent = '';
                 if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
-                 if (message && message.trim() !== "") { 
+                 if (message && message.trim() !== "") { // Show additional message if provided
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
-            } else { 
-                modalMessage.innerHTML = message; 
+            } else { // Generic modal
+                modalMessage.innerHTML = message;
                 modalMessage.classList.remove('hidden');
             }
-            
+
             modalConfirmBtn.textContent = confirmText;
-            modalConfirmCallback = onConfirm; 
+            modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
 
-            if (cancelText || modalType === "changeName" || modalType === "avatar") { 
+            if (cancelText || modalType === "changeName" || modalType === "avatar") {
                 modalCancelBtn.textContent = cancelText || "لغو";
                 modalCancelBtn.classList.remove('hidden');
             } else {
@@ -1072,101 +1097,125 @@
             modalContainer.classList.add('panel-visible');
         }
 
+        /**
+         * Hides the currently active modal.
+         */
         function hideModal() {
             if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
                 return;
             }
             modalContainer.classList.add('panel-hidden');
             modalContainer.classList.remove('panel-visible');
-            modalConfirmCallback = null; 
+            modalConfirmCallback = null;
             modalCancelCallback = null;
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
-            modalMessage.classList.add('hidden'); 
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && 
-               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) { 
+            modalMessage.classList.add('hidden');
+            // Restore user profile visibility if no other panel is open
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
-        
+
+        /**
+         * Handles the click on the modal's confirm button.
+         */
         function handleModalConfirm() {
             if (modalConfirmCallback) {
                 try {
-                    modalConfirmCallback(); 
+                    modalConfirmCallback();
                 } catch (e) {
                     console.error("[handleModalConfirm] Error in modal confirm callback:", e);
-                    hideModal(); 
+                    hideModal(); // Ensure modal closes even on callback error
                 }
             } else {
-                hideModal(); 
+                hideModal(); // Default action if no callback
             }
         }
 
+        /**
+         * Handles the click on the modal's cancel button.
+         */
         function handleModalCancel() {
             if (modalCancelCallback) {
                 try {
-                    modalCancelCallback(); 
+                    modalCancelCallback();
                 } catch (e) {
                     console.error("[handleModalCancel] Error in modal cancel callback:", e);
                 }
             }
-            hideModal(); 
+            hideModal(); // Always hide modal on cancel
         }
 
+        /**
+         * Shows the developers information panel.
+         */
         function showDevelopersPanel() {
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.remove('panel-hidden');
             developersPanelContainer.classList.add('panel-visible');
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) { 
-                userProfileArea.classList.add('profile-area-hidden'); 
+            // Hide user profile if developers panel is shown on main screen
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
             }
         }
 
+        /**
+         * Hides the developers information panel.
+         */
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.add('panel-hidden');
             developersPanelContainer.classList.remove('panel-visible');
-             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && 
-               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) { 
+             // Restore user profile visibility if no other panel (like a modal) is open
+             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
 
+        /**
+         * Updates various UI elements based on the current game state.
+         * This includes display name, coins, avatar, and visibility of forms/buttons.
+         */
         function updateUI() {
-            if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان"; 
-            if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---"; 
+            // Update user profile display
+            if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
+            if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
             if(coinsOutput) coinsOutput.textContent = gameState.coins;
-            if(gameCoinsDisplay) gameCoinsDisplay.textContent = gameState.coins; 
-            if(stageDisplay) stageDisplay.textContent = gameState.currentStage; 
+            if(gameCoinsDisplay) gameCoinsDisplay.textContent = gameState.coins;
+            if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
 
+            // Update avatar image
             if(avatarImage && gameState.avatarUrl) {
                 avatarImage.src = gameState.avatarUrl;
             } else if (avatarImage) {
-                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`; 
+                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`; // Default placeholder
             }
 
+            // Determine visibility of registration form, action buttons, and user profile
             let showRegistration = true;
             let showActionButtons = false;
             let showUserInfoAndAvatar = false;
 
-            if (isAuthReady && gameState.displayName && gameState.publicUserId) { 
+            if (isAuthReady && gameState.displayName && gameState.publicUserId) { // User is registered and data loaded
                 showRegistration = false;
                 showActionButtons = true;
-                if (mainScreen && mainScreen.classList.contains('active')) { 
+                if (mainScreen && mainScreen.classList.contains('active')) { // Only show profile on main screen
                     showUserInfoAndAvatar = true;
                 }
-            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) { 
-                // User is authenticated, but hasn't completed registration (display name/public ID)
+            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) { // Auth ready, but user not fully registered
                 showRegistration = true;
                 showActionButtons = false;
-                showUserInfoAndAvatar = false; 
-            } else { 
-                // Not authenticated or other states, fallback to registration
-                showRegistration = true; 
+                showUserInfoAndAvatar = false;
+            } else { // Auth not ready yet
+                showRegistration = true; // Effectively hidden by loading screen
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
             }
 
+            // Toggle registration form visibility
             if(registrationForm){
                 if (showRegistration) {
                     registrationForm.classList.remove('panel-hidden');
@@ -1176,185 +1225,236 @@
                     registrationForm.classList.remove('panel-visible');
                 }
             }
-            
-            if(mainScreenButtonsLayout){ 
+
+            // Toggle main action buttons layout visibility
+            if(mainScreenButtonsLayout){
                 if (showActionButtons) {
                     mainScreenButtonsLayout.classList.remove('hidden');
                 } else {
                     mainScreenButtonsLayout.classList.add('hidden');
                 }
             }
-            
-            if(userProfileArea){ 
-                const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) || 
+
+            // Toggle user profile area visibility, considering modals/panels
+            if(userProfileArea){
+                const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) ||
                                         (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
-                if (showUserInfoAndAvatar && !isAnyPanelVisible) { 
-                    userProfileArea.classList.remove('profile-area-hidden'); 
-                    userProfileArea.classList.remove('hidden'); 
-                    if(avatarContainer){
-                        // Only show avatar on larger screens to save space on mobile
-                        if(window.innerWidth >= 768) { 
+                if (showUserInfoAndAvatar && !isAnyPanelVisible) { // Show profile if user is set and no panel is open
+                    userProfileArea.classList.remove('profile-area-hidden');
+                    userProfileArea.classList.remove('hidden');
+                    if(avatarContainer){ // Special handling for avatar visibility based on screen size
+                        if(window.innerWidth >= 768) { // Desktop
                             avatarContainer.classList.remove('hidden');
-                        } else {
-                            avatarContainer.classList.add('hidden'); 
+                        } else { // Mobile
+                            avatarContainer.classList.add('hidden');
                         }
                     }
                     if(userInfoBox) userInfoBox.classList.remove('hidden');
 
-                } else if (!showUserInfoAndAvatar) { 
-                    userProfileArea.classList.add('hidden'); 
+                } else if (!showUserInfoAndAvatar) { // Hide profile if user not set
+                    userProfileArea.classList.add('hidden');
                     if(avatarContainer) avatarContainer.classList.add('hidden');
                     if(userInfoBox) userInfoBox.classList.add('hidden');
-                } else if (isAnyPanelVisible) { 
+                } else if (isAnyPanelVisible) { // Temporarily hide profile if a panel is open
                     userProfileArea.classList.add('profile-area-hidden');
                 }
             }
         }
 
         // --- Firebase Functions ---
+
+        /**
+         * Initializes Firebase app, auth, and Firestore.
+         * Sets up an authentication state listener to load user data or sign in.
+         */
         async function initFirebase() {
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                console.log("Firebase initialized.");
+                console.log("Firebase initialized successfully.");
 
+                // Listen for authentication state changes
                 onAuthStateChanged(auth, async (user) => {
-                    if (user) { 
+                    if (user) { // User is signed in
                         currentUserId = user.uid;
-                        await loadUserData(); 
-                    } else { 
-                        // Try custom token first for persistence if available, otherwise anonymous sign-in
+                        console.log("User is signed in with UID:", currentUserId);
+                        await loadUserData(); // Load existing user data
+                    } else { // User is signed out or not yet signed in
+                        console.log("No user signed in, attempting sign-in...");
+                        // Attempt sign-in with custom token if available, otherwise anonymous
                         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                             try {
+                                console.log("Attempting sign-in with custom token.");
                                 await signInWithCustomToken(auth, __initial_auth_token);
                             } catch (error) {
-                                console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
+                                console.error("[onAuthStateChanged] Custom token sign-in error, falling back to anonymous:", error);
                                 await signInAnonymously(auth);
                             }
                         } else {
+                            console.log("Attempting anonymous sign-in.");
                             await signInAnonymously(auth);
                         }
-                        // Reset gameState if no user or anonymous sign-in failed
-                        gameState.displayName = ''; 
-                        gameState.publicUserId = ''; 
-                        gameState.coins = 0; 
-                        gameState.avatarUrl = ''; 
-                        gameState.nameChangeCount = 0; 
+                        // Reset game state for potentially new anonymous user if no data is loaded
+                        // This will be overwritten by loadUserData if they sign in and had data
+                        if (!gameState.displayName) { // Only reset if displayName isn't already set (e.g. from a quick previous load)
+                            gameState.displayName = '';
+                            gameState.publicUserId = '';
+                            gameState.coins = 0; // Default for a truly new session before registration
+                            gameState.avatarUrl = '';
+                            gameState.nameChangeCount = 0;
+                        }
                     }
-                    isAuthReady = true; 
-                    updateUI(); 
-                    
-                    if (loadingScreen && loadingScreen.classList.contains('active')) { 
+                    isAuthReady = true; // Auth process is complete
+                    updateUI(); // Update UI based on new auth state
+
+                    // Transition from loading screen to main screen
+                    if (loadingScreen && loadingScreen.classList.contains('active')) {
                         if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
-                            if(mainScreen) showScreen(mainScreen); 
-                        }, 500); 
+                            if(mainScreen) showScreen(mainScreen);
+                        }, 500); // Short delay to show welcome message
                     }
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
                 if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
-                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden'); 
+                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden'); // Hide game buttons on error
             }
         }
-        
+
+        /**
+         * Loads user data from Firestore.
+         * If no data exists (new user), sets default values.
+         */
         async function loadUserData() {
             if (!currentUserId || !db) {
-                // If no user or db not ready, ensure gameState is reset to default values
-                gameState.displayName = ''; 
-                gameState.publicUserId = ''; 
-                gameState.coins = 0; 
-                gameState.avatarUrl = ''; 
-                gameState.nameChangeCount = 0; 
+                console.log("[loadUserData] No currentUserId or db, resetting game state.");
+                // Ensure defaults if somehow called without user context
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.coins = 0; // Or 500 if we want to give new users coins before registration completes
+                gameState.avatarUrl = '';
+                gameState.nameChangeCount = 0;
                 return;
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            console.log(`[loadUserData] Loading data for user: ${currentUserId} from path: ${userDocRef.path}`);
             try {
                 const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) { 
+                if (docSnap.exists()) {
+                    console.log("[loadUserData] User document found.");
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
-                    gameState.publicUserId = data.publicUserId || ""; 
-                    gameState.coins = data.coins !== undefined ? data.coins : 0; // Default to 0 if exists but no coins field
+                    gameState.publicUserId = data.publicUserId || "";
+                    // Give 500 coins if user is registered but has no coin data (e.g. old profile)
+                    // Or if they are newly registered and this is the first load post-registration.
+                    // The registration process itself sets coins to 500 for truly new users.
+                    gameState.coins = data.coins !== undefined ? data.coins : (gameState.displayName ? 0 : 500);
                     gameState.currentStage = data.currentStage || 1;
-                    gameState.nameChangeCount = data.nameChangeCount !== undefined ? data.nameChangeCount : 0; 
-                    gameState.avatarUrl = data.avatarUrl || ''; 
-                } else { 
-                    // New profile for an authenticated but unregistered user
-                    gameState.displayName = ""; 
-                    gameState.publicUserId = ""; 
-                    gameState.coins = 0; // Coins will be granted on first registration
-                    gameState.avatarUrl = ''; 
+                    gameState.nameChangeCount = data.nameChangeCount || 0;
+                    gameState.avatarUrl = data.avatarUrl || '';
+                    console.log("[loadUserData] Loaded data:", JSON.stringify(gameState));
+                } else {
+                    // This case means the user is authenticated (e.g., anonymously) but has no profile document yet.
+                    // This is expected for a brand new user before they complete the in-app registration.
+                    console.log("[loadUserData] No user document found. User is likely new or hasn't registered in-game yet.");
+                    gameState.displayName = ""; // Will be set during in-app registration
+                    gameState.publicUserId = ""; // Will be set during in-app registration
+                    gameState.coins = 500; // Initial coins for a new user before they save a profile
+                    gameState.avatarUrl = '';
                     gameState.nameChangeCount = 0;
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-                // Fallback to empty state if load fails
-                gameState.displayName = ''; 
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد. لطفاً صفحه را تازه‌سازی کنید.", "باشه", null, () => hideModal());
+                // Fallback to default state on error
+                gameState.displayName = '';
                 gameState.publicUserId = '';
                 gameState.coins = 0;
-                gameState.avatarUrl = ''; 
+                gameState.avatarUrl = '';
                 gameState.nameChangeCount = 0;
             }
         }
 
+
+        /**
+         * Saves the current game state (user profile) to Firestore.
+         */
         async function saveUserData() {
-            if (!currentUserId || !db) return; 
+            if (!currentUserId || !db) {
+                console.warn("[saveUserData] Cannot save: No currentUserId or db instance.");
+                return;
+            }
+            if (!gameState.publicUserId) {
+                console.warn("[saveUserData] Cannot save: publicUserId is not set. User likely hasn't completed registration.");
+                // Optionally, show a message to the user if this is unexpected.
+                // For now, we just prevent saving incomplete data.
+                return;
+            }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            console.log(`[saveUserData] Saving data for user: ${currentUserId} to path: ${userDocRef.path}`);
             try {
                 await setDoc(userDocRef, {
                     displayName: gameState.displayName,
-                    publicUserId: gameState.publicUserId, 
+                    publicUserId: gameState.publicUserId,
                     coins: gameState.coins,
                     currentStage: gameState.currentStage,
-                    nameChangeCount: gameState.nameChangeCount, 
-                    avatarUrl: gameState.avatarUrl, 
-                    lastUpdated: serverTimestamp() 
-                }, { merge: true }); // Use merge: true to only update specified fields
+                    nameChangeCount: gameState.nameChangeCount,
+                    avatarUrl: gameState.avatarUrl,
+                    lastUpdated: serverTimestamp() // Adds a server-side timestamp
+                }, { merge: true }); // Merge to avoid overwriting fields not included here
+                console.log("[saveUserData] User data saved successfully.");
             } catch (error) {
                 console.error("Error saving user data:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
 
+        /**
+         * Updates the player's coin count and saves the data.
+         * @param {number} amount - The amount to add (positive) or subtract (negative) from coins.
+         * @param {boolean} [bypassModal=false] - If true, won't show "insufficient funds" modal.
+         * @returns {boolean} True if coin update was successful, false otherwise.
+         */
         async function updateCoins(amount, bypassModal = false) {
             const newCoins = gameState.coins + amount;
-            if (newCoins < 0) { 
+            if (newCoins < 0) {
                 if (!bypassModal) showModal("اعتبار ناکافی", "سکه کافی برای این عملیات ندارید.", "باشه", null, () => hideModal());
-                return false; 
+                return false; // Not enough coins
             }
-            gameState.coins = newCoins; 
-            updateUI(); 
-            await saveUserData(); 
-            return true; 
+            gameState.coins = newCoins;
+            updateUI(); // Reflect changes immediately
+            await saveUserData(); // Persist changes
+            return true;
         }
 
         // --- Gemini API Functions ---
-        // IMPORTANT: Replace this with your actual Gemini API Key.
-        // For production, never expose API keys directly in client-side code.
-        // Use environment variables or a secure backend proxy.
-        const GEMINI_API_KEY = ""; 
-        const GEMINI_TEXT_MODEL = "gemini-2.0-flash"; 
-        const IMAGEN_MODEL = "imagen-3.0-generate-002"; 
+        // NOTE: API Key should ideally be handled securely, not hardcoded client-side for production.
+        // For this environment, an empty string for GEMINI_API_KEY is fine as it might be injected or proxied.
+        const GEMINI_API_KEY = ""; // Your Gemini API Key if needed directly, or leave empty if handled by environment
+        const GEMINI_TEXT_MODEL = "gemini-2.0-flash"; // Or any other suitable model
+        const IMAGEN_MODEL = "imagen-3.0-generate-002"; // Model for image generation
 
+        /**
+         * Calls the Gemini API to generate text or structured JSON.
+         * @param {string} prompt - The prompt to send to the API.
+         * @param {boolean} [isJsonOutput=false] - Whether to expect JSON output.
+         * @param {Object|null} [schema=null] - JSON schema for structured output if isJsonOutput is true.
+         * @returns {Promise<string|Object|null>} The generated text/JSON or null on error.
+         */
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
-            if (!GEMINI_API_KEY) {
-                showModal("خطای API", "کلید Gemini API تنظیم نشده است. قابلیت‌های هوش مصنوعی فعال نیستند.", "باشه", null, () => hideModal());
-                return null;
-            }
-            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden'); 
+            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden'); // Show thinking indicator
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-            
+
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory };
 
-            if (isJsonOutput) { 
+            if (isJsonOutput) {
                 payload.generationConfig = {
                     responseMimeType: "application/json",
                 };
-                if (schema) {
+                if (schema) { // Add schema if provided for structured JSON output
                     payload.generationConfig.responseSchema = schema;
                 }
             }
@@ -1365,7 +1465,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) { 
+                if (!response.ok) {
                     const errorBody = await response.text();
                     throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
                 }
@@ -1374,43 +1474,46 @@
                     result.candidates[0].content && result.candidates[0].content.parts &&
                     result.candidates[0].content.parts.length > 0) {
                     const text = result.candidates[0].content.parts[0].text;
-                    return isJsonOutput ? JSON.parse(text) : text; 
+                    return isJsonOutput ? JSON.parse(text) : text; // Parse if JSON output is expected
                 } else {
+                    console.warn("Gemini API response structure unexpected:", result);
                     throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
                 }
             } catch (error) {
                 console.error("Error calling Gemini API:", error);
-                // Avoid showing error modal for "offensive content" as it's a safety feature response
-                if (!error.message.includes("offensive, hateful, or contain profanity")) { 
-                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد: ${error.message}`, "باشه", null, () => hideModal());
+                // Avoid showing modal for content safety prompts.
+                if (!prompt.toLowerCase().includes("offensive, hateful, or contain profanity")) {
+                     showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد: ${error.message}`, "باشه", null, () => hideModal());
                 }
                 return null;
             } finally {
-                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden'); 
+                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden'); // Hide thinking indicator
             }
         }
 
+        /**
+         * Calls the Imagen API to generate images.
+         * @param {string} prompt - The prompt for image generation.
+         * @param {number} [sampleCount=1] - Number of images to generate.
+         * @returns {Promise<string[]|null>} Array of base64 image data URLs or null on error.
+         */
         async function callImagenAPI(prompt, sampleCount = 1) {
-            if (!GEMINI_API_KEY) {
-                if(avatarErrorMessage) avatarErrorMessage.textContent = "کلید Gemini API تنظیم نشده است. قابلیت‌های هوش مصنوعی فعال نیستند.";
-                return null;
-            }
-            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden'); 
-            if(avatarErrorMessage) avatarErrorMessage.textContent = '';
-            
-            const payload = { 
-                instances: [{ prompt: prompt }], 
-                parameters: { "sampleCount": sampleCount } 
+            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden'); // Show avatar loading indicator
+            if(avatarErrorMessage) avatarErrorMessage.textContent = ''; // Clear previous errors
+
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": sampleCount }
             };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
-            
+
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) { 
+                if (!response.ok) {
                     const errorBody = await response.text();
                     throw new Error(`API request failed: ${response.status} ${errorBody}`);
                 }
@@ -1418,6 +1521,7 @@
                 if (result.predictions && result.predictions.length > 0) {
                     return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
                 } else {
+                    console.warn("Imagen API response structure unexpected:", result);
                     throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
                 }
             } catch (error) {
@@ -1425,55 +1529,74 @@
                 if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
                 return null;
             } finally {
-                if(avatarAiLoading) avatarAiLoading.classList.add('hidden'); 
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden'); // Hide avatar loading indicator
             }
         }
-        
+
         // --- Game Logic Functions ---
 
+        /**
+         * Generates a new mafia-themed question using the Gemini API.
+         * Updates gameState.currentQuestionData and calls displayQuestion.
+         */
         async function generateQuestion() {
-            if (gameState.isLoadingNextQuestion) return; 
+            if (gameState.isLoadingNextQuestion) return; // Prevent concurrent calls
             gameState.isLoadingNextQuestion = true;
             if(questionText) questionText.textContent = "در حال تولید سوال جدید...";
-            if(optionsContainer) optionsContainer.innerHTML = "";
+            if(optionsContainer) optionsContainer.innerHTML = ""; // Clear old options
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(gameFeedback) gameFeedback.textContent = "";
 
-            const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن. سوال باید دارای 4 گزینه باشد و گزینه صحیح مشخص شود. پاسخ را در قالب JSON با ساختار زیر ارائه بده:
-            {
-              "question": "متن سوال به فارسی",
-              "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
-              "correctAnswerIndex": 0, 
-              "explanation": "توضیح مختصر در مورد پاسخ صحیح به فارسی"
-            }
-            مطمئن شو که ایندکس پاسخ صحیح معتبر و بین 0 تا 3 باشد.`;
-            
+            const questionSchema = {
+                type: "OBJECT",
+                properties: {
+                    "question": { "type": "STRING", "description": "متن سوال به فارسی" },
+                    "options": {
+                        "type": "ARRAY",
+                        "description": "آرایه‌ای شامل ۴ گزینه رشته‌ای به فارسی",
+                        "items": { "type": "STRING" },
+                        "minItems": 4,
+                        "maxItems": 4
+                    },
+                    "correctAnswerIndex": { "type": "INTEGER", "description": "ایندکس پاسخ صحیح (بین 0 تا 3)" },
+                    "explanation": { "type": "STRING", "description": "توضیح مختصر در مورد پاسخ صحیح به فارسی" }
+                },
+                required: ["question", "options", "correctAnswerIndex", "explanation"]
+            };
+
+            const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن. سوال باید دارای 4 گزینه باشد و گزینه صحیح مشخص شود. پاسخ را در قالب JSON با ساختار ارائه شده ارائه بده. مطمئن شو که ایندکس پاسخ صحیح معتبر و بین 0 تا 3 باشد و تمام فیلدهای مورد نیاز پر شده باشند.`;
+
             try {
-                const data = await callGeminiAPI(prompt, true); 
-                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
+                const data = await callGeminiAPI(prompt, true, questionSchema); // Request JSON output with schema
+                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined && data.correctAnswerIndex >= 0 && data.correctAnswerIndex < 4) {
                     gameState.currentQuestionData = data;
-                    displayQuestion(); 
+                    displayQuestion();
                 } else {
-                    throw new Error("ساختار سوال از AI معتبر نیست.");
+                    console.error("Invalid question structure from AI:", data);
+                    throw new Error("ساختار سوال از AI معتبر نیست یا ناقص است.");
                 }
             } catch (error) {
                 console.error("Error generating question:", error);
                 if(questionText) questionText.textContent = "خطا در بارگذاری سوال.";
-                showModal("خطا در سوال", `مشکلی در تولید سوال جدید پیش آمد. (${error.message}) آیا میخواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی", 
-                    () => { hideModal(); generateQuestion(); }, 
+                showModal("خطا در سوال", `مشکلی در تولید سوال جدید پیش آمد. (${error.message}) آیا میخواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                    () => { hideModal(); generateQuestion(); },
                     () => { hideModal(); if(mainScreen) showScreen(mainScreen); }
                 );
             } finally {
                 gameState.isLoadingNextQuestion = false;
-                gameState.isQuestionActive = true; 
+                gameState.isQuestionActive = true; // Question is now active for answering
             }
         }
 
+        /**
+         * Generates a hint for the current question using Gemini API.
+         * Costs coins to use.
+         */
         async function generateHint() {
-            if (!gameState.currentQuestionData) return null; 
-            
+            if (!gameState.currentQuestionData) return null;
+
             const hintCost = 100;
-            if (gameState.coins < hintCost) { 
+            if (gameState.coins < hintCost) {
                 showModal("سکه ناکافی", `برای دریافت راهنمایی ${hintCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
                 return null;
             }
@@ -1483,75 +1606,84 @@
                 `آیا مایلید ${hintCost} سکه برای دریافت راهنمایی خرج کنید؟`,
                 "بله، راهنمایی بده",
                 "خیر",
-                async () => { 
-                    hideModal(); 
-                    const coinUpdateSuccess = await updateCoins(-hintCost); 
+                async () => { // onConfirm
+                    hideModal();
+                    const coinUpdateSuccess = await updateCoins(-hintCost);
                     if (coinUpdateSuccess) {
                         const { question, options, correctAnswerIndex } = gameState.currentQuestionData;
                         const correctAnswerText = options[correctAnswerIndex];
                         const prompt = `برای سوال مافیایی زیر یک راهنمایی کوتاه و غیر مستقیم به زبان فارسی ارائه بده. راهنمایی نباید پاسخ را مستقیما لو بدهد.
                         سوال: "${question}"
                         گزینه ها: ${options.join(", ")}
-                        پاسح صحیح: "${correctAnswerText}"
+                        پاسخ صحیح: "${correctAnswerText}"
                         راهنمایی شما:`;
 
                         const hintText = await callGeminiAPI(prompt);
-                        if (hintText) { 
+                        if (hintText) {
                             showModal("راهنمایی ✨", hintText.replace(/\n/g, '<br>'), "متوجه شدم", null, () => hideModal());
-                        } else { 
-                            await updateCoins(hintCost); // Refund coins if API call fails
+                        } else {
+                            await updateCoins(hintCost); // Refund coins if hint generation failed
                             showModal("خطا", "متاسفانه دستیار نتوانست راهنمایی ارائه دهد. سکه‌های شما بازگردانده شد.", "باشه", null, () => hideModal());
                         }
                     }
                 },
-                () => hideModal() 
+                () => hideModal() // onCancel
             );
         }
 
+        /**
+         * Displays the current question and options on the game screen.
+         */
         function displayQuestion() {
             if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
             const { question, options } = gameState.currentQuestionData;
             questionText.textContent = question;
-            optionsContainer.innerHTML = ""; 
+            optionsContainer.innerHTML = ""; // Clear previous options
             options.forEach((option, index) => {
                 const button = document.createElement('button');
-                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right'; 
+                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right'; // Tailwind classes for styling
                 button.textContent = `${index + 1}. ${option}`;
-                button.dataset.index = index; 
+                button.dataset.index = index; // Store index for answer checking
                 button.addEventListener('click', handleAnswerSelection);
                 optionsContainer.appendChild(button);
             });
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(questionExplanation) questionExplanation.textContent = "";
             if(gameFeedback) gameFeedback.textContent = "";
-            gameState.isQuestionActive = true; 
+            gameState.isQuestionActive = true; // Enable answer selection
         }
 
+        /**
+         * Handles the player's answer selection.
+         * Checks if the answer is correct, updates coins and stage, and provides feedback.
+         * @param {Event} event - The click event from an option button.
+         */
         async function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
-            gameState.isQuestionActive = false; 
+            gameState.isQuestionActive = false; // Disable further answers for this question
 
             const selectedOptionButton = event.target.closest('.option-btn');
             if (!selectedOptionButton) return;
 
             const selectedIndex = parseInt(selectedOptionButton.dataset.index);
-            const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData; 
+            const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
 
+            // Disable all option buttons
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
-            if (selectedIndex === correctAnswerIndex) { 
+            if (selectedIndex === correctAnswerIndex) { // Correct answer
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح! +۵ سکه";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
-                await updateCoins(5); 
-                gameState.currentStage++; 
-                await saveUserData(); 
-                setTimeout(() => { generateQuestion(); updateUI(); }, 2000); 
-            } else { 
+                await updateCoins(5);
+                gameState.currentStage++;
+                await saveUserData(); // Save progress
+                setTimeout(() => { generateQuestion(); updateUI(); }, 2000); // Load next question
+            } else { // Incorrect answer
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-                if (correctButton) correctButton.classList.add('correct'); 
-                
+                if (correctButton) correctButton.classList.add('correct'); // Highlight correct answer
+
                 const selectedOptionText = options[selectedIndex];
                 const correctAnswerText = options[correctAnswerIndex];
                 const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
@@ -1561,44 +1693,48 @@
                 یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد. همچنین ۵ سکه از او کم کن.`;
 
                 const taunt = await callGeminiAPI(tauntPrompt);
-                if (taunt) { 
+                if (taunt) {
                     gameFeedback.innerHTML = `${taunt.replace(/\n/g, '<br>')} <br> (-۵ سکه)`;
-                } else { 
+                } else {
                     gameFeedback.textContent = "پاسخ اشتباه! -۵ سکه";
                 }
-                gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400'; 
-                await updateCoins(-5); 
-                setTimeout(() => { generateQuestion(); updateUI(); }, 4000); 
+                gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
+                await updateCoins(-5);
+                setTimeout(() => { generateQuestion(); updateUI(); }, 4000); // Load next question after a longer delay
             }
-            if (explanation && questionExplanation) {
+            if (explanation && questionExplanation) { // Display explanation if available
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
         }
 
+        /**
+         * Allows the player to skip the current stage/question at a cost of coins.
+         */
         async function skipStage() {
             if (gameState.isLoadingNextQuestion) return;
             const skipCost = 250;
-            if (gameState.coins < skipCost) { 
+            if (gameState.coins < skipCost) {
                 showModal("سکه ناکافی", `برای رد کردن مرحله ${skipCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
                 return;
             }
-            
-            showModal("رد کردن مرحله", `آیا مطمئن هستید که می‌خواهید این مرحله را با ${skipCost} سکه رد کنید؟`, "بله، رد کن", "خیر", 
-            async () => { 
-                hideModal(); 
-                const coinUpdateSuccess = await updateCoins(-skipCost); 
+
+            showModal("رد کردن مرحله", `آیا مطمئن هستید که می‌خواهید این مرحله را با ${skipCost} سکه رد کنید؟`, "بله، رد کن", "خیر",
+            async () => { // onConfirm
+                hideModal();
+                const coinUpdateSuccess = await updateCoins(-skipCost);
                 if (coinUpdateSuccess) {
-                    gameState.currentStage++; 
+                    gameState.currentStage++;
                     await saveUserData();
                     updateUI();
-                    generateQuestion(); 
+                    generateQuestion(); // Generate a new question for the next stage
                 }
-            }, 
-            () => hideModal() 
+            },
+            () => hideModal() // onCancel
             );
         }
-        
+
+        // Demonstrative shop items
         const shopItems = [
             { id: 'coins_1000', name: '۱۰۰۰ سکه', price: '۱۰,۰۰۰ تومان', icon: '🪙', description: 'یک شروع خوب برای تازه واردها!' },
             { id: 'coins_5000', name: '۵۵۰۰ سکه', price: '۵۰,۰۰۰ تومان', icon: '💰', description: 'بسته ویژه با ۵۰۰ سکه اضافه!' },
@@ -1606,9 +1742,12 @@
             { id: 'respect_pack', name: 'بسته احترام', price: '۲۵,۰۰۰ تومان', icon: '🎩', description: '۲۵۰۰ سکه + نشان افتخار (نمایشی)' }
         ];
 
+        /**
+         * Displays items in the shop screen. Currently for demonstration.
+         */
         function displayShopItems() {
             if(!shopItemsContainer) return;
-            shopItemsContainer.innerHTML = ''; 
+            shopItemsContainer.innerHTML = ''; // Clear previous items
             shopItems.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = `shop-item panel panel-visible p-3 sm:p-5 rounded-lg text-center flex flex-col items-center justify-between shadow-md bg-[rgba(40,40,40,0.9)]`;
@@ -1622,6 +1761,7 @@
                 shopItemsContainer.appendChild(itemDiv);
             });
 
+            // Add event listeners to buy buttons
             document.querySelectorAll('.buy-item-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const itemId = e.target.dataset.itemId;
@@ -1630,67 +1770,79 @@
                 });
             });
         }
-        
+
+        /**
+         * Generates avatar suggestions using Imagen API and displays them in the modal.
+         */
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
-            avatarAiLoading.classList.remove('hidden'); 
-            // Generic prompt for mafia-themed avatars
-            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons";
-            const suggestions = await callImagenAPI(prompt, 4); // Request 4 suggestions
+            avatarAiLoading.classList.remove('hidden');
+            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons, simple background"; // Refined prompt
+            const suggestions = await callImagenAPI(prompt, 4); // Generate 4 suggestions
 
-            avatarSuggestionsContainer.innerHTML = ''; 
-            selectedAvatarForConfirmation = null; 
+            avatarSuggestionsContainer.innerHTML = ''; // Clear previous suggestions
+            selectedAvatarForConfirmation = null; // Reset selected avatar
 
             if (suggestions && suggestions.length > 0) {
-                suggestions.forEach(base64Url => { 
+                suggestions.forEach(base64Url => {
                     const imgWrapper = document.createElement('div');
                     imgWrapper.className = 'avatar-suggestion-item';
                     const img = document.createElement('img');
                     img.src = base64Url;
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
-                    imgWrapper.addEventListener('click', () => {
+                    imgWrapper.addEventListener('click', () => { // Handle selection
                         const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
                         if (currentSelected) {
                             currentSelected.classList.remove('selected');
                         }
                         imgWrapper.classList.add('selected');
-                        selectedAvatarForConfirmation = base64Url; 
-                        modalConfirmBtn.disabled = false; // Enable confirm button once an avatar is selected
+                        selectedAvatarForConfirmation = base64Url; // Store selected avatar URL
+                        modalConfirmBtn.disabled = false; // Enable confirm button
                     });
                     avatarSuggestionsContainer.appendChild(imgWrapper);
                 });
-                modalConfirmBtn.textContent = "انتخاب این آواتار"; 
-                modalConfirmBtn.disabled = true; // Disable until an avatar is selected
-            } else { 
+                modalConfirmBtn.textContent = "انتخاب این آواتار";
+                modalConfirmBtn.disabled = true; // Confirm button disabled until an avatar is selected
+            } else {
                 if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
-                modalConfirmBtn.textContent = "تایید"; // Reset button text
-                modalConfirmBtn.disabled = true; // Keep disabled if no avatars
+                modalConfirmBtn.textContent = "تایید"; // Revert button text if no avatars
+                modalConfirmBtn.disabled = true;
             }
         }
-        
+
+        /**
+         * Confirms the selected avatar, updates game state, and saves data.
+         */
         async function confirmAvatarSelection() {
             if (selectedAvatarForConfirmation) {
-                gameState.avatarUrl = selectedAvatarForConfirmation; 
-                await saveUserData(); 
-                updateUI(); 
+                gameState.avatarUrl = selectedAvatarForConfirmation;
+                await saveUserData();
+                updateUI(); // Update main avatar display
                 hideModal();
                 showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
             } else {
                 if(avatarErrorMessage) avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
             }
         }
-        
+
+        /**
+         * Validates and sanitizes a display name input.
+         * @param {string} nameValue - The raw value from the input field.
+         * @param {HTMLElement} errorElement - The element to display error messages.
+         * @param {HTMLInputElement} inputElement - The input field itself for styling.
+         * @returns {string|null} The sanitized and validated name, or null if invalid.
+         */
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
-            if (!inputElement || !errorElement) return null; 
-            // Allow only English letters, numbers, underscore, hyphen, and period
+            if (!inputElement || !errorElement) return null;
+            // Allow English letters, numbers, underscore, period, hyphen.
             const regex = /[^a-zA-Z0-9_.-]/g;
             let sanitizedValue = nameValue.replace(regex, '');
-            
-            if (nameValue !== sanitizedValue) {
-                inputElement.value = sanitizedValue; // Update input field with sanitized value
+
+            if (nameValue !== sanitizedValue) { // If sanitization changed the value, update the input field
+                inputElement.value = sanitizedValue;
             }
-            
+
             const trimmedName = sanitizedValue.trim();
 
             if (trimmedName === '') {
@@ -1703,65 +1855,76 @@
                 inputElement.classList.add('invalid');
                 return null;
             }
-            if (trimmedName.length > 20) { 
+            if (trimmedName.length > 20) {
                 errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
                 inputElement.classList.add('invalid');
                 return null;
             }
             errorElement.textContent = ''; // Clear error message
-            inputElement.classList.remove('invalid');
+            inputElement.classList.remove('invalid'); // Remove invalid styling
             return trimmedName;
         }
-        
+
+        /**
+         * Handles changing the display name. Costs coins after the first change.
+         */
         async function handleChangeDisplayName() {
             if(!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
-            if (!newName) return; 
+            if (!newName) return; // Invalid name
 
-            if (newName === gameState.displayName) { 
+            if (newName === gameState.displayName) {
                 if(changeNameErrorMessage) changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
-            const changeNameCost = gameState.nameChangeCount === 0 ? 0 : 900; // First change is free, subsequent cost 900 coins
-            
-            if (gameState.coins < changeNameCost) { 
+            const changeNameCost = gameState.nameChangeCount === 0 ? 0 : 900; // First change is free
+
+            if (gameState.coins < changeNameCost) {
                 if(changeNameErrorMessage) changeNameErrorMessage.textContent = `برای تغییر نام ${changeNameCost === 0 ? ' (بار اول رایگان)' : changeNameCost + ' سکه'} نیاز دارید. سکه شما: ${gameState.coins}`;
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
-            if (changeNameCost > 0) { 
-                const coinDeducted = await updateCoins(-changeNameCost, true); // true to bypass modal for insufficient funds as we already checked
-                if (!coinDeducted) {
+            if (changeNameCost > 0) { // Deduct coins if not the first change
+                const coinDeducted = await updateCoins(-changeNameCost, true); // Bypass insufficient funds modal here, as we already checked
+                if (!coinDeducted) { // Should not happen if logic is correct
                     if(changeNameErrorMessage) changeNameErrorMessage.textContent = "خطا در کسر سکه. لطفاً دوباره تلاش کنید.";
-                    return; 
+                    return;
                 }
             }
-            
+
             gameState.displayName = newName;
-            gameState.nameChangeCount++; 
+            gameState.nameChangeCount++;
             await saveUserData();
             updateUI();
             hideModal();
             showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
-        
+
+        /**
+         * Generates a random mafia-related fact using Gemini API and displays it in a modal.
+         */
         async function generateMafiaFact() {
             const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
-            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
-            
+            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal()); // Show loading in modal
+
             const fact = await callGeminiAPI(prompt);
-            if (fact) { 
+            if (fact) {
                 showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
-            } else { 
+            } else {
                 showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
             }
         }
 
+        /**
+         * Generates a random alphanumeric public user ID.
+         * @param {number} [length=5] - The desired length of the ID.
+         * @returns {string} The generated public user ID.
+         */
         function generateAlphanumericPublicUserId(length = 5) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Characters to choose from
             let result = '';
             const charactersLength = characters.length;
             for (let i = 0; i < length; i++) {
@@ -1771,39 +1934,48 @@
         }
 
         // --- Event Listener Setup ---
+
+        /**
+         * Sets up all necessary event listeners for UI elements.
+         */
         function setupEventListeners() {
+            // Modal buttons
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
+            // Registration: Display name input validation and Enter key submission
             if (displayNameInput) {
                 displayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
                 });
-                displayNameInput.addEventListener('keydown', (event) => { 
+                displayNameInput.addEventListener('keydown', (event) => { // Allow Enter to submit
                     if (event.key === 'Enter') {
-                        event.preventDefault(); 
-                        if(registerBtn) registerBtn.click(); 
+                        event.preventDefault(); // Prevent default form submission if any
+                        if(registerBtn) registerBtn.click();
                     }
                 });
             }
 
+            // Registration: Generate User ID button
             if (generateUserIdBtn) {
                 generateUserIdBtn.addEventListener('click', () => {
                     const newPublicId = generateAlphanumericPublicUserId();
                     if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
-                    gameState.publicUserId = newPublicId; 
-                    if (userIdErrorMessage) userIdErrorMessage.textContent = ''; 
+                    gameState.publicUserId = newPublicId; // Temporarily store in gameState until registration
+                    if (userIdErrorMessage) userIdErrorMessage.textContent = ''; // Clear any previous error
                 });
             }
 
 
+            // Modal: New display name input validation and Enter key submission
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
                 });
-                newDisplayNameInput.addEventListener('keydown', (event) => { 
+                newDisplayNameInput.addEventListener('keydown', (event) => { // Allow Enter to submit in modal
                     if (event.key === 'Enter') {
                         event.preventDefault();
+                        // Check if the current modal is for changing name
                         if (modalConfirmCallback === handleChangeDisplayName && modalTitle && modalTitle.textContent.includes("تغییر نام نمایشی")) {
                             if(modalConfirmBtn) modalConfirmBtn.click();
                         }
@@ -1811,125 +1983,129 @@
                 });
             }
 
+            // Registration: Register button
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                    
+
                     let isPublicIdValid = false;
-                    if (!gameState.publicUserId) {
+                    if (!gameState.publicUserId && (!userIdDisplayInput || !userIdDisplayInput.value)) { // No ID generated at all
                         if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
                         isPublicIdValid = false;
-                    } else if (userIdDisplayInput && userIdDisplayInput.value !== gameState.publicUserId) {
-                        // This case should ideally not happen if generateUserIdBtn sets gameState.publicUserId correctly
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "خطا: شناسه کاربری نمایش داده شده با شناسه ساخته شده مغایرت دارد.";
-                        isPublicIdValid = false;
-                    }
-                    else {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = ""; 
-                        isPublicIdValid = true;
+                    } else if (userIdDisplayInput && userIdDisplayInput.value && gameState.publicUserId !== userIdDisplayInput.value) {
+                         // This case handles if the input field was somehow manually changed after generation,
+                         // or if gameState.publicUserId wasn't updated correctly by generate button.
+                         // We trust the generate button's update to gameState.publicUserId.
+                         // So if userIdDisplayInput.value is populated, we assume it's the one to use.
+                         // If it matches gameState.publicUserId, great. If not, something is off.
+                         // For simplicity, if an ID is in the box, we try to use it.
+                         // The crucial part is that gameState.publicUserId *must* be set before saving.
+                         // The generateUserIdBtn sets gameState.publicUserId.
+                        if(userIdDisplayInput.value) { // If there's something in the display box use that
+                            gameState.publicUserId = userIdDisplayInput.value;
+                            isPublicIdValid = true;
+                            if(userIdErrorMessage) userIdErrorMessage.textContent = "";
+                        } else { // if display box is empty and gameState.publicUserId is also somehow empty.
+                             if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً یک شناسه کاربری بسازید.";
+                             isPublicIdValid = false;
+                        }
+
+                    } else if (gameState.publicUserId) { // gameState.publicUserId is set (e.g. by generate button)
+                         if(userIdDisplayInput && !userIdDisplayInput.value) userIdDisplayInput.value = gameState.publicUserId; // sync display
+                         isPublicIdValid = true;
+                         if(userIdErrorMessage) userIdErrorMessage.textContent = "";
                     }
 
-                    if (!validatedName || !isPublicIdValid) return; 
 
-                    // Check if user already has a profile with name and ID (existing Firebase user)
+                    if (!validatedName || !isPublicIdValid) return; // Stop if validation fails
+
+                    gameState.displayName = validatedName;
+                    // gameState.publicUserId should have been set by the "Generate ID" button click
+
+                    // Check if the user already had a profile to determine if it's truly a "first registration"
+                    // This check is mostly for deciding initial coin amount.
                     let userHadProfileWithNameAndId = false;
-                    if(isAuthReady && currentUserId && db){ 
+                    if(isAuthReady && currentUserId && db){
                         const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
                         try {
                             const docSnap = await getDoc(userDocRef);
                             if (docSnap.exists()) {
                                 const data = docSnap.data();
-                                // If display name AND public ID existed, then it's not a "first time" registration
-                                if (data.displayName && data.publicUserId) { 
+                                if (data.displayName && data.publicUserId) { // Check if a full profile existed
                                      userHadProfileWithNameAndId = true;
                                 }
                             }
-                        } catch(e) { 
-                            console.error("Error checking existing profile during registration:", e); 
-                            // Treat as no existing profile for safety in case of error
-                            userHadProfileWithNameAndId = false;
-                        }
+                        } catch(e) { console.error("Error checking existing profile during registration:", e); }
                     }
 
-                    gameState.displayName = validatedName; 
-                    
-                    // Only grant initial coins and reset nameChangeCount if this is the first time a name/ID is set for this user
-                    if (!userHadProfileWithNameAndId) { 
-                        gameState.coins = 500; // Initial coins for new registration
-                        gameState.nameChangeCount = 0; 
+                    if (!userHadProfileWithNameAndId) { // If no prior full profile, it's effectively a new registration
+                        gameState.coins = 500; // Award initial coins
+                        gameState.nameChangeCount = 0; // Reset name change count
+                        gameState.avatarUrl = ''; // Reset avatar
                     }
-                    await saveUserData(); 
-                    updateUI(); 
+                    // If they did have a profile, loadUserData should have already populated coins, etc.
+                    // The act of clicking "Register" with a valid name and ID now saves this profile.
+
+                    await saveUserData(); // Save the newly registered or updated profile
+                    updateUI(); // Refresh UI to show main game area
                 });
             }
 
+            // Profile: Edit name button
             if (editNameBtn) {
                 editNameBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return; // Must be authenticated and have a name to edit
-                    
+                    if (!isAuthReady || !gameState.displayName) return; // Must be registered
+
                     let modalMessageText = "";
-                    let confirmButtonText = `تغییر نام`; // Base text
+                    let confirmButtonText = `تغییر نام (${gameState.nameChangeCount === 0 ? "رایگان" : "900 سکه"})`;
 
                     if (gameState.nameChangeCount === 0) {
                         modalMessageText = "اولین تغییر نام شما رایگان است. تغییرات بعدی شامل هزینه سکه خواهد بود.";
-                        confirmButtonText = "تغییر نام (رایگان - فقط یکبار)";
-                    } else {
-                        modalMessageText = `تغییر نام ${900} سکه هزینه دارد. سکه‌های شما: ${gameState.coins}.`;
-                        confirmButtonText = `تغییر نام (${900} سکه)`;
-                        // Add warning if not enough coins
-                        if (gameState.coins < 900) {
-                             modalMessageText += `<br><span class="text-red-400">سکه کافی برای تغییر نام ندارید.</span>`;
-                             confirmButtonText = "تغییر نام (سکه ناکافی)";
-                        }
                     }
-
 
                     showModal(
                         "تغییر نام نمایشی",
-                        modalMessageText, 
+                        modalMessageText,
                         confirmButtonText,
                         "لغو",
-                        handleChangeDisplayName, // The function to call on confirm
-                        hideModal, 
-                        "changeName" // Custom modal type for name change
+                        handleChangeDisplayName, // onConfirm
+                        hideModal,  // onCancel
+                        "changeName" // Modal type
                     );
-                    // Disable confirm button if not enough coins
-                    if (gameState.nameChangeCount > 0 && gameState.coins < 900) {
-                        if(modalConfirmBtn) modalConfirmBtn.disabled = true;
-                    } else {
-                        if(modalConfirmBtn) modalConfirmBtn.disabled = false;
-                    }
-                });
-            }
-            
-            if (avatarContainer) {
-                avatarContainer.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return; // Must be authenticated and registered to change avatar
-                    selectedAvatarForConfirmation = null; 
-                    showModal(
-                        "تغییر آواتار",
-                        "یک آواتار از لیست زیر انتخاب کنید یا یک آواتار جدید بسازید.", 
-                        "انتخاب این آواتار", // This text will be updated after suggestions are generated
-                        "لغو",
-                        confirmAvatarSelection, 
-                        hideModal,  
-                        "avatar"    // Custom modal type for avatar selection
-                    );
-                    if(modalConfirmBtn) modalConfirmBtn.disabled = true; // Initially disable confirm button
                 });
             }
 
+            // Profile: Avatar click to change avatar
+            if (avatarContainer) {
+                avatarContainer.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName) return;
+                    selectedAvatarForConfirmation = null; // Reset selection
+                    showModal(
+                        "تغییر آواتار",
+                        "", // No initial message, content is avatar generation UI
+                        "انتخاب این آواتار", // Confirm button text
+                        "لغو", // Cancel button text
+                        confirmAvatarSelection, // onConfirm
+                        hideModal,  // onCancel
+                        "avatar"    // Modal type
+                    );
+                    if(modalConfirmBtn) modalConfirmBtn.disabled = true; // Disable confirm until an avatar is selected
+                });
+            }
+
+            // Modal: Generate Avatar button (inside avatar change modal)
             if (generateAvatarBtn) {
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
-            
-            // Centralized check for main action buttons to ensure user is registered
-            const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null); 
+
+            // Prevent actions if user is not registered (generic handler for main buttons)
+            const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
-                // Use capture phase for the event listener to intercept clicks before they reach the button's own handler
                 button.addEventListener('click', (event) => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) { 
-                        event.stopPropagation(); // Stop the event from propagating to the button's own click handler
+                    // This check runs *before* the button's specific action if user isn't registered
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
+                        event.stopPropagation(); // Stop the original button action
+                        event.preventDefault();
                         showModal(
                             "ثبت نام لازم است",
                             "برای دسترسی به این بخش، ابتدا باید با وارد کردن نام نمایشی و ساخت شناسه کاربری، ثبت نام خود را کامل کنید.",
@@ -1938,60 +2114,61 @@
                             () => hideModal()
                         );
                     }
-                }, true); // The 'true' argument makes it a capturing listener
+                }, true); // Use capture phase to intercept click early
             });
 
 
+            // Main Screen Buttons
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
-                    // Actual game start logic, this part runs IF the centralized check above passed
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
+                    // Prerequisite check is handled by the generic handler above
+                    // If it passes, this specific logic runs:
                     showModal(
-                        "هشدار VPN", 
+                        "هشدار VPN",
                         "دوست عزیز، برای تجربه بهتر و بدون اختلال در بازی، پیشنهاد می‌شود VPN خود را روشن کنید. اتصال پایدار برای بازی آنلاین ضروری است.",
                         "متوجه شدم، ادامه بده", null,
-                        () => { 
+                        () => { // onConfirm
                             hideModal();
                             if(gameScreen) showScreen(gameScreen);
-                            // Generate new question or display current one based on state
+                            // Load question if not already loaded for current stage
                             if (!gameState.currentQuestionData || gameState.currentQuestionData.stage !== gameState.currentStage) {
                                 generateQuestion();
                             } else {
-                                displayQuestion(); 
+                                displayQuestion(); // Display existing question for current stage
                             }
                         }
                     );
                 });
             }
-            
+
             if (shopBtn) {
                 shopBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
-                    displayShopItems(); 
+                    // Prerequisite check handled by generic handler
+                    displayShopItems();
                     if(shopScreen) showScreen(shopScreen);
                 });
             }
 
-            if (mafiaFactBtn) { 
+            if (mafiaFactBtn) {
                 mafiaFactBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return; 
+                    // Prerequisite check handled by generic handler
                     generateMafiaFact();
                 });
             }
-            
-            if (devIntroBtnHeader) { 
+
+            if (devIntroBtnHeader) {
                 devIntroBtnHeader.addEventListener('click', () => {
-                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                        showDevelopersPanel();
-                    }
+                    // Prerequisite check handled by generic handler
+                    showDevelopersPanel();
                 });
             }
 
-            if (closeDevelopersPanelBtn) { 
+            if (closeDevelopersPanelBtn) {
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
 
+            // Navigation and Game Action Buttons
             if(backToMainFromShopBtn) {
                 backToMainFromShopBtn.addEventListener('click', () => {
                     if(mainScreen) showScreen(mainScreen);
@@ -2003,11 +2180,11 @@
             if(skipStageBtn) {
                 skipStageBtn.addEventListener('click', skipStage);
             }
-            if(backToMainBtn) {
+            if(backToMainBtn) { // From Game Screen
                 backToMainBtn.addEventListener('click', async () => {
                     try {
-                        await saveUserData(); // Save game state before returning to main
-                        gameState.currentQuestionData = null; // Clear question data to ensure a new one is loaded next time
+                        await saveUserData(); // Save progress before leaving game screen
+                        gameState.currentQuestionData = null; // Clear current question data
                         if(mainScreen) {
                             showScreen(mainScreen);
                         }
@@ -2018,19 +2195,24 @@
                 });
             }
 
+            // Responsive UI updates on window resize
             window.addEventListener('resize', () => {
-                updateUI(); // Update UI on resize, especially for avatar visibility
+                updateUI(); // Re-evaluate UI elements like avatar visibility on resize
             });
         }
 
         // --- Game Initialization ---
+
+        /**
+         * Initializes the game by caching DOM elements, setting up Firebase, and event listeners.
+         */
         async function initializeGame() {
-            // Get all DOM elements
+            // Cache all frequently accessed DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
-            shopScreen = document.getElementById('shop-screen'); 
+            shopScreen = document.getElementById('shop-screen');
             registrationForm = document.getElementById('registration-form');
             displayNameInput = document.getElementById('display-name-input');
             registerBtn = document.getElementById('register-btn');
@@ -2043,15 +2225,15 @@
             avatarContainer = document.getElementById('avatar-container');
             avatarImage = document.getElementById('avatar-image');
             userInfoBox = document.getElementById('user-info-box');
-            displayNameOutput = document.getElementById('display-name-output'); 
-            publicUserIdOutput = document.getElementById('public-user-id-output'); 
+            displayNameOutput = document.getElementById('display-name-output');
+            publicUserIdOutput = document.getElementById('public-user-id-output');
             editNameBtn = document.getElementById('edit-name-btn');
-            coinsOutput = document.getElementById('coins-output'); 
+            coinsOutput = document.getElementById('coins-output');
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
-            shopBtn = document.getElementById('shop-btn'); 
+            shopBtn = document.getElementById('shop-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
-            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header'); 
+            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
             stageDisplay = document.getElementById('stage-display');
             gameCoinsDisplay = document.getElementById('game-coins-display');
             questionText = document.getElementById('question-text');
@@ -2062,8 +2244,8 @@
             backToMainBtn = document.getElementById('back-to-main-btn');
             gameFeedback = document.getElementById('game-feedback');
             aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
-            backToMainFromShopBtn = document.getElementById('back-to-main-from-shop-btn'); 
-            shopItemsContainer = document.getElementById('shop-items-container'); 
+            backToMainFromShopBtn = document.getElementById('back-to-main-from-shop-btn');
+            shopItemsContainer = document.getElementById('shop-items-container');
             modalContainer = document.getElementById('modal-container');
             modalTitle = document.getElementById('modal-title');
             modalContentDynamic = document.getElementById('modal-content-dynamic');
@@ -2078,38 +2260,39 @@
             avatarErrorMessage = document.getElementById('avatar-error-message');
             modalConfirmBtn = document.getElementById('modal-confirm-btn');
             modalCancelBtn = document.getElementById('modal-cancel-btn');
-            developersPanelContainer = document.getElementById('developers-panel-container'); 
-            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn'); 
+            developersPanelContainer = document.getElementById('developers-panel-container');
+            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
-            // Initially hide user profile area
-            if(userProfileArea) userProfileArea.classList.add('hidden'); 
+            if(userProfileArea) userProfileArea.classList.add('hidden'); // Initially hide user profile
 
+            // Initial loading messages
             if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال به اینترنت...";
-            if (!navigator.onLine) {
+            if (!navigator.onLine) { // Check for internet connection
                 showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
                     hideModal();
                     if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
                 });
-                return; 
+                return; // Stop initialization if offline
             }
-            if(loadingMessage) loadingMessage.textContent = "در حال آماده سازی اولین ورود...";
-            
+            if(loadingMessage) loadingMessage.textContent = "در حال آماده سازی اولین ورود..."; // Message for first-time setup
+
             try {
-                setupEventListeners(); // Setup all event listeners first
+                setupEventListeners(); // Setup all UI interactions
                 await initFirebase(); // Initialize Firebase and authentication
             } catch (error) {
                 console.error("Error during initializeGame:", error);
                 if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
             }
         }
-        
-        // Start game initialization when the DOM is ready
+
+        // Start game initialization once the DOM is fully loaded
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
-            initializeGame(); 
+            initializeGame(); // DOM already loaded
         }
 
     </script>
 </body>
 </html>
+
