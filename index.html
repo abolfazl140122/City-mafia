@@ -84,10 +84,12 @@
         const cancelResetBtn = document.getElementById('cancel-reset-btn');
 
         // --- Firebase Configuration ---
+        // This is automatically provided by the environment.
         const firebaseConfig = typeof __firebase_config !== 'undefined' 
             ? JSON.parse(__firebase_config) 
-            : {}; // Fallback for local testing, ensure your local setup provides a config
-            
+            : {}; // Will be empty on GitHub pages, but that's okay. Your firebase config should be in your repo.
+        
+        // This is also provided by the environment.
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'salawat-counter-app';
         
         // --- State Variables ---
@@ -98,7 +100,16 @@
 
         // --- Firebase Initialization ---
         try {
-            const app = initializeApp(firebaseConfig);
+            // **IMPORTANT**: You must add your actual Firebase config object here for it to work on GitHub pages.
+            // Replace the empty {} with your config.
+            const app = initializeApp(firebaseConfig.apiKey ? firebaseConfig : {
+                apiKey: "AIzaSy...",
+                authDomain: "your-project-id.firebaseapp.com",
+                projectId: "your-project-id",
+                storageBucket: "your-project-id.appspot.com",
+                messagingSenderId: "...",
+                appId: "..."
+            });
             db = getFirestore(app);
             auth = getAuth(app);
         } catch (e) {
@@ -150,26 +161,19 @@
                 // User is signed in.
                 userId = user.uid;
                 userIdDisplay.textContent = userId;
-                console.log("Authenticated with UID:", userId);
                 setupFirestoreListener(); // Setup listener now that we have a user
             } else {
                 // User is not signed in. Attempt to sign in.
-                console.log("No user found, attempting sign-in...");
                 try {
-                    // In a production environment outside the initial platform, __initial_auth_token will be undefined.
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                          await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
                          // Fallback to anonymous sign-in for environments like GitHub pages.
-                         // **IMPORTANT**: This requires Anonymous sign-in to be enabled in your Firebase console.
                          await signInAnonymously(auth);
-                         console.log("Signed in anonymously.");
                     }
                 } catch (error) {
                     console.error("Sign-in failed:", error);
                     userIdDisplay.textContent = "خطای ورود";
-                    // It's helpful to see the reason in the console, e.g., "auth/operation-not-allowed"
-                    console.error("Make sure Anonymous Sign-in is enabled in your Firebase project and the domain is authorized.");
                 }
             }
         });
