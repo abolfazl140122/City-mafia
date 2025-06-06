@@ -18,6 +18,10 @@
             transform: translateY(2px);
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.2);
         }
+        /* Styles for the confirmation modal */
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen">
@@ -52,23 +56,37 @@
         </div>
     </div>
 
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 flex items-center justify-center p-4 z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 max-w-sm mx-auto text-center">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">شروع مجدد شمارنده</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-2 mb-6">آیا برای صفر کردن شمارنده و شروع مجدد مطمئن هستید؟</p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-reset-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">بله، صفر کن</button>
+                <button id="cancel-reset-btn" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 font-bold py-2 px-6 rounded-lg">لغو</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         // Import necessary functions from Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- DOM Elements ---
         const counterDisplay = document.getElementById('counter-display');
         const incrementButton = document.getElementById('increment-button');
         const resetButton = document.getElementById('reset-button');
         const userIdDisplay = document.getElementById('userId-display');
+        const resetModal = document.getElementById('reset-modal');
+        const confirmResetBtn = document.getElementById('confirm-reset-btn');
+        const cancelResetBtn = document.getElementById('cancel-reset-btn');
 
         // --- Firebase Configuration ---
-        // These variables are provided by the environment.
         const firebaseConfig = typeof __firebase_config !== 'undefined' 
             ? JSON.parse(__firebase_config) 
-            : { apiKey: "YOUR_API_KEY", authDomain: "...", projectId: "..." }; // Fallback for local testing
+            : {}; // Fallback for local testing, ensure your local setup provides a config
             
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'salawat-counter-app';
         
@@ -76,112 +94,114 @@
         let count = 0;
         let db, auth, userId;
         let counterDocRef;
-        let isAuthReady = false;
+        let unsubscribe; // To hold the listener cleanup function
 
         // --- Firebase Initialization ---
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
-            // setLogLevel('debug'); // Uncomment for detailed logs
         } catch (e) {
-            console.error("Error initializing Firebase:", e);
+            console.error("Firebase initialization failed:", e);
+            userIdDisplay.textContent = "خطا در اتصال";
             counterDisplay.textContent = "خطا";
         }
 
         /**
-         * Initializes the application logic once authentication is ready.
-         * Sets up the Firestore listener.
+         * Initializes the Firestore listener once authentication is ready.
          */
-        function initializeAppLogic() {
-            if (!userId) return;
+        function setupFirestoreListener() {
+            if (!userId || !db) return;
+            if (unsubscribe) unsubscribe(); // Detach any old listener first
 
-            // Define the reference to the user's specific document in Firestore
             const collectionPath = `artifacts/${appId}/users/${userId}/salawatData`;
             counterDocRef = doc(db, collectionPath, 'mainCounter');
 
-            // Set up a real-time listener on the document
-            onSnapshot(counterDocRef, (docSnap) => {
+            unsubscribe = onSnapshot(counterDocRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    // If the document exists, update the count from Firestore data
-                    const data = docSnap.data();
-                    count = data.value || 0;
+                    count = docSnap.data().value || 0;
                 } else {
-                    // If the document doesn't exist, the count is 0
-                    console.log("No previous data found. Starting from zero.");
                     count = 0;
                 }
-                // Update the UI with the current count
                 updateDisplay();
             }, (error) => {
-                console.error("Error listening to document:", error);
+                console.error("Firestore listener error:", error);
                 counterDisplay.textContent = "خطا";
             });
         }
         
-        /**
-         * Updates the counter display on the screen.
-         */
         function updateDisplay() {
             counterDisplay.textContent = count;
         }
 
-        /**
-         * Saves the current count to Firestore.
-         * It uses setDoc to create or overwrite the document.
-         */
         async function saveCount() {
-            if (!counterDocRef || !isAuthReady) {
-                console.log("Authentication not ready. Cannot save.");
-                return;
-            }
+            if (!counterDocRef) return;
             try {
-                // Save the count object to Firestore.
                 await setDoc(counterDocRef, { value: count });
             } catch (error) {
-                console.error("Error saving count to Firestore:", error);
+                console.error("Error saving count:", error);
             }
         }
 
         // --- Event Listeners ---
 
-        // Listen for changes in authentication state
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // User is signed in.
                 userId = user.uid;
                 userIdDisplay.textContent = userId;
-                isAuthReady = true;
-                initializeAppLogic();
+                console.log("Authenticated with UID:", userId);
+                setupFirestoreListener(); // Setup listener now that we have a user
             } else {
-                 // User is not signed in, attempt to sign in.
-                isAuthReady = false;
+                // User is not signed in. Attempt to sign in.
+                console.log("No user found, attempting sign-in...");
                 try {
+                    // In a production environment outside the initial platform, __initial_auth_token will be undefined.
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                          await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
+                         // Fallback to anonymous sign-in for environments like GitHub pages.
+                         // **IMPORTANT**: This requires Anonymous sign-in to be enabled in your Firebase console.
                          await signInAnonymously(auth);
+                         console.log("Signed in anonymously.");
                     }
                 } catch (error) {
-                    console.error("Error during sign-in:", error);
-                    userIdDisplay.textContent = "خطا در ورود";
+                    console.error("Sign-in failed:", error);
+                    userIdDisplay.textContent = "خطای ورود";
+                    // It's helpful to see the reason in the console, e.g., "auth/operation-not-allowed"
+                    console.error("Make sure Anonymous Sign-in is enabled in your Firebase project and the domain is authorized.");
                 }
             }
         });
 
-        // Handle the increment button click
         incrementButton.addEventListener('click', () => {
+            if (!userId) return; // Prevent incrementing if not logged in
             count++;
             updateDisplay();
-            saveCount(); // Save after each increment
+            saveCount();
+        });
+        
+        // --- Modal Logic ---
+        resetButton.addEventListener('click', () => {
+             if (!userId) return;
+             resetModal.classList.remove('hidden');
         });
 
-        // Handle the reset button click
-        resetButton.addEventListener('click', () => {
-            if (confirm("آیا برای شروع مجدد از صفر مطمئن هستید؟")) {
-                count = 0;
-                updateDisplay();
-                saveCount(); // Save the reset value
+        cancelResetBtn.addEventListener('click', () => {
+             resetModal.classList.add('hidden');
+        });
+        
+        confirmResetBtn.addEventListener('click', () => {
+            count = 0;
+            updateDisplay();
+            saveCount();
+            resetModal.classList.add('hidden');
+        });
+        
+        // Also close modal if backdrop is clicked
+        resetModal.addEventListener('click', (e) => {
+            if(e.target === resetModal) {
+                 resetModal.classList.add('hidden');
             }
         });
 
