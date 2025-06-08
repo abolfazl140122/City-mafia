@@ -948,16 +948,15 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CHANGED: Updated Firebase configuration ---
-        // I have replaced the placeholder configuration with the one you provided.
-        // The code first tries to use the injected __firebase_config, and if it's not available, it uses your config as a fallback.
+        // پیکربندی Firebase - این بخش به صورت خودکار از محیط برنامه خوانده می‌شود
+        // اما یک نسخه جایگزین برای تست محلی نیز در نظر گرفته شده است.
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
             : {
                 apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
                 authDomain: "city-mafia.firebaseapp.com",
                 projectId: "city-mafia",
-                storageBucket: "city-mafia.appspot.com", // Corrected storage bucket domain
+                storageBucket: "city-mafia.appspot.com",
                 messagingSenderId: "66458127103",
                 appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
                 measurementId: "G-8M0M6BJ0GG"
@@ -971,7 +970,7 @@
         let currentUserId = null;
         let isAuthReady = false;
 
-        // Game state object
+        // وضعیت کلی بازی
         const gameState = {
             displayName: '',
             publicUserId: '',
@@ -984,7 +983,7 @@
             nameChangeCount: 0,
         };
 
-        // DOM Element Selectors
+        // انتخابگرهای عناصر DOM
         let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
@@ -1006,7 +1005,7 @@
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
 
-        // --- Utility Functions ---
+        // --- توابع کمکی ---
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -1210,7 +1209,7 @@
             }
         }
 
-        // --- Firebase Functions ---
+        // --- توابع Firebase ---
         async function initFirebase() {
             try {
                 app = initializeApp(firebaseConfig);
@@ -1331,14 +1330,15 @@
             return true;
         }
 
-        // --- Gemini API Functions ---
-        const GEMINI_API_KEY = "";
+        // --- توابع API هوش مصنوعی ---
+        // کلید API به صورت خودکار توسط محیط برنامه تزریق می‌شود، بنابراین این متغیر خالی می‌ماند.
+        const apiKey = ""; 
         const GEMINI_TEXT_MODEL = "gemini-2.0-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
             if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${apiKey}`;
 
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory };
@@ -1390,7 +1390,7 @@
                 instances: [{ prompt: prompt }],
                 parameters: { "sampleCount": sampleCount }
             };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${apiKey}`;
 
             try {
                 const response = await fetch(apiUrl, {
@@ -1417,7 +1417,7 @@
             }
         }
 
-        // --- Game Logic Functions ---
+        // --- توابع منطق بازی ---
 
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
@@ -1756,7 +1756,7 @@
             return result;
         }
 
-        // --- Event Listener Setup ---
+        // --- تنظیم Event Listeners ---
         function setupEventListeners() {
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
@@ -1982,7 +1982,7 @@
             });
         }
 
-        // --- Game Initialization ---
+        // --- راه اندازی اولیه بازی ---
         async function initializeGame() {
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
