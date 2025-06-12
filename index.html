@@ -194,8 +194,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            min-height: 100vh;
-            padding: 10px; /* Base padding */
+            height: 100vh;
+            padding: 10px;
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
@@ -203,28 +203,22 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto;
-        }
-        @media (min-width: 640px) { /* sm */
-            .screen {
-                padding: 20px; /* Increased padding for larger screens */
-            }
         }
 
-        #main-screen {
-            justify-content: flex-start;
+        @media (min-width: 640px) {
+             .screen { padding: 20px; }
         }
-        #loading-screen {
-             justify-content: center;
-        }
+
+        #main-screen { justify-content: flex-start; }
+        #loading-screen { justify-content: center; }
 
         .screen.active {
             opacity: 1;
             visibility: visible;
             position: relative;
             z-index: 1;
-            overflow-y: auto;
         }
+
         .screen-content-wrapper {
             width: 100%;
             max-width: 800px;
@@ -236,6 +230,7 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            overflow: hidden; /* Prevent content from overflowing wrapper */
         }
         @media (min-width: 640px) {
             .screen-content-wrapper {
@@ -744,6 +739,75 @@
             color: #b8b8b8;
             line-height: 1.65;
         }
+        
+        /* START: CHAT ROOM STYLES */
+        #chat-screen .screen-content-wrapper {
+            padding-top: 0; /* No extra top padding needed */
+            justify-content: flex-start;
+        }
+
+        #chat-messages-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: rgba(10, 10, 10, 0.5);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .chat-message-item {
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            width: fit-content;
+            word-wrap: break-word;
+        }
+        
+        .chat-message-item.other-message {
+            background-color: #3a3a3a;
+            align-self: flex-end; /* Corresponds to right in RTL */
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-message-item.my-message {
+            background-color: #5a4b27;
+            align-self: flex-start; /* Corresponds to left in RTL */
+            border-bottom-left-radius: 2px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #c49730;
+            margin-bottom: 4px;
+        }
+
+        .message-text {
+            font-size: 0.95em;
+            color: #f0f0f0;
+            white-space: pre-wrap;
+        }
+
+        .message-timestamp {
+            font-size: 0.7em;
+            color: #999;
+            margin-top: 5px;
+            text-align: left; /* Always LTR for time */
+            direction: ltr;
+        }
+
+        #chat-input-form {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: auto; /* Push to bottom */
+            padding-top: 10px;
+            border-top: 1px solid #444;
+        }
+        /* END: CHAT ROOM STYLES */
 
     </style>
 </head>
@@ -821,6 +885,8 @@
                 <div id="top-action-buttons" class="">
                     <button id="shop-btn" class="btn-mafia" style="order: -1;">فروشگاه</button>
                     <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button>
+                    <!-- NEW CHAT BUTTON -->
+                    <button id="public-chat-btn" class="btn-mafia" style="order: 0;">چت عمومی 💬</button>
                     <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button>
                 </div>
             </div>
@@ -862,6 +928,24 @@
             </div>
             <div id="shop-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 </div>
+        </div>
+    </div>
+
+    <!-- NEW CHAT SCREEN -->
+    <div id="chat-screen" class="screen">
+        <div class="screen-content-wrapper">
+            <div class="flex justify-between items-center mb-4 p-2 sm:p-3 bg-[rgba(0,0,0,0.4)] rounded-lg shadow-lg">
+                <h1 class="text-xl sm:text-2xl font-bold text-[#c49730]">چت عمومی</h1>
+                <button id="back-to-main-from-chat-btn" class="btn-mafia-secondary">بازگشت</button>
+            </div>
+            <div id="chat-messages-container">
+                <!-- Messages will be injected here by JavaScript -->
+            </div>
+            <form id="chat-input-form" onsubmit="return false;">
+                <input type="text" id="chat-message-input" class="input-mafia w-full" placeholder="پیام خود را بنویسید..." maxlength="200">
+                <button id="send-chat-message-btn" class="btn-mafia whitespace-nowrap">ارسال</button>
+            </form>
+            <p id="chat-message-error" class=""></p>
         </div>
     </div>
 
@@ -954,7 +1038,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
@@ -988,14 +1072,14 @@
             nameChangeCount: 0,
         };
 
-        let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen,
+        let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen, chatScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
             publicUserIdOutput,
             editNameBtn, coinsOutput,
             mainScreenButtonsLayout,
-            startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader,
+            startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader, publicChatBtn,
             stageDisplay, gameCoinsDisplay, questionText,
             optionsContainer, questionExplanation, hintBtn, skipStageBtn, backToMainBtn,
             gameFeedback, aiThinkingIndicator, backToMainFromShopBtn, shopItemsContainer,
@@ -1003,11 +1087,13 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn;
+            developersPanelContainer, closeDevelopersPanelBtn,
+            backToMainFromChatBtn, chatMessagesContainer, chatMessageInput, sendChatMessageBtn, chatMessageError;
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
+        let chatListenerUnsubscribe = null; // To hold the unsubscribe function for the chat listener
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -1332,7 +1418,6 @@
         }
 
         // --- Gemini API Functions ---
-        // این کلید API برای تمام بخش‌های هوش مصنوعی بازی (دانستنی‌ها، سوالات، راهنمایی و...) استفاده می‌شود
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
         const GEMINI_TEXT_MODEL = "gemini-2.0-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
@@ -1370,7 +1455,6 @@
                     const text = result.candidates[0].content.parts[0].text;
                     return isJsonOutput ? JSON.parse(text) : text;
                 } else {
-                    // Check for safety ratings or other reasons for no content
                     if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
                          throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
                     }
@@ -1423,7 +1507,6 @@
         }
 
         // --- Game Logic Functions ---
-
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
@@ -1432,9 +1515,6 @@
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(gameFeedback) gameFeedback.textContent = "";
             
-            // --- CHANGED: Improved prompt for generating questions ---
-            // This new prompt is more specific to ensure the AI returns a valid JSON format,
-            // which should make the game questions work more reliably.
             const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن.
 پاسخ شما باید فقط و فقط یک آبجکت JSON خام باشد و هیچ چیز دیگری در پاسخ نباشد.
 از قرار دادن بک‌تیک (\`\`\`) یا کلمه "json" در ابتدای و انتهای پاسخ خودداری کن.
@@ -1468,7 +1548,6 @@
                 gameState.isQuestionActive = true;
             }
         }
-
         async function generateHint() {
             if (!gameState.currentQuestionData) return null;
 
@@ -1598,7 +1677,8 @@
             () => hideModal()
             );
         }
-
+        
+        // --- Shop Functions ---
         const shopItems = [
             { id: 'coins_1000', name: '۱۰۰۰ سکه', price: '۱۰,۰۰۰ تومان', icon: '🪙', description: 'یک شروع خوب برای تازه واردها!' },
             { id: 'coins_5000', name: '۵۵۰۰ سکه', price: '۵۰,۰۰۰ تومان', icon: '💰', description: 'بسته ویژه با ۵۰۰ سکه اضافه!' },
@@ -1630,7 +1710,8 @@
                 });
             });
         }
-
+        
+        // --- Profile Management Functions ---
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
             avatarAiLoading.classList.remove('hidden');
@@ -1767,6 +1848,103 @@
             }
             return result;
         }
+        
+        // --- CHAT FUNCTIONS ---
+        function listenForChatMessages() {
+            if (!db || !isAuthReady) return;
+            if (chatListenerUnsubscribe) chatListenerUnsubscribe(); // Unsubscribe from previous listener if any
+
+            const messagesRef = collection(db, `artifacts/${appId}/publicChat/messages`);
+            const q = query(messagesRef, orderBy("timestamp", "asc"), limit(50));
+
+            if(chatMessagesContainer) chatMessagesContainer.innerHTML = ''; // Clear previous messages
+
+            chatListenerUnsubscribe = onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const messageData = change.doc.data();
+                        const messageElement = createChatMessageElement(messageData);
+                        if(chatMessagesContainer) {
+                           chatMessagesContainer.appendChild(messageElement);
+                           chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                        }
+                    }
+                });
+            }, (error) => {
+                console.error("Error listening to chat messages:", error);
+                if(chatMessageError) chatMessageError.textContent = "خطا در اتصال به چت روم.";
+            });
+        }
+        
+        function formatTimestamp(timestamp) {
+            if (!timestamp || !timestamp.toDate) return '';
+            const date = timestamp.toDate();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+        
+        function sanitizeHTML(str) {
+            return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+        
+        function createChatMessageElement(messageData) {
+            const item = document.createElement('div');
+            item.className = 'chat-message-item';
+            
+            if (messageData.senderId === currentUserId) {
+                item.classList.add('my-message');
+            } else {
+                item.classList.add('other-message');
+            }
+            
+            const senderName = sanitizeHTML(messageData.senderName || 'کاربر ناشناس');
+            const messageText = sanitizeHTML(messageData.text || '');
+
+            item.innerHTML = `
+                <div class="message-sender">${senderName}</div>
+                <div class="message-text">${messageText}</div>
+                <div class="message-timestamp">${formatTimestamp(messageData.timestamp)}</div>
+            `;
+            return item;
+        }
+
+        async function sendChatMessage() {
+            if (!chatMessageInput || !isAuthReady || !currentUserId) return;
+            
+            const text = chatMessageInput.value.trim();
+            if (text === '') {
+                if(chatMessageError) chatMessageError.textContent = 'پیام نمی‌تواند خالی باشد.';
+                return;
+            }
+            
+            if (text.length > 200) {
+                 if(chatMessageError) chatMessageError.textContent = 'پیام طولانی‌تر از ۲۰۰ کاراکتر است.';
+                 return;
+            }
+            
+            const messageData = {
+                text: text,
+                senderId: currentUserId,
+                senderName: gameState.displayName,
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                if(sendChatMessageBtn) sendChatMessageBtn.disabled = true;
+                const messagesRef = collection(db, `artifacts/${appId}/publicChat/messages`);
+                await addDoc(messagesRef, messageData);
+                chatMessageInput.value = '';
+                if(chatMessageError) chatMessageError.textContent = '';
+                chatMessageInput.focus();
+            } catch (error) {
+                console.error("Error sending message: ", error);
+                if(chatMessageError) chatMessageError.textContent = 'خطا در ارسال پیام.';
+            } finally {
+                if(sendChatMessageBtn) sendChatMessageBtn.disabled = false;
+            }
+        }
+
 
         function setupEventListeners() {
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
@@ -1897,7 +2075,7 @@
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
 
-            const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
+            const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader, publicChatBtn].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
@@ -1941,6 +2119,38 @@
                     if(shopScreen) showScreen(shopScreen);
                 });
             }
+
+            if (publicChatBtn) {
+                publicChatBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    if(chatScreen) showScreen(chatScreen);
+                    listenForChatMessages();
+                });
+            }
+            
+            if (sendChatMessageBtn) {
+                sendChatMessageBtn.addEventListener('click', sendChatMessage);
+            }
+            
+            if (chatMessageInput) {
+                chatMessageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+            }
+            
+            if(backToMainFromChatBtn) {
+                backToMainFromChatBtn.addEventListener('click', () => {
+                    if (chatListenerUnsubscribe) {
+                        chatListenerUnsubscribe(); // Important: Stop listening to DB changes
+                        chatListenerUnsubscribe = null;
+                    }
+                    if(mainScreen) showScreen(mainScreen);
+                });
+            }
+
 
             if (mafiaFactBtn) {
                 mafiaFactBtn.addEventListener('click', () => {
@@ -1999,6 +2209,7 @@
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
             shopScreen = document.getElementById('shop-screen');
+            chatScreen = document.getElementById('chat-screen');
             registrationForm = document.getElementById('registration-form');
             displayNameInput = document.getElementById('display-name-input');
             registerBtn = document.getElementById('register-btn');
@@ -2019,6 +2230,7 @@
             startGameBtn = document.getElementById('start-game-btn');
             shopBtn = document.getElementById('shop-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
+            publicChatBtn = document.getElementById('public-chat-btn');
             devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
             stageDisplay = document.getElementById('stage-display');
             gameCoinsDisplay = document.getElementById('game-coins-display');
@@ -2032,6 +2244,13 @@
             aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
             backToMainFromShopBtn = document.getElementById('back-to-main-from-shop-btn');
             shopItemsContainer = document.getElementById('shop-items-container');
+            
+            backToMainFromChatBtn = document.getElementById('back-to-main-from-chat-btn');
+            chatMessagesContainer = document.getElementById('chat-messages-container');
+            chatMessageInput = document.getElementById('chat-message-input');
+            sendChatMessageBtn = document.getElementById('send-chat-message-btn');
+            chatMessageError = document.getElementById('chat-message-error');
+            
             modalContainer = document.getElementById('modal-container');
             modalTitle = document.getElementById('modal-title');
             modalContentDynamic = document.getElementById('modal-content-dynamic');
