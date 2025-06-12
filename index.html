@@ -527,8 +527,8 @@
             }
         }
 
-        /* Developer Intro Icon Button - Header Position */
-        #dev-intro-icon-btn-header {
+        /* Header Icon Buttons */
+        #dev-intro-icon-btn-header, #announcement-icon-btn-header {
             background-color: transparent;
             color: #c49730;
             border: 2px solid #c49730;
@@ -543,29 +543,52 @@
             width: 40px;
             height: 40px;
             flex-shrink: 0; /* Prevent shrinking */
+            position: relative; /* For the notification dot */
         }
-        #dev-intro-icon-btn-header:hover {
+        #dev-intro-icon-btn-header:hover, #announcement-icon-btn-header:hover {
             background-color: rgba(196, 151, 48, 0.2);
             color: #d4a840;
             border-color: #d4a840;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
-        #dev-intro-icon-btn-header svg {
+        #dev-intro-icon-btn-header svg, #announcement-icon-btn-header svg {
             width: 20px;
             height: 20px;
         }
          @media (min-width: 640px) {
-            #dev-intro-icon-btn-header {
+            #dev-intro-icon-btn-header, #announcement-icon-btn-header {
                 width: 44px;
                 height: 44px;
                 padding: 0.6rem;
             }
-            #dev-intro-icon-btn-header svg {
+            #dev-intro-icon-btn-header svg, #announcement-icon-btn-header svg {
                 width: 22px;
                 height: 22px;
             }
         }
+
+        /* Notification dot style */
+        #announcement-icon-btn-header::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 10px;
+            height: 10px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            border: 2px solid #101010;
+            box-shadow: 0 0 5px #dc3545;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #announcement-icon-btn-header.new-announcement::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
 
         /* Bottom Action Buttons Layout */
         #main-screen-buttons-layout {
@@ -652,11 +675,11 @@
             display: none !important;
         }
 
-        /* Styles for Developers Panel */
-        #developers-panel-container {
+        /* Styles for Panels */
+        #developers-panel-container, #announcement-panel-container {
             background-color: rgba(10, 10, 10, 0.92);
         }
-        #developers-panel {
+        #developers-panel, #announcement-panel {
             background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
             border: 2px solid #c49730;
             box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
@@ -664,7 +687,7 @@
             overflow-y: auto;
             border-radius: 15px;
         }
-        #close-developers-panel-btn {
+        #close-developers-panel-btn, #close-announcement-panel-btn {
             position: absolute;
             top: 18px;
             right: 18px;
@@ -685,7 +708,7 @@
             box-shadow: 0 3px 7px rgba(0,0,0,0.5);
             z-index: 10;
         }
-        #close-developers-panel-btn:hover {
+        #close-developers-panel-btn:hover, #close-announcement-panel-btn:hover {
             background-color: #d4a840;
             transform: scale(1.1) rotate(180deg);
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
@@ -785,18 +808,28 @@
         <div class="screen-content-wrapper"> <!-- Increased padding-top here -->
             <div>
                 <div id="main-screen-header">
-                    <!-- Developer Intro Icon Button - Moved to the left (visual right in RTL) -->
-                    <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                    </button>
+                    <!-- Header Buttons Group (Left side, visual right in RTL) -->
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <button id="announcement-icon-btn-header" title="اعلامیه‌ها" class="hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                        </button>
+                        <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </button>
+                    </div>
+
                     <h1 id="main-title">شهر مافیا</h1>
-                     <!-- Spacer on the right (visual left in RTL) to balance the icon button -->
-                    <div style="width: 40px; flex-shrink: 0;"></div>
+                    
+                    <!-- Spacer on the right (visual left in RTL) to balance the icon buttons -->
+                    <div class="flex-shrink-0 w-[88px] sm:w-[100px]"></div>
                 </div>
 
                 <div id="registration-form" class="mb-4 panel panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
@@ -950,6 +983,18 @@
             </div>
         </div>
     </div>
+    
+    <!-- Announcement Panel -->
+    <div id="announcement-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[51]">
+        <div id="announcement-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
+            <button id="close-announcement-panel-btn">×</button>
+            <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">اعلامیه‌های شهر</h3>
+            <div id="announcement-content" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y-auto pr-2 sm:pr-3 pl-1 text-base sm:text-lg leading-relaxed text-gray-200">
+                <p>در حال بارگذاری اعلامیه...</p>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -987,6 +1032,13 @@
             avatarUrl: '',
             nameChangeCount: 0,
         };
+        
+        // --- Announcement Variables ---
+        const ANNOUNCEMENT_URL = 'https://litebase.ir/code/servers/payam_city_mafia.json';
+        const SEEN_ANNOUNCEMENT_KEY = 'mafiaGame_seenAnnouncement';
+        let currentAnnouncements = [];
+        let announcementCheckInterval = null;
+
 
         let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
@@ -1003,7 +1055,9 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn;
+            developersPanelContainer, closeDevelopersPanelBtn,
+            announcementPanelContainer, closeAnnouncementPanelBtn, announcementIconBtn, announcementContent;
+
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
@@ -1087,7 +1141,8 @@
             avatarGenerationContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
-               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) {
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden')) &&
+               (!announcementPanelContainer || announcementPanelContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
@@ -1130,10 +1185,103 @@
             developersPanelContainer.classList.add('panel-hidden');
             developersPanelContainer.classList.remove('panel-visible');
              if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
-               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
+               (!modalContainer || modalContainer.classList.contains('panel-hidden')) &&
+               (!announcementPanelContainer || announcementPanelContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
+        
+        // --- Announcement Functions ---
+        async function fetchAnnouncements() {
+            try {
+                // Add a cache-busting parameter to prevent stale data
+                const response = await fetch(`${ANNOUNCEMENT_URL}?t=${new Date().getTime()}`);
+                if (!response.ok) {
+                    console.error('Failed to fetch announcements, status:', response.status);
+                    return null;
+                }
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    return data;
+                }
+                console.error('Announcements data is not an array:', data);
+                return null;
+            } catch (error) {
+                console.error('Error fetching or parsing announcements:', error);
+                return null;
+            }
+        }
+
+        function showAnnouncementPanel() {
+            if (!announcementPanelContainer || !announcementContent || !announcementIconBtn) return;
+
+            // Format announcements for display. Join multiple with line breaks.
+            const announcementsHTML = currentAnnouncements.map(msg => `<p class="mb-4">${String(msg).replace(/\n/g, '<br>')}</p>`).join('');
+            announcementContent.innerHTML = announcementsHTML || '<p>اعلامیه جدیدی وجود ندارد.</p>';
+
+            announcementPanelContainer.classList.remove('panel-hidden');
+            announcementPanelContainer.classList.add('panel-visible');
+
+            // Mark this/these announcement(s) as seen by storing the first one as an identifier
+            if (currentAnnouncements.length > 0) {
+                 localStorage.setItem(SEEN_ANNOUNCEMENT_KEY, currentAnnouncements[0]);
+                 announcementIconBtn.classList.remove('new-announcement');
+            }
+
+            // Hide user profile area when panel is open
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+        }
+
+        function hideAnnouncementPanel() {
+            if (!announcementPanelContainer) return;
+            announcementPanelContainer.classList.add('panel-hidden');
+            announcementPanelContainer.classList.remove('panel-visible');
+
+            // Restore user profile area if no other panels are open
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!modalContainer || modalContainer.classList.contains('panel-hidden')) &&
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden')) ) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
+        }
+
+        async function checkAnnouncements(isInitialCheck = false) {
+            const announcements = await fetchAnnouncements();
+
+            if (announcements && announcements.length > 0 && announcements[0].trim() !== "") {
+                currentAnnouncements = announcements;
+                const latestAnnouncement = announcements[0]; // Use the first item as the unique ID
+                const seenAnnouncement = localStorage.getItem(SEEN_ANNOUNCEMENT_KEY);
+
+                if (announcementIconBtn) {
+                    announcementIconBtn.classList.remove('hidden');
+                }
+
+                if (latestAnnouncement !== seenAnnouncement) {
+                    if (announcementIconBtn) {
+                        announcementIconBtn.classList.add('new-announcement');
+                    }
+                    if (isInitialCheck) {
+                        setTimeout(() => {
+                            showAnnouncementPanel();
+                        }, 1500); // Delay to let UI settle
+                    }
+                } else {
+                     if (announcementIconBtn) {
+                        announcementIconBtn.classList.remove('new-announcement');
+                    }
+                }
+            } else {
+                currentAnnouncements = [];
+                if (announcementIconBtn) {
+                    announcementIconBtn.classList.add('hidden');
+                    announcementIconBtn.classList.remove('new-announcement');
+                }
+            }
+        }
+
 
         function updateUI() {
             if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
@@ -1188,7 +1336,8 @@
 
             if(userProfileArea){
                 const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) ||
-                                        (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
+                                        (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible')) ||
+                                        (announcementPanelContainer && announcementPanelContainer.classList.contains('panel-visible'));
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                     userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
@@ -1223,6 +1372,12 @@
                         console.log("User is signed in:", user.uid);
                         currentUserId = user.uid;
                         await loadUserData();
+                        
+                        // Start checking for announcements after user is logged in
+                        checkAnnouncements(true); // `true` for initial check on load
+                        if (announcementCheckInterval) clearInterval(announcementCheckInterval);
+                        announcementCheckInterval = setInterval(() => checkAnnouncements(false), 5 * 60 * 1000); // Check every 5 mins
+
                     } else {
                         console.log("User is signed out. Attempting to sign in.");
                         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1313,7 +1468,8 @@
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
                  console.log("User data saved successfully.");
-            } catch (error) {
+            } catch (error)
+            {
                 console.error("Error saving user data:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
@@ -1961,6 +2117,18 @@
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
+            if (announcementIconBtn) {
+                announcementIconBtn.addEventListener('click', () => {
+                    if (currentAnnouncements && currentAnnouncements.length > 0) {
+                        showAnnouncementPanel();
+                    }
+                });
+            }
+
+            if (closeAnnouncementPanelBtn) {
+                closeAnnouncementPanelBtn.addEventListener('click', hideAnnouncementPanel);
+            }
+
 
             if(backToMainFromShopBtn) {
                 backToMainFromShopBtn.addEventListener('click', () => {
@@ -2048,6 +2216,11 @@
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+            announcementPanelContainer = document.getElementById('announcement-panel-container');
+            closeAnnouncementPanelBtn = document.getElementById('close-announcement-panel-btn');
+            announcementIconBtn = document.getElementById('announcement-icon-btn-header');
+            announcementContent = document.getElementById('announcement-content');
+
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
