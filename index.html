@@ -22,28 +22,18 @@
 
         /* --- Cinematic Background & Effects --- */
         #background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2; overflow: hidden;
         }
         #background-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* Ken Burns Effect */
+            width: 100%; height: 100%; object-fit: cover;
             animation: ken-burns 40s ease-in-out infinite;
             transform-origin: center;
         }
         #smoke-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             background: url(https://www.transparenttextures.com/patterns/foggy-birds.png) repeat;
             opacity: 0.15;
             animation: drift 60s linear infinite;
@@ -53,87 +43,65 @@
             50% { transform: scale(1.1) translate(1%, -1%); }
         }
         @keyframes drift {
-            from { background-position: 0 0; }
-            to { background-position: 512px 512px; }
+            from { background-position: 0 0; } to { background-position: 512px 512px; }
         }
 
         /* --- Metallic & Gold Trim Panels --- */
         .panel {
             background-color: rgba(10, 10, 12, 0.85);
             backdrop-filter: blur(5px);
-            border: 2px solid;
-            border-image-slice: 1;
+            border: 2px solid; border-image-slice: 1;
             border-image-source: var(--border-gradient);
             box-shadow: 0 0 25px rgba(var(--glow-color-rgb), 0.2), inset 0 0 10px rgba(0,0,0,0.5);
             transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .panel-hidden {
-            opacity: 0;
-            transform: scale(0.98) translateY(15px);
-            pointer-events: none;
-            visibility: hidden;
+            opacity: 0; transform: scale(0.98) translateY(15px);
+            pointer-events: none; visibility: hidden;
         }
         .panel-visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            visibility: visible;
+            opacity: 1; transform: scale(1) translateY(0); visibility: visible;
         }
         
         /* --- Modern Buttons with Gold Trim --- */
         .btn-mafia, .btn-mafia-secondary {
-            color: #f3f4f6; /* gray-100 */
-            border: 2px solid;
-            border-image-slice: 1;
-            border-image-source: var(--border-gradient);
-            padding: 10px 24px;
-            font-size: 1rem;
-            border-radius: 8px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            position: relative;
+            color: #f3f4f6; border: 2px solid;
+            border-image-slice: 1; border-image-source: var(--border-gradient);
+            padding: 10px 24px; font-size: 1rem;
+            border-radius: 8px; font-weight: 700;
+            transition: all 0.3s ease; position: relative;
             background-color: rgba(10, 10, 12, 0.6);
             box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
+        .btn-mafia:hover, .btn-mafia-secondary:hover {
+            transform: translateY(-2px); color: #fff;
+        }
         .btn-mafia:hover {
-            transform: translateY(-2px);
-            color: #fff;
             box-shadow: 0 0 20px rgba(var(--glow-color-rgb), 0.5), inset 0 0 15px rgba(var(--glow-color-rgb), 0.2);
         }
         .btn-mafia-secondary {
-            border-image-source: linear-gradient(145deg, #888, #555, #888);
-            color: #a0a0a0;
+            border-image-source: linear-gradient(145deg, #888, #555, #888); color: #a0a0a0;
         }
         .btn-mafia-secondary:hover {
              border-image-source: linear-gradient(145deg, #ccc, #999, #ccc);
-             color: #fff;
              box-shadow: 0 0 15px rgba(200,200,200, 0.3);
         }
 
-        /* --- Modern Inputs --- */
         .input-mafia {
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(196, 151, 48, 0.4);
-            color: #e0e0e0;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            background-color: rgba(0, 0, 0, 0.7); border: 1px solid rgba(196, 151, 48, 0.4);
+            color: #e0e0e0; border-radius: 8px; padding: 12px;
+            font-size: 1rem; transition: all 0.3s ease;
         }
         .input-mafia:focus {
-            outline: none;
-            border-color: var(--glow-color);
+            outline: none; border-color: var(--glow-color);
             box-shadow: 0 0 15px rgba(var(--glow-color-rgb), 0.5);
         }
         .input-mafia.invalid {
-            border-color: #ef4444; /* red-500 */
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
         }
 
-        /* --- Main Title with Flicker Effect --- */
         #main-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #eab308;
+            font-size: 3.5rem; font-weight: 800; color: #eab308;
             animation: flicker 4s linear infinite;
         }
         @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
@@ -142,14 +110,10 @@
             50% { text-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 15px var(--glow-color), 0 0 25px var(--glow-color); }
         }
 
-        /* --- Screens & Layout --- */
         .screen {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100vh;
-            padding: 20px; box-sizing: border-box;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease;
-            display: flex; flex-direction: column; align-items: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+            padding: 20px; box-sizing: border-box; opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease; display: flex; flex-direction: column; align-items: center;
             overflow-y: auto;
         }
         .screen.active { opacity: 1; visibility: visible; }
@@ -159,29 +123,62 @@
         }
         #main-screen .screen-content-wrapper { justify-content: space-between; }
         
-        /* Game Feedback Animations */
         #game-feedback {
-            font-size: 2rem;
-            font-weight: bold;
-            opacity: 0;
-            transform: scale(0.5);
+            font-size: 2rem; font-weight: bold; opacity: 0; transform: scale(0.5);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        #game-feedback.animate-in {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .feedback-correct { color: #22c55e; /* green-500 */ }
-        .feedback-incorrect { color: #ef4444; /* red-500 */ }
+        #game-feedback.animate-in { opacity: 1; transform: scale(1); }
+        .feedback-correct { color: #22c55e; } .feedback-incorrect { color: #ef4444; }
 
         body.shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+            10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); }
         }
         
+        /* --- Super Cool Loading Screen --- */
+        #loading-screen-content { text-align: center; }
+        #loading-title-container {
+            font-weight: 800; font-size: 4rem; overflow: hidden;
+            display: flex; justify-content: center; gap: 1rem;
+        }
+        @media (min-width: 768px) { #loading-title-container { font-size: 6rem; } }
+        
+        #loading-title-container span {
+            display: block; transform: translateY(110%);
+            animation-duration: 0.8s; animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        #loading-title-container.animate-in span:first-child { animation-name: reveal-text; }
+        #loading-title-container.animate-in span:last-child { animation-name: reveal-text; animation-delay: 0.2s; }
+
+        #loading-screen.exiting #loading-title-container span:first-child { animation-name: hide-text; }
+        #loading-screen.exiting #loading-title-container span:last-child { animation-name: hide-text; animation-delay: 0.2s; }
+
+        @keyframes reveal-text { from { transform: translateY(110%); } to { transform: translateY(0); } }
+        @keyframes hide-text { from { transform: translateY(0); } to { transform: translateY(-110%); } }
+
+        #loading-bar-container {
+            width: 100%; max-width: 300px; height: 4px;
+            background-color: rgba(255, 255, 255, 0.2); margin: 1.5rem auto;
+            border-radius: 2px; overflow: hidden; transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+        #loading-screen.animate-in #loading-bar-container { transform: scaleX(1); transition-delay: 0.5s; }
+        #loading-screen.exiting #loading-bar-container { transform: scaleX(0); transition-delay: 0s; }
+
+        #loading-bar {
+            width: 0%; height: 100%; background-color: var(--glow-color);
+            border-radius: 2px; transition: width 3s ease-out;
+        }
+
+        #loading-message {
+            opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s;
+        }
+        #loading-screen.animate-in #loading-message { opacity: 1; transform: translateY(0); transition-delay: 0.8s; }
+        #loading-screen.exiting #loading-message { opacity: 0; transition-delay: 0s; }
+
+
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
@@ -213,10 +210,15 @@
     </div>
 
     <div id="loading-screen" class="screen active">
-        <div class="screen-content-wrapper items-center">
-            <h1 id="main-title" class="!text-4xl mb-6">شهر مافیا</h1>
-            <div class="w-16 h-16 border-4 border-t-yellow-500 border-gray-600 rounded-full animate-spin"></div>
-            <p id="loading-message" class="text-xl text-gray-300 mt-4">در حال اتصال...</p>
+        <div id="loading-screen-content">
+            <h1 id="loading-title-container">
+                <span class="text-gray-300">شهر</span>
+                <span class="text-yellow-500">مافیا</span>
+            </h1>
+            <div id="loading-bar-container">
+                <div id="loading-bar"></div>
+            </div>
+            <p id="loading-message" class="text-lg text-gray-400">در حال اتصال...</p>
         </div>
     </div>
 
@@ -283,8 +285,7 @@
                     <p id="change-name-error-message" class="text-red-400 text-sm h-6"></p>
                 </div>
                 <div id="avatar-generation-container" class="hidden">
-                    <p class="text-gray-400 mb-4">این قابلیت در حال حاضر روی دسکتاپ (غیر از ویندوز) در دسترس است.</p>
-                    <button id="generate-avatar-btn" class="btn-mafia my-4">ساخت آواتار جدید با AI</button>
+                    <p class="text-gray-400 mb-4">این قابلیت در حال حاضر روی دستگاه شما در دسترس نیست.</p>
                 </div>
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-6">
@@ -295,111 +296,91 @@
     </div>
 
     <script type="module">
-        // The JavaScript logic remains almost identical to the previous version,
-        // with added logic to disable avatar features and trigger new animations.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-            authDomain: "city-mafia.firebaseapp.com",
-            projectId: "city-mafia",
-            storageBucket: "city-mafia.appspot.com",
-            messagingSenderId: "66458127103",
-            appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-            measurementId: "G-8M0M6BJ0GG"
+            apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s", authDomain: "city-mafia.firebaseapp.com",
+            projectId: "city-mafia", storageBucket: "city-mafia.appspot.com",
+            messagingSenderId: "66458127103", appId: "1:66458127103:web:8bcc2ad470f51b5db45aca"
         };
         const appId = 'mafia-game-default';
         let app, auth, db, currentUserId = null, isAuthReady = false;
 
         const gameState = {
-            displayName: '', publicUserId: '', currentStage: 1,
-            currentQuestionData: null, isQuestionActive: false,
-            isLoadingNextQuestion: false, avatarUrl: '',
+            displayName: '', publicUserId: '', currentStage: 1, currentQuestionData: null,
+            isQuestionActive: false, isLoadingNextQuestion: false, avatarUrl: '',
         };
         
-        // --- Feature Flag for Avatar Generation ---
         const isWindows = /Windows/i.test(navigator.userAgent);
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         const disableAvatarFeature = isWindows || isMobile;
 
-        let loadingScreen, mainScreen, gameScreen, registrationFormContainer,
-            displayNameInput, registerBtn, inputErrorMessage, userIdDisplayInput, generateUserIdBtn,
-            userIdErrorMessage, userProfileArea, avatarContainer, avatarImage, userInfoBox,
-            displayNameOutput, publicUserIdOutput, editNameBtn, mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, devIntroBtnHeader, stageDisplay, questionText,
-            optionsContainer, questionExplanation, backToMainBtn, gameFeedback,
-            modalContainer, modalTitle, modalMessage, changeNameInputContainer,
-            newDisplayNameInput, changeNameErrorMessage, avatarGenerationContainer,
-            generateAvatarBtn, modalConfirmBtn, modalCancelBtn;
-            
+        const elements = {};
         let modalConfirmCallback = null, modalCancelCallback = null;
-        
+
         function showScreen(screenElement) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
             updateUI();
         }
 
-        function showPanel(panel) {
-            if (panel) panel.classList.remove('panel-hidden');
-        }
-        function hidePanel(panel) {
-            if (panel) panel.classList.add('panel-hidden');
-        }
+        function showPanel(panel) { if (panel) panel.classList.remove('panel-hidden'); }
+        function hidePanel(panel) { if (panel) panel.classList.add('panel-hidden'); }
 
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            modalTitle.textContent = title;
-            modalMessage.innerHTML = message;
+            elements.modalTitle.textContent = title;
+            elements.modalMessage.innerHTML = message;
 
-            changeNameInputContainer.classList.add('hidden');
-            avatarGenerationContainer.classList.add('hidden');
+            elements.changeNameInputContainer.classList.add('hidden');
+            elements.avatarGenerationContainer.classList.add('hidden');
 
             if (modalType === "changeName") {
-                changeNameInputContainer.classList.remove('hidden');
-                newDisplayNameInput.value = gameState.displayName;
+                elements.changeNameInputContainer.classList.remove('hidden');
+                elements.newDisplayNameInput.value = gameState.displayName;
             } else if (modalType === "avatar" && !disableAvatarFeature) {
-                avatarGenerationContainer.classList.remove('hidden');
+                elements.avatarGenerationContainer.classList.remove('hidden');
             }
 
-            modalConfirmBtn.textContent = confirmText;
+            elements.modalConfirmBtn.textContent = confirmText;
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
-            modalCancelBtn.classList.toggle('hidden', !cancelText);
-            if(cancelText) modalCancelBtn.textContent = cancelText;
+            elements.modalCancelBtn.classList.toggle('hidden', !cancelText);
+            if (cancelText) elements.modalCancelBtn.textContent = cancelText;
 
-            modalContainer.classList.remove('panel-hidden');
-            showPanel(modalContainer.querySelector('.panel'));
+            elements.modalContainer.classList.remove('panel-hidden');
+            showPanel(elements.modalContainer.querySelector('.panel'));
         }
 
         function hideModal() {
-            modalContainer.classList.add('panel-hidden');
-            hidePanel(modalContainer.querySelector('.panel'));
+            elements.modalContainer.classList.add('panel-hidden');
+            hidePanel(elements.modalContainer.querySelector('.panel'));
         }
 
         function handleModalConfirm() { (modalConfirmCallback) ? modalConfirmCallback() : hideModal(); }
         function handleModalCancel() { (modalCancelCallback) ? modalCancelCallback() : hideModal(); }
         
         function updateUI() {
-            displayNameOutput.textContent = gameState.displayName || "مهمان";
-            publicUserIdOutput.textContent = gameState.publicUserId || "---";
-            stageDisplay.textContent = gameState.currentStage;
-            if (avatarImage) avatarImage.src = gameState.avatarUrl || `https://placehold.co/80x80/333333/777777?text=?`;
+            if (!isAuthReady) return;
+            elements.displayNameOutput.textContent = gameState.displayName || "مهمان";
+            elements.publicUserIdOutput.textContent = gameState.publicUserId || "---";
+            elements.stageDisplay.textContent = gameState.currentStage;
+            if (elements.avatarImage) elements.avatarImage.src = gameState.avatarUrl || `https://placehold.co/80x80/333333/777777?text=?`;
 
-            const isLoggedIn = isAuthReady && gameState.displayName && gameState.publicUserId;
+            const isLoggedIn = gameState.displayName && gameState.publicUserId;
             
             if (isLoggedIn) {
-                hidePanel(registrationFormContainer);
-                mainScreenButtonsLayout.classList.remove('hidden');
-                userProfileArea.classList.remove('hidden');
-                showPanel(userInfoBox);
-                if (!disableAvatarFeature) avatarContainer.classList.remove('hidden');
+                hidePanel(elements.registrationFormContainer);
+                elements.mainScreenButtonsLayout.classList.remove('hidden');
+                elements.userProfileArea.classList.remove('hidden');
+                showPanel(elements.userInfoBox);
+                if (!disableAvatarFeature) elements.avatarContainer.classList.remove('hidden');
             } else {
-                showPanel(registrationFormContainer);
-                mainScreenButtonsLayout.classList.add('hidden');
-                userProfileArea.classList.add('hidden');
-                hidePanel(userInfoBox);
+                showPanel(elements.registrationFormContainer);
+                elements.mainScreenButtonsLayout.classList.add('hidden');
+                elements.userProfileArea.classList.add('hidden');
+                hidePanel(elements.userInfoBox);
             }
         }
         
@@ -408,41 +389,51 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
+                
                 onAuthStateChanged(auth, async (user) => {
-                    currentUserId = user ? user.uid : (await signInAnonymously(auth)).user.uid;
+                    if (user) {
+                        currentUserId = user.uid;
+                    } else {
+                        const { user: newUser } = await signInAnonymously(auth);
+                        currentUserId = newUser.uid;
+                    }
                     await loadUserData();
                     isAuthReady = true;
                     updateUI();
-                    if (loadingScreen.classList.contains('active')) {
-                        document.getElementById('loading-message').textContent = "خوش آمدید!";
-                        setTimeout(() => showScreen(mainScreen), 800);
-                    }
+                    
+                    // This will be triggered once auth is ready, ending the loading sequence
+                    elements.loadingMessage.textContent = "خوش آمدید!";
+                    elements.loadingBar.style.width = '100%';
+                    setTimeout(() => {
+                        elements.loadingScreen.classList.add('exiting');
+                        setTimeout(() => showScreen(elements.mainScreen), 600);
+                    }, 500);
                 });
             } catch (error) {
-                 document.getElementById('loading-message').textContent = "خطا در اتصال به سرور.";
+                 elements.loadingMessage.textContent = "خطا در اتصال به سرور.";
             }
         }
         
         async function loadUserData() {
             if (!currentUserId) return;
             const docRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-            const docSnap = await getDoc(docRef).catch(() => null);
-            if (docSnap && docSnap.exists()) {
-                const data = docSnap.data();
-                Object.assign(gameState, {
-                    displayName: data.displayName || "",
-                    publicUserId: data.publicUserId || "",
-                    currentStage: data.currentStage || 1,
-                    avatarUrl: data.avatarUrl || '',
-                });
-            }
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    Object.assign(gameState, {
+                        displayName: data.displayName || "", publicUserId: data.publicUserId || "",
+                        currentStage: data.currentStage || 1, avatarUrl: data.avatarUrl || '',
+                    });
+                }
+            } catch (error) { console.error("Error loading user data", error); }
         }
         
         async function saveUserData() {
             if (!currentUserId) return;
             const docRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-            const dataToSave = (({ displayName, publicUserId, currentStage, avatarUrl }) => ({ displayName, publicUserId, currentStage, avatarUrl }))(gameState);
-            await setDoc(docRef, { ...dataToSave, lastUpdated: serverTimestamp() }, { merge: true });
+            const { displayName, publicUserId, currentStage, avatarUrl } = gameState;
+            await setDoc(docRef, { displayName, publicUserId, currentStage, avatarUrl, lastUpdated: serverTimestamp() }, { merge: true });
         }
         
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
@@ -460,7 +451,7 @@
                 if (!text) throw new Error("Invalid AI response.");
                 return isJsonOutput ? JSON.parse(text) : text;
             } catch (error) {
-                showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. از خاموش بودن فیلترشکن مطمئن شوید.`, "باشه");
+                showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد.`, "باشه");
                 return null;
             }
         }
@@ -468,33 +459,32 @@
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
-            questionText.textContent = "در حال تولید سوال جدید...";
-            optionsContainer.innerHTML = "";
-            questionExplanation.classList.add('hidden');
-            gameFeedback.textContent = "";
-            gameFeedback.classList.remove('animate-in', 'feedback-correct', 'feedback-incorrect');
+            elements.questionText.textContent = "در حال تولید سوال جدید...";
+            elements.optionsContainer.innerHTML = "";
+            elements.questionExplanation.classList.add('hidden');
+            elements.gameFeedback.className = 'text-center font-semibold my-4 h-12';
             const prompt = `یک سوال چند گزینه ای با موضوع مافیا به زبان فارسی ایجاد کن. پاسخ شما باید فقط یک آبجکت JSON خام باشد. ساختار: { "question": "متن سوال", "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"], "correctAnswerIndex": 0, "explanation": "توضیح پاسخ" }`;
             const data = await callGeminiAPI(prompt, true);
             if (data?.question && data.options?.length === 4) {
                 gameState.currentQuestionData = data;
                 displayQuestion();
             } else {
-                showModal("خطا در سوال", "مشکلی در تولید سوال پیش آمد.", "تلاش مجدد", "صفحه اصلی", () => { hideModal(); generateQuestion(); }, () => { hideModal(); showScreen(mainScreen); });
+                showModal("خطا در سوال", "مشکلی در تولید سوال پیش آمد.", "تلاش مجدد", "صفحه اصلی", () => { hideModal(); generateQuestion(); }, () => { hideModal(); showScreen(elements.mainScreen); });
             }
             gameState.isLoadingNextQuestion = false;
         }
 
         function displayQuestion() {
             const { question, options } = gameState.currentQuestionData;
-            questionText.textContent = question;
-            optionsContainer.innerHTML = "";
+            elements.questionText.textContent = question;
+            elements.optionsContainer.innerHTML = "";
             options.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.className = 'btn-mafia-secondary !py-4 text-base';
                 button.textContent = option;
                 button.dataset.index = index;
                 button.addEventListener('click', handleAnswerSelection);
-                optionsContainer.appendChild(button);
+                elements.optionsContainer.appendChild(button);
             });
             gameState.isQuestionActive = true;
         }
@@ -506,28 +496,28 @@
             const selectedIndex = parseInt(selectedBtn.dataset.index);
             const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
             
-            optionsContainer.querySelectorAll('button').forEach(btn => {
+            elements.optionsContainer.querySelectorAll('button').forEach(btn => {
                 btn.disabled = true;
                 if(parseInt(btn.dataset.index) === correctAnswerIndex) btn.classList.add('!border-green-500', '!text-green-400');
             });
             
             if (selectedIndex === correctAnswerIndex) {
-                gameFeedback.textContent = '✔️';
-                gameFeedback.className = 'text-center font-semibold my-4 h-12 animate-in feedback-correct';
+                elements.gameFeedback.textContent = '✔️';
+                elements.gameFeedback.className = 'text-center font-semibold my-4 h-12 animate-in feedback-correct';
                 gameState.currentStage++;
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
                 selectedBtn.classList.add('!border-red-500', '!text-red-400', 'opacity-70');
-                gameFeedback.textContent = '❌';
-                gameFeedback.className = 'text-center font-semibold my-4 h-12 animate-in feedback-incorrect';
+                elements.gameFeedback.textContent = '❌';
+                elements.gameFeedback.className = 'text-center font-semibold my-4 h-12 animate-in feedback-incorrect';
                 document.body.classList.add('shake-animation');
                 setTimeout(() => document.body.classList.remove('shake-animation'), 500);
                 setTimeout(() => { generateQuestion(); updateUI(); }, 3000);
             }
             if (explanation) {
-                questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden');
+                elements.questionExplanation.textContent = `توضیح: ${explanation}`;
+                elements.questionExplanation.classList.remove('hidden');
             }
         }
         
@@ -546,26 +536,26 @@
         }
 
         function setupEventListeners() {
-            modalConfirmBtn.addEventListener('click', handleModalConfirm);
-            modalCancelBtn.addEventListener('click', handleModalCancel);
+            elements.modalConfirmBtn.addEventListener('click', handleModalConfirm);
+            elements.modalCancelBtn.addEventListener('click', handleModalCancel);
 
-            registerBtn.addEventListener('click', async () => {
-                const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                if (!gameState.publicUserId) userIdErrorMessage.textContent = "لطفاً ابتدا شناسه بسازید.";
+            elements.registerBtn.addEventListener('click', async () => {
+                const validatedName = validateAndSanitizeName(elements.displayNameInput.value, elements.inputErrorMessage, elements.displayNameInput);
+                if (!gameState.publicUserId) elements.userIdErrorMessage.textContent = "لطفاً ابتدا شناسه بسازید.";
                 if (!validatedName || !gameState.publicUserId) return;
                 gameState.displayName = validatedName;
                 await saveUserData();
                 updateUI();
             });
 
-            generateUserIdBtn.addEventListener('click', () => {
+            elements.generateUserIdBtn.addEventListener('click', () => {
                 gameState.publicUserId = Array(5).fill(0).map(() => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
-                userIdDisplayInput.value = gameState.publicUserId;
-                userIdErrorMessage.textContent = '';
+                elements.userIdDisplayInput.value = gameState.publicUserId;
+                elements.userIdErrorMessage.textContent = '';
             });
 
-            editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", async () => {
-                 const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+            elements.editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", async () => {
+                 const newName = validateAndSanitizeName(elements.newDisplayNameInput.value, elements.changeNameErrorMessage, elements.newDisplayNameInput);
                  if (newName && newName !== gameState.displayName) {
                      gameState.displayName = newName;
                      await saveUserData(); updateUI(); hideModal();
@@ -573,46 +563,46 @@
             }, hideModal, "changeName"));
 
             if (!disableAvatarFeature) {
-                avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "", "انتخاب", "لغو", null, hideModal, "avatar"));
+                elements.avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "", "انتخاب", "لغو", null, hideModal, "avatar"));
             }
 
-            startGameBtn.addEventListener('click', () => {
-                if(!gameState.displayName) {
-                    showModal("ثبت نام لازم است", "ابتدا ثبت نام خود را کامل کنید.", "باشه");
-                    return;
-                }
-                showScreen(gameScreen);
+            elements.startGameBtn.addEventListener('click', () => {
+                if(!gameState.displayName) { showModal("ثبت نام لازم است", "ابتدا ثبت نام خود را کامل کنید.", "باشه"); return; }
+                showScreen(elements.gameScreen);
                 generateQuestion();
             });
             
-            mafiaFactBtn.addEventListener('click', async () => {
+            elements.mafiaFactBtn.addEventListener('click', async () => {
                 showModal("دانستنی مافیا ✨", "در حال جستجو...", "باشه");
                 const fact = await callGeminiAPI("یک حقیقت جالب و کوتاه (۲-۴ جمله) در مورد دنیای مافیا به زبان فارسی بگو.");
                 if (fact) showModal("دانستنی مافیا ✨", fact, "جالب بود!");
             });
             
-            backToMainBtn.addEventListener('click', async () => {
-                await saveUserData();
-                showScreen(mainScreen);
-            });
+            elements.backToMainBtn.addEventListener('click', async () => { await saveUserData(); showScreen(elements.mainScreen); });
         }
 
         function initializeGame() {
-            // A quick way to assign all element variables
-            const ids = ["loading-screen", "main-screen", "game-screen", "registration-form-container", "display-name-input", "register-btn", "input-error-message", "user-id-display", "generate-user-id-btn", "user-id-error-message", "user-profile-area", "avatar-container", "avatar-image", "user-info-box", "display-name-output", "public-user-id-output", "edit-name-btn", "main-screen-buttons-layout", "start-game-btn", "mafia-fact-btn", "dev-intro-icon-btn-header", "stage-display", "question-text", "options-container", "question-explanation", "back-to-main-btn", "game-feedback", "modal-container", "modal-title", "modal-message", "change-name-input-container", "new-display-name-input", "change-name-error-message", "avatar-generation-container", "generate-avatar-btn", "modal-confirm-btn", "modal-cancel-btn"];
+            const ids = ["loading-screen", "loading-title-container", "loading-bar", "loading-message", "main-screen", "game-screen", "registration-form-container", "display-name-input", "register-btn", "input-error-message", "user-id-display", "generate-user-id-btn", "user-id-error-message", "user-profile-area", "avatar-container", "avatar-image", "user-info-box", "display-name-output", "public-user-id-output", "edit-name-btn", "main-screen-buttons-layout", "start-game-btn", "mafia-fact-btn", "dev-intro-icon-btn-header", "stage-display", "question-text", "options-container", "question-explanation", "back-to-main-btn", "game-feedback", "modal-container", "modal-title", "modal-message", "change-name-input-container", "new-display-name-input", "change-name-error-message", "avatar-generation-container", "modal-confirm-btn", "modal-cancel-btn"];
             const camelCase = s => s.replace(/-./g, x => x[1].toUpperCase());
-            ids.forEach(id => window[camelCase(id)] = document.getElementById(id));
+            ids.forEach(id => elements[camelCase(id)] = document.getElementById(id));
             
             if (!navigator.onLine) {
                 showModal("عدم اتصال", "لطفاً اتصال اینترنت خود را بررسی کنید.", "باشه");
                 return;
             }
+            
+            // Start Loading Animation
+            setTimeout(() => {
+                elements.loadingScreen.classList.add('animate-in');
+                elements.loadingBar.style.width = '70%'; // Simulate progress
+                elements.loadingMessage.textContent = 'برقراری ارتباط با سرور...';
+            }, 100);
+
             setupEventListeners();
             initFirebase();
         }
 
         document.addEventListener('DOMContentLoaded', initializeGame);
-
     </script>
 </body>
 </html>
