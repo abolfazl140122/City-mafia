@@ -259,10 +259,6 @@
             }
         }
 
-
-        .shop-item { transition: all 0.3s ease; }
-        .shop-item:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 10px 30px rgba(200, 150, 50, 0.6); }
-
         /* User Profile Area Styling */
         #user-profile-area {
             position: fixed;
@@ -410,9 +406,6 @@
             #display-name-output-box .value {
                 text-shadow: 0 0 7px rgba(200, 150, 50, 0.6);
             }
-        }
-        #coins-output-box .value {
-            color: #ffd700;
         }
         #public-user-id-output-box .value {
             color: #a0a0a0;
@@ -762,10 +755,6 @@
                     <div id="display-name-output" class="value"></div>
                 </div>
             </div>
-            <div id="coins-output-box" class="user-info-item">
-                <div class="label">سکه:</div>
-                <div id="coins-output" class="value">0</div>
-            </div>
             <div id="public-user-id-output-box" class="user-info-item">
                 <div class="label">شناسه کاربری:</div>
                 <div id="public-user-id-output" class="value"></div>
@@ -819,7 +808,6 @@
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
                 <div id="top-action-buttons" class="">
-                    <button id="shop-btn" class="btn-mafia" style="order: -1;">فروشگاه</button>
                     <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button>
                     <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button>
                 </div>
@@ -832,7 +820,6 @@
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
                 <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
                 <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
-                <div>سکه: <span id="game-coins-display" class="font-bold text-[#ffd700]">0</span> 🪙</div>
             </div>
 
             <div id="question-container" class="panel panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[150px] sm:min-h-[200px] flex flex-col justify-center">
@@ -842,29 +829,13 @@
             </div>
 
             <div id="game-feedback" class="text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-8"></div>
-
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-4 sm:mt-6">
-                <button id="hint-btn" class="btn-mafia w-full sm:w-auto text-xs sm:text-sm">راهنمایی (۱۰۰ سکه 🪙)</button>
-                <button id="skip-stage-btn" class="btn-mafia w-full sm:w-auto text-xs sm:text-sm">رد کردن مرحله (۲۵۰ سکه 🪙)</button>
-            </div>
+            
             <div id="ai-thinking-indicator" class="text-center mt-3 sm:mt-4 hidden">
                 <div class="loader inline-block"></div>
                 <p class="text-sm sm:text-base">دستیار هوش مصنوعی در حال فکر کردن است...</p>
             </div>
         </div>
     </div>
-
-    <div id="shop-screen" class="screen">
-        <div class="screen-content-wrapper justify-start"> <!-- Default padding-top for shop screen -->
-            <div class="flex justify-between items-center mb-6 sm:mb-8 p-2 sm:p-3 bg-[rgba(0,0,0,0.4)] rounded-lg shadow-lg">
-                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">فروشگاه سکه</h1>
-                <button id="back-to-main-from-shop-btn" class="btn-mafia-secondary">بازگشت</button>
-            </div>
-            <div id="shop-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                </div>
-        </div>
-    </div>
-
 
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-3 sm:p-4 panel-hidden z-50">
         <div class="panel panel-visible p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
@@ -979,26 +950,24 @@
         const gameState = {
             displayName: '',
             publicUserId: '',
-            coins: 0,
             currentStage: 1,
             currentQuestionData: null,
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
-            nameChangeCount: 0,
         };
 
-        let loadingScreen, loadingMessage, mainScreen, gameScreen, shopScreen,
+        let loadingScreen, loadingMessage, mainScreen, gameScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
             publicUserIdOutput,
-            editNameBtn, coinsOutput,
+            editNameBtn,
             mainScreenButtonsLayout,
-            startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader,
-            stageDisplay, gameCoinsDisplay, questionText,
-            optionsContainer, questionExplanation, hintBtn, skipStageBtn, backToMainBtn,
-            gameFeedback, aiThinkingIndicator, backToMainFromShopBtn, shopItemsContainer,
+            startGameBtn, mafiaFactBtn, devIntroBtnHeader,
+            stageDisplay, questionText,
+            optionsContainer, questionExplanation, backToMainBtn,
+            gameFeedback, aiThinkingIndicator,
             modalContainer, modalTitle, modalContentDynamic, modalMessage,
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
@@ -1138,8 +1107,6 @@
         function updateUI() {
             if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
             if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
-            if(coinsOutput) coinsOutput.textContent = gameState.coins;
-            if(gameCoinsDisplay) gameCoinsDisplay.textContent = gameState.coins;
             if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
 
             if(avatarImage && gameState.avatarUrl) {
@@ -1237,9 +1204,7 @@
                         }
                         gameState.displayName = '';
                         gameState.publicUserId = '';
-                        gameState.coins = 0;
                         gameState.avatarUrl = '';
-                        gameState.nameChangeCount = 0;
                     }
                     isAuthReady = true;
                     updateUI();
@@ -1263,9 +1228,7 @@
                 console.log("Cannot load user data: no currentUserId or db connection.");
                 gameState.displayName = '';
                 gameState.publicUserId = '';
-                gameState.coins = 0;
                 gameState.avatarUrl = '';
-                gameState.nameChangeCount = 0;
                 return;
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
@@ -1276,26 +1239,20 @@
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
                     gameState.publicUserId = data.publicUserId || "";
-                    gameState.coins = data.coins !== undefined ? data.coins : (gameState.displayName ? 0 : 500);
                     gameState.currentStage = data.currentStage || 1;
-                    gameState.nameChangeCount = data.nameChangeCount || 0;
                     gameState.avatarUrl = data.avatarUrl || '';
                 } else {
                     console.log("No user profile found, setting default values.");
                     gameState.displayName = "";
                     gameState.publicUserId = "";
-                    gameState.coins = 500;
                     gameState.avatarUrl = '';
-                    gameState.nameChangeCount = 0;
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
                 gameState.displayName = '';
                 gameState.publicUserId = '';
-                gameState.coins = 0;
                 gameState.avatarUrl = '';
-                gameState.nameChangeCount = 0;
             }
         }
 
@@ -1306,9 +1263,7 @@
                 await setDoc(userDocRef, {
                     displayName: gameState.displayName,
                     publicUserId: gameState.publicUserId,
-                    coins: gameState.coins,
                     currentStage: gameState.currentStage,
-                    nameChangeCount: gameState.nameChangeCount,
                     avatarUrl: gameState.avatarUrl,
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
@@ -1317,18 +1272,6 @@
                 console.error("Error saving user data:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
-        }
-
-        async function updateCoins(amount, bypassModal = false) {
-            const newCoins = gameState.coins + amount;
-            if (newCoins < 0) {
-                if (!bypassModal) showModal("اعتبار ناکافی", "سکه کافی برای این عملیات ندارید.", "باشه", null, () => hideModal());
-                return false;
-            }
-            gameState.coins = newCoins;
-            updateUI();
-            await saveUserData();
-            return true;
         }
 
         // --- Gemini API Functions ---
@@ -1432,9 +1375,6 @@
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(gameFeedback) gameFeedback.textContent = "";
             
-            // --- CHANGED: Improved prompt for generating questions ---
-            // This new prompt is more specific to ensure the AI returns a valid JSON format,
-            // which should make the game questions work more reliably.
             const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن.
 پاسخ شما باید فقط و فقط یک آبجکت JSON خام باشد و هیچ چیز دیگری در پاسخ نباشد.
 از قرار دادن بک‌تیک (\`\`\`) یا کلمه "json" در ابتدای و انتهای پاسخ خودداری کن.
@@ -1467,45 +1407,6 @@
                 gameState.isLoadingNextQuestion = false;
                 gameState.isQuestionActive = true;
             }
-        }
-
-        async function generateHint() {
-            if (!gameState.currentQuestionData) return null;
-
-            const hintCost = 100;
-            if (gameState.coins < hintCost) {
-                showModal("سکه ناکافی", `برای دریافت راهنمایی ${hintCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
-                return null;
-            }
-
-            showModal(
-                "درخواست راهنمایی",
-                `آیا مایلید ${hintCost} سکه برای دریافت راهنمایی خرج کنید؟`,
-                "بله، راهنمایی بده",
-                "خیر",
-                async () => {
-                    hideModal();
-                    const coinUpdateSuccess = await updateCoins(-hintCost);
-                    if (coinUpdateSuccess) {
-                        const { question, options, correctAnswerIndex } = gameState.currentQuestionData;
-                        const correctAnswerText = options[correctAnswerIndex];
-                        const prompt = `برای سوال مافیایی زیر یک راهنمایی کوتاه و غیر مستقیم به زبان فارسی ارائه بده. راهنمایی نباید پاسخ را مستقیما لو بدهد.
-                        سوال: "${question}"
-                        گزینه ها: ${options.join(", ")}
-                        پاسح صحیح: "${correctAnswerText}"
-                        راهنمایی شما:`;
-
-                        const hintText = await callGeminiAPI(prompt);
-                        if (hintText) {
-                            showModal("راهنمایی ✨", hintText.replace(/\n/g, '<br>'), "متوجه شدم", null, () => hideModal());
-                        } else {
-                            await updateCoins(hintCost);
-                            showModal("خطا", "متاسفانه دستیار نتوانست راهنمایی ارائه دهد. سکه‌های شما بازگردانده شد.", "باشه", null, () => hideModal());
-                        }
-                    }
-                },
-                () => hideModal()
-            );
         }
 
         function displayQuestion() {
@@ -1541,9 +1442,8 @@
 
             if (selectedIndex === correctAnswerIndex) {
                 selectedOptionButton.classList.add('correct');
-                gameFeedback.textContent = "پاسخ صحیح! +۵ سکه";
+                gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
-                await updateCoins(5);
                 gameState.currentStage++;
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
@@ -1558,77 +1458,21 @@
                 سوال: "${question}"
                 پاسخ اشتباه بازیکن: "${selectedOptionText}"
                 پاسخ صحیح: "${correctAnswerText}"
-                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد. همچنین ۵ سکه از او کم کن.`;
+                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
 
                 const taunt = await callGeminiAPI(tauntPrompt);
                 if (taunt) {
-                    gameFeedback.innerHTML = `${taunt.replace(/\n/g, '<br>')} <br> (-۵ سکه)`;
+                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
                 } else {
-                    gameFeedback.textContent = "پاسخ اشتباه! -۵ سکه";
+                    gameFeedback.textContent = "پاسخ اشتباه!";
                 }
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
-                await updateCoins(-5);
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
             if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
-        }
-
-        async function skipStage() {
-            if (gameState.isLoadingNextQuestion) return;
-            const skipCost = 250;
-            if (gameState.coins < skipCost) {
-                showModal("سکه ناکافی", `برای رد کردن مرحله ${skipCost} سکه نیاز دارید.`, "باشه", null, () => hideModal());
-                return;
-            }
-
-            showModal("رد کردن مرحله", `آیا مطمئن هستید که می‌خواهید این مرحله را با ${skipCost} سکه رد کنید؟`, "بله، رد کن", "خیر",
-            async () => {
-                hideModal();
-                const coinUpdateSuccess = await updateCoins(-skipCost);
-                if (coinUpdateSuccess) {
-                    gameState.currentStage++;
-                    await saveUserData();
-                    updateUI();
-                    generateQuestion();
-                }
-            },
-            () => hideModal()
-            );
-        }
-
-        const shopItems = [
-            { id: 'coins_1000', name: '۱۰۰۰ سکه', price: '۱۰,۰۰۰ تومان', icon: '🪙', description: 'یک شروع خوب برای تازه واردها!' },
-            { id: 'coins_5000', name: '۵۵۰۰ سکه', price: '۵۰,۰۰۰ تومان', icon: '💰', description: 'بسته ویژه با ۵۰۰ سکه اضافه!' },
-            { id: 'coins_12000', name: '۱۲۰۰۰ سکه', price: '۱۰۰,۰۰۰ تومان', icon: '💎', description: 'برای حرفه‌ای‌ها، با ۲۰۰۰ سکه جایزه!' },
-            { id: 'respect_pack', name: 'بسته احترام', price: '۲۵,۰۰۰ تومان', icon: '🎩', description: '۲۵۰۰ سکه + نشان افتخار (نمایشی)' }
-        ];
-
-        function displayShopItems() {
-            if(!shopItemsContainer) return;
-            shopItemsContainer.innerHTML = '';
-            shopItems.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = `shop-item panel panel-visible p-3 sm:p-5 rounded-lg text-center flex flex-col items-center justify-between shadow-md bg-[rgba(40,40,40,0.9)]`;
-                itemDiv.innerHTML = `
-                    <div class="text-4xl sm:text-6xl mb-2 sm:mb-3">${item.icon}</div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-[#c49730] mb-1">${item.name}</h3>
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3 min-h-[30px] sm:min-h-[40px]">${item.description || ''}</p>
-                    <p class="text-base sm:text-lg font-bold text-green-300 mb-3 sm:mb-4">${item.price}</p>
-                    <button class="btn-mafia w-full buy-item-btn text-xs sm:text-sm py-1.5 sm:py-2" data-item-id="${item.id}">خرید</button>
-                `;
-                shopItemsContainer.appendChild(itemDiv);
-            });
-
-            document.querySelectorAll('.buy-item-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const itemId = e.target.dataset.itemId;
-                    const selectedItem = shopItems.find(i => i.id === itemId);
-                    showModal("خرید آیتم", `شما در حال خرید "${selectedItem.name}" به قیمت ${selectedItem.price} هستید.<br><br><strong class="text-yellow-400">توجه: این بخش در حال حاضر کاملاً نمایشی است و هیچ تراکنش مالی واقعی انجام نخواهد شد.</strong>`, "متوجه شدم", null, () => hideModal());
-                });
-            });
         }
 
         async function generateAndDisplayAvatars() {
@@ -1722,24 +1566,7 @@
                 return;
             }
 
-            const changeNameCost = gameState.nameChangeCount === 0 ? 0 : 900;
-
-            if (gameState.coins < changeNameCost) {
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = `برای تغییر نام ${changeNameCost === 0 ? ' (بار اول رایگان)' : changeNameCost + ' سکه'} نیاز دارید. سکه شما: ${gameState.coins}`;
-                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
-                return;
-            }
-
-            if (changeNameCost > 0) {
-                const coinDeducted = await updateCoins(-changeNameCost, true);
-                if (!coinDeducted) {
-                    if(changeNameErrorMessage) changeNameErrorMessage.textContent = "خطا در کسر سکه. لطفاً دوباره تلاش کنید.";
-                    return;
-                }
-            }
-
             gameState.displayName = newName;
-            gameState.nameChangeCount++;
             await saveUserData();
             updateUI();
             hideModal();
@@ -1829,24 +1656,6 @@
 
                     gameState.displayName = validatedName;
 
-                    let userHadProfileWithNameAndId = false;
-                    if(isAuthReady && currentUserId && db){
-                        const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-                        try {
-                            const docSnap = await getDoc(userDocRef);
-                            if (docSnap.exists()) {
-                                const data = docSnap.data();
-                                if (data.displayName && data.publicUserId) {
-                                     userHadProfileWithNameAndId = true;
-                                }
-                            }
-                        } catch(e) { console.error("Error checking existing profile:", e); }
-                    }
-
-                    if (!userHadProfileWithNameAndId) {
-                        gameState.coins = 500;
-                        gameState.nameChangeCount = 0;
-                    }
                     await saveUserData();
                     updateUI();
                 });
@@ -1855,19 +1664,10 @@
             if (editNameBtn) {
                 editNameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
-
-                    let modalMessageText = "";
-                    let confirmButtonText = `تغییر نام (${gameState.nameChangeCount === 0 ? "رایگان" : "900 سکه"})`;
-
-                    if (gameState.nameChangeCount === 0) {
-                        modalMessageText = "اولین تغییر نام شما رایگان است. تغییرات بعدی شامل هزینه سکه خواهد بود.";
-                        confirmButtonText = "تغییر نام (رایگان - فقط یکبار)";
-                    }
-
                     showModal(
                         "تغییر نام نمایشی",
-                        modalMessageText,
-                        confirmButtonText,
+                        "تغییر نام در این بازی رایگان است.",
+                        "تغییر نام",
                         "لغو",
                         handleChangeDisplayName,
                         hideModal,
@@ -1897,7 +1697,7 @@
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
 
-            const allActionButtons = [startGameBtn, shopBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
+            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
@@ -1934,14 +1734,6 @@
                 });
             }
 
-            if (shopBtn) {
-                shopBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    displayShopItems();
-                    if(shopScreen) showScreen(shopScreen);
-                });
-            }
-
             if (mafiaFactBtn) {
                 mafiaFactBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
@@ -1961,18 +1753,6 @@
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
-
-            if(backToMainFromShopBtn) {
-                backToMainFromShopBtn.addEventListener('click', () => {
-                    if(mainScreen) showScreen(mainScreen);
-                });
-            }
-            if(hintBtn) {
-                hintBtn.addEventListener('click', generateHint);
-            }
-            if(skipStageBtn) {
-                skipStageBtn.addEventListener('click', skipStage);
-            }
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
                     try {
@@ -1998,7 +1778,6 @@
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
-            shopScreen = document.getElementById('shop-screen');
             registrationForm = document.getElementById('registration-form');
             displayNameInput = document.getElementById('display-name-input');
             registerBtn = document.getElementById('register-btn');
@@ -2014,24 +1793,17 @@
             displayNameOutput = document.getElementById('display-name-output');
             publicUserIdOutput = document.getElementById('public-user-id-output');
             editNameBtn = document.getElementById('edit-name-btn');
-            coinsOutput = document.getElementById('coins-output');
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
-            shopBtn = document.getElementById('shop-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
             devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
             stageDisplay = document.getElementById('stage-display');
-            gameCoinsDisplay = document.getElementById('game-coins-display');
             questionText = document.getElementById('question-text');
             optionsContainer = document.getElementById('options-container');
             questionExplanation = document.getElementById('question-explanation');
-            hintBtn = document.getElementById('hint-btn');
-            skipStageBtn = document.getElementById('skip-stage-btn');
             backToMainBtn = document.getElementById('back-to-main-btn');
             gameFeedback = document.getElementById('game-feedback');
             aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
-            backToMainFromShopBtn = document.getElementById('back-to-main-from-shop-btn');
-            shopItemsContainer = document.getElementById('shop-items-container');
             modalContainer = document.getElementById('modal-container');
             modalTitle = document.getElementById('modal-title');
             modalContentDynamic = document.getElementById('modal-content-dynamic');
