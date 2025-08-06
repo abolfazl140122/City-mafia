@@ -519,15 +519,9 @@
                 font-size: 3.75rem; /* text-6xl */
             }
         }
-        
-        #header-buttons-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem; /* Space between icons */
-        }
-        
-        /* General Icon Button Style (for Dev and Announcement) */
-        .header-icon-btn {
+
+        /* Developer Intro Icon Button - Header Position */
+        #dev-intro-icon-btn-header {
             background-color: transparent;
             color: #c49730;
             border: 2px solid #c49730;
@@ -543,29 +537,28 @@
             height: 40px;
             flex-shrink: 0; /* Prevent shrinking */
         }
-        .header-icon-btn:hover {
+        #dev-intro-icon-btn-header:hover {
             background-color: rgba(196, 151, 48, 0.2);
             color: #d4a840;
             border-color: #d4a840;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
-        .header-icon-btn svg {
+        #dev-intro-icon-btn-header svg {
             width: 20px;
             height: 20px;
         }
          @media (min-width: 640px) {
-            .header-icon-btn {
+            #dev-intro-icon-btn-header {
                 width: 44px;
                 height: 44px;
                 padding: 0.6rem;
             }
-            .header-icon-btn svg {
+            #dev-intro-icon-btn-header svg {
                 width: 22px;
                 height: 22px;
             }
         }
-
 
         /* Bottom Action Buttons Layout */
         #main-screen-buttons-layout {
@@ -652,8 +645,19 @@
             display: none !important;
         }
 
-        /* Close Button General Style */
-        .close-panel-btn {
+        /* Styles for Developers Panel */
+        #developers-panel-container {
+            background-color: rgba(10, 10, 10, 0.92);
+        }
+        #developers-panel {
+            background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
+            border: 2px solid #c49730;
+            box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 15px;
+        }
+        #close-developers-panel-btn {
             position: absolute;
             top: 18px;
             right: 18px;
@@ -674,25 +678,12 @@
             box-shadow: 0 3px 7px rgba(0,0,0,0.5);
             z-index: 10;
         }
-        .close-panel-btn:hover {
+        #close-developers-panel-btn:hover {
             background-color: #d4a840;
             transform: scale(1.1) rotate(180deg);
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         }
 
-        /* Styles for Developers Panel */
-        #developers-panel-container {
-            background-color: rgba(10, 10, 10, 0.92);
-        }
-        #developers-panel {
-            background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
-            border: 2px solid #c49730;
-            box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 15px;
-        }
-        
         .developer-item {
             background-color: rgba(28, 28, 35, 0.92);
             padding: 1.2rem 1.5rem;
@@ -747,29 +738,6 @@
             line-height: 1.65;
         }
 
-        /* Styles for Announcement Panel (NEW) */
-        #announcement-panel-container {
-            background-color: rgba(10, 10, 10, 0.85); /* Slightly less opaque */
-        }
-        #announcement-panel {
-             /* Using the same .panel style is fine, but can add specifics */
-            max-width: 480px; /* A good size for announcements */
-        }
-        #announcement-title {
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
-        #announcement-content {
-            white-space: pre-wrap; /* To respect \n for new lines */
-            max-height: 50vh;
-            overflow-y: auto;
-            text-align: center;
-            padding: 0 10px;
-        }
-        #announcement-confirm-btn {
-            font-size: 1.1rem;
-            padding: 12px 30px;
-        }
-
     </style>
 </head>
 <body>
@@ -806,25 +774,18 @@
         <div class="screen-content-wrapper"> <!-- Increased padding-top here -->
             <div>
                 <div id="main-screen-header">
-                    <div id="header-buttons-group">
-                        <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </button>
-                        <button id="announcement-icon-btn-header" class="header-icon-btn hidden" title="مشاهده اطلاعیه">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                            </svg>
-                        </button>
-                    </div>
+                    <!-- Developer Intro Icon Button - Moved to the left (visual right in RTL) -->
+                    <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </button>
                     <h1 id="main-title">شهر مافیا</h1>
-                     <!-- Spacer on the right (visual left in RTL) to balance the icon buttons -->
-                    <div id="header-spacer" style="flex-shrink: 0; transition: width 0.3s ease;"></div>
+                     <!-- Spacer on the right (visual left in RTL) to balance the icon button -->
+                    <div style="width: 40px; flex-shrink: 0;"></div>
                 </div>
 
                 <div id="registration-form" class="mb-4 panel panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
@@ -906,7 +867,7 @@
     <!-- Developers Panel -->
     <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[51]">
         <div id="developers-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
-            <button id="close-developers-panel-btn" class="close-panel-btn">×</button>
+            <button id="close-developers-panel-btn">×</button>
             <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">سازندگان شهر مافیا</h3>
             <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y-auto pr-2 sm:pr-3 pl-1">
                 <div class="developer-item">
@@ -960,44 +921,11 @@
             </div>
         </div>
     </div>
-    
-    <!-- Announcement Panel (NEW) -->
-    <div id="announcement-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[52]">
-        <div id="announcement-panel" class="panel p-5 sm:p-7 rounded-xl w-full relative transform transition-all duration-500 ease-out">
-            <button id="close-announcement-btn" class="close-panel-btn">×</button>
-            <h3 id="announcement-title" class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center text-[#c49730]"></h3>
-            <div id="announcement-content" class="text-base sm:text-lg text-gray-200 leading-relaxed mb-6"></div>
-            <div class="text-center">
-                 <button id="announcement-confirm-btn" class="btn-mafia"></button>
-            </div>
-        </div>
-    </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // ================== ANNOUNCEMENT CONFIGURATION ==================
-        // **مهم:** برای نمایش یک اعلامیه جدید، مقادیر زیر را پر کنید.
-        const ANNOUNCEMENT_CONFIG = {
-            // یک شناسه منحصر به فرد برای این اعلامیه. هر بار که متن را تغییر می‌دهید،
-            // این شناسه را هم عوض کنید (مثلاً: "v1.1-update").
-            // این کار باعث می‌شود اعلامیه جدید به کاربرانی که قبلی را دیده‌اند هم نمایش داده شود.
-            id: "v1.0-initial-release",
-        
-            // عنوان اعلامیه
-            title: "به شهر مافیا خوش آمدید!",
-        
-            // متن اصلی اعلامیه. می‌توانید از \n برای رفتن به خط بعد استفاده کنید.
-            // برای غیرفعال کردن، این مقدار را برابر با "" (رشته خالی) قرار دهید.
-            text: "این یک نسخه آزمایشی از بازی شهر مافیا است.\nهدف شما پاسخ به سوالات مربوط به دنیای مافیا و افزایش مرحله خود می‌باشد.\n\nاز بازی لذت ببرید!",
-        
-            // متن دکمه تأیید
-            buttonText: "فهمیدم، بزن بریم!",
-        };
-        // ===============================================================
 
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
@@ -1036,7 +964,7 @@
             publicUserIdOutput,
             editNameBtn,
             mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, devIntroBtnHeader, headerSpacer,
+            startGameBtn, mafiaFactBtn, devIntroBtnHeader,
             stageDisplay, questionText,
             optionsContainer, questionExplanation, backToMainBtn,
             gameFeedback, aiThinkingIndicator,
@@ -1044,38 +972,11 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn,
-            announcementPanelContainer, announcementTitle, announcementContent, announcementConfirmBtn, 
-            closeAnnouncementBtn, announcementIconBtnHeader;
+            developersPanelContainer, closeDevelopersPanelBtn;
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
-        
-        function updateProfileAreaAndSpacer() {
-            if (!userProfileArea) return;
-            const isAnyPanelVisible = 
-                (modalContainer && modalContainer.classList.contains('panel-visible')) ||
-                (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible')) ||
-                (announcementPanelContainer && announcementPanelContainer.classList.contains('panel-visible'));
-
-            if (isAnyPanelVisible && mainScreen && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            } else if (mainScreen && mainScreen.classList.contains('active')) {
-                const hasRegistered = gameState.displayName && gameState.publicUserId;
-                if(hasRegistered) {
-                    userProfileArea.classList.remove('profile-area-hidden');
-                }
-            }
-            
-            // Adjust header spacer
-            if(headerSpacer && announcementIconBtnHeader) {
-                const baseWidth = 44; // width of one icon
-                const gap = 8; // from `gap-2` -> 0.5rem
-                const visibleIcons = document.querySelectorAll('#header-buttons-group .header-icon-btn:not(.hidden)').length;
-                headerSpacer.style.width = `${visibleIcons * baseWidth + (visibleIcons > 1 ? gap : 0)}px`;
-            }
-        }
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -1101,6 +1002,10 @@
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
+
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
 
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
@@ -1137,7 +1042,6 @@
             }
             modalContainer.classList.remove('panel-hidden');
             modalContainer.classList.add('panel-visible');
-            updateProfileAreaAndSpacer();
         }
 
         function hideModal() {
@@ -1151,7 +1055,10 @@
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
-            updateProfileAreaAndSpacer();
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
         }
 
         function handleModalConfirm() {
@@ -1182,58 +1089,21 @@
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.remove('panel-hidden');
             developersPanelContainer.classList.add('panel-visible');
-            updateProfileAreaAndSpacer();
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
         }
 
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
             developersPanelContainer.classList.add('panel-hidden');
             developersPanelContainer.classList.remove('panel-visible');
-            updateProfileAreaAndSpacer();
-        }
-        
-        // --- Announcement Functions (NEW) ---
-        function showAnnouncement() {
-            if (!announcementPanelContainer || !ANNOUNCEMENT_CONFIG.text) return;
-            
-            announcementTitle.textContent = ANNOUNCEMENT_CONFIG.title;
-            announcementContent.textContent = ANNOUNCEMENT_CONFIG.text;
-            announcementConfirmBtn.textContent = ANNOUNCEMENT_CONFIG.buttonText;
-
-            announcementPanelContainer.classList.remove('panel-hidden');
-            announcementPanelContainer.classList.add('panel-visible');
-            updateProfileAreaAndSpacer();
-        }
-
-        function hideAnnouncement() {
-            if (!announcementPanelContainer) return;
-            announcementPanelContainer.classList.add('panel-hidden');
-            announcementPanelContainer.classList.remove('panel-visible');
-            updateProfileAreaAndSpacer();
-        }
-
-        function markAnnouncementAsSeen() {
-            localStorage.setItem('mafia_seen_announcement_id', ANNOUNCEMENT_CONFIG.id);
-            hideAnnouncement();
-        }
-
-        function handleAnnouncement() {
-            if (!announcementIconBtnHeader || !ANNOUNCEMENT_CONFIG.text || !ANNOUNCEMENT_CONFIG.id) {
-                if (announcementIconBtnHeader) announcementIconBtnHeader.classList.add('hidden');
-                updateProfileAreaAndSpacer();
-                return;
-            }
-
-            announcementIconBtnHeader.classList.remove('hidden');
-            updateProfileAreaAndSpacer();
-            
-            const seenId = localStorage.getItem('mafia_seen_announcement_id');
-            if (seenId !== ANNOUNCEMENT_CONFIG.id) {
-                // Use a short timeout to ensure the main screen UI is settled
-                setTimeout(showAnnouncement, 1000);
+             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
+                userProfileArea.classList.remove('profile-area-hidden');
             }
         }
-        
+
         function updateUI() {
             if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
             if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
@@ -1284,7 +1154,10 @@
             }
 
             if(userProfileArea){
-                if (showUserInfoAndAvatar) {
+                const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) ||
+                                        (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
+                if (showUserInfoAndAvatar && !isAnyPanelVisible) {
+                    userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
                     if(avatarContainer){
                         if(window.innerWidth >= 768) {
@@ -1294,13 +1167,15 @@
                         }
                     }
                     if(userInfoBox) userInfoBox.classList.remove('hidden');
-                } else {
+
+                } else if (!showUserInfoAndAvatar) {
                     userProfileArea.classList.add('hidden');
                     if(avatarContainer) avatarContainer.classList.add('hidden');
                     if(userInfoBox) userInfoBox.classList.add('hidden');
+                } else if (isAnyPanelVisible) {
+                    userProfileArea.classList.add('profile-area-hidden');
                 }
             }
-            updateProfileAreaAndSpacer(); // Central call to manage visibility
         }
 
         async function initFirebase() {
@@ -1338,7 +1213,6 @@
                         if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
                             if(mainScreen) showScreen(mainScreen);
-                            handleAnnouncement(); // Show announcement after transitioning to main screen
                         }, 500);
                     }
                 });
@@ -1823,7 +1697,7 @@
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
 
-            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader, announcementIconBtnHeader].filter(btn => btn !== null);
+            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
@@ -1874,32 +1748,10 @@
                     }
                 });
             }
+
             if (closeDevelopersPanelBtn) {
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
-            
-            // Announcement Listeners (NEW)
-            if (announcementIconBtnHeader) {
-                announcementIconBtnHeader.addEventListener('click', () => {
-                     if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                        showAnnouncement();
-                    }
-                });
-            }
-            if (closeAnnouncementBtn) {
-                closeAnnouncementBtn.addEventListener('click', markAnnouncementAsSeen);
-            }
-            if (announcementConfirmBtn) {
-                announcementConfirmBtn.addEventListener('click', markAnnouncementAsSeen);
-            }
-            if(announcementPanelContainer) {
-                announcementPanelContainer.addEventListener('click', (e) => {
-                    if (e.target === announcementPanelContainer) {
-                        markAnnouncementAsSeen();
-                    }
-                });
-            }
-
 
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
@@ -1945,7 +1797,6 @@
             startGameBtn = document.getElementById('start-game-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
             devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
-            headerSpacer = document.getElementById('header-spacer');
             stageDisplay = document.getElementById('stage-display');
             questionText = document.getElementById('question-text');
             optionsContainer = document.getElementById('options-container');
@@ -1969,14 +1820,6 @@
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
-
-            // New Announcement elements
-            announcementPanelContainer = document.getElementById('announcement-panel-container');
-            announcementTitle = document.getElementById('announcement-title');
-            announcementContent = document.getElementById('announcement-content');
-            announcementConfirmBtn = document.getElementById('announcement-confirm-btn');
-            closeAnnouncementBtn = document.getElementById('close-announcement-btn');
-            announcementIconBtnHeader = document.getElementById('announcement-icon-btn-header');
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
