@@ -738,6 +738,54 @@
             line-height: 1.65;
         }
 
+        /* === TIMER STYLES - START === */
+        #timer-display-container {
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        #timer-text-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 640px) {
+             #timer-text-wrapper {
+                font-size: 1rem;
+            }
+        }
+        #timer-value-display {
+            font-weight: bold;
+            color: #c49730;
+            font-size: 1.2em;
+            width: 2ch;
+            text-align: center;
+        }
+        #timer-progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid #555;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #timer-progress-bar {
+            height: 100%;
+            width: 100%;
+            background-color: #c49730;
+            border-radius: 3px;
+            transition: width 1s linear, background-color 0.5s ease;
+        }
+        #timer-progress-bar.low-time {
+            background-color: #dc3545;
+        }
+        /* === TIMER STYLES - END === */
+
+
     </style>
 </head>
 <body>
@@ -820,6 +868,17 @@
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
                 <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
                 <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
+                <!-- === TIMER ELEMENT - START === -->
+                <div id="timer-display-container" class="hidden">
+                    <div id="timer-text-wrapper">
+                        <span>زمان باقی‌مانده:</span>
+                        <span id="timer-value-display">30</span>
+                    </div>
+                    <div id="timer-progress-bar-container">
+                        <div id="timer-progress-bar"></div>
+                    </div>
+                </div>
+                <!-- === TIMER ELEMENT - END === -->
             </div>
 
             <div id="question-container" class="panel panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[150px] sm:min-h-[200px] flex flex-col justify-center">
@@ -947,6 +1006,8 @@
         let currentUserId = null;
         let isAuthReady = false;
 
+        const TIME_PER_QUESTION = 30; // 30 ثانیه برای هر سوال
+
         const gameState = {
             displayName: '',
             publicUserId: '',
@@ -955,7 +1016,8 @@
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
-            seenQuestionHashes: new Set(), // <<--- NEW: To store hashes of seen questions
+            seenQuestionHashes: new Set(),
+            timerIntervalId: null, // <<--- NEW: To hold the timer's interval ID
         };
 
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
@@ -973,13 +1035,13 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn;
+            developersPanelContainer, closeDevelopersPanelBtn,
+            timerDisplayContainer, timerValueDisplay, timerProgressBar; // <<--- NEW: Timer UI elements
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
 
-        // <<--- NEW: Simple non-cryptographic hash function
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -1256,7 +1318,6 @@
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
-                    // <<--- MODIFIED: Load seen questions and convert to a Set for efficient lookup
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
                     console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
@@ -1285,7 +1346,6 @@
                     publicUserId: gameState.publicUserId,
                     currentStage: gameState.currentStage,
                     avatarUrl: gameState.avatarUrl,
-                    // <<--- MODIFIED: Convert Set to Array for Firestore storage
                     seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
@@ -1298,7 +1358,7 @@
 
         // --- Gemini API Functions ---
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash"; // Using a slightly more advanced model for better quality
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
@@ -1385,7 +1445,71 @@
             }
         }
 
-        // --- Game Logic Functions ---
+        // --- Game Logic & Timer Functions ---
+
+        function stopTimer() {
+            if (gameState.timerIntervalId) {
+                clearInterval(gameState.timerIntervalId);
+                gameState.timerIntervalId = null;
+            }
+        }
+
+        function startTimer() {
+            stopTimer(); // Ensure no other timers are running
+
+            if (!timerDisplayContainer || !timerValueDisplay || !timerProgressBar) return;
+            timerDisplayContainer.classList.remove('hidden');
+
+            let timeLeft = TIME_PER_QUESTION;
+
+            const updateTimerUI = () => {
+                timerValueDisplay.textContent = timeLeft;
+                const percentage = (timeLeft / TIME_PER_QUESTION) * 100;
+                timerProgressBar.style.width = `${percentage}%`;
+
+                if (timeLeft <= 5) {
+                    timerProgressBar.classList.add('low-time');
+                } else {
+                    timerProgressBar.classList.remove('low-time');
+                }
+            };
+
+            updateTimerUI(); // Initial display
+
+            gameState.timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                if (timeLeft <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function handleTimeUp() {
+            stopTimer();
+            if (!gameState.isQuestionActive || !optionsContainer || !gameFeedback) return;
+            gameState.isQuestionActive = false;
+
+            const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
+
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+
+            gameFeedback.textContent = "زمان تمام شد!";
+            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-red-400';
+
+            const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+            if (correctButton) correctButton.classList.add('correct');
+            
+            if (explanation && questionExplanation) {
+                questionExplanation.textContent = `توضیح: ${explanation}`;
+                questionExplanation.classList.remove('hidden');
+            }
+            
+            // Go to the next question after a delay
+            setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
+        }
+
 
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
@@ -1395,12 +1519,14 @@
             if (questionExplanation) questionExplanation.classList.add('hidden');
             if (gameFeedback) gameFeedback.textContent = "";
             
+            stopTimer(); // Stop any previous timers
+            if (timerDisplayContainer) timerDisplayContainer.classList.add('hidden');
+
             let attempts = 0;
             const maxAttempts = 3;
             let questionData = null;
 
             while (attempts < maxAttempts) {
-                // <<--- NEW: Determine difficulty based on stage
                 let difficulty = "آسان";
                 if (gameState.currentStage > 20) {
                     difficulty = "بسیار سخت";
@@ -1410,7 +1536,6 @@
                     difficulty = "متوسط";
                 }
 
-                // <<--- NEW: Professional and enhanced prompt
                 const prompt = `
                 شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
                 
@@ -1443,14 +1568,14 @@
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
-                        break; // Found a new, unique question
+                        break; 
                     } else {
                         console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
                         attempts++;
                     }
                 } else {
                     console.error("Invalid question data structure received from AI:", data);
-                    attempts++; // Count as a failed attempt
+                    attempts++;
                 }
             }
 
@@ -1487,9 +1612,12 @@
             if(questionExplanation) questionExplanation.textContent = "";
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
+            
+            startTimer(); // <<--- START THE TIMER
         }
 
         async function handleAnswerSelection(event) {
+            stopTimer(); // <<--- STOP THE TIMER
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
             gameState.isQuestionActive = false;
 
@@ -1506,7 +1634,6 @@
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
                 
-                // <<--- MODIFIED: Add question hash to seen list and increment stage
                 const questionHash = simpleHash(question);
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
@@ -1533,8 +1660,6 @@
                     gameFeedback.textContent = "پاسخ اشتباه!";
                 }
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
-                // Note: We do NOT add the hash to the seen list on wrong answers, so they might see it again to learn.
-                // Or we could add it to prevent farming wrong answers, but for now, let's keep it this way.
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
             if (explanation && questionExplanation) {
@@ -1820,6 +1945,7 @@
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
                     try {
+                        stopTimer(); // <<--- STOP THE TIMER ON GOING BACK
                         await saveUserData();
                         gameState.currentQuestionData = null;
                         if(mainScreen) {
@@ -1885,7 +2011,15 @@
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
+            // <<--- NEW: Get timer elements
+            timerDisplayContainer = document.getElementById('timer-display-container');
+            timerValueDisplay = document.getElementById('timer-value-display');
+            timerProgressBar = document.getElementById('timer-progress-bar');
+
+
             if(userProfileArea) userProfileArea.classList.add('hidden');
+            if(timerDisplayContainer) timerDisplayContainer.classList.add('hidden'); // <<--- Hide timer initially
+
 
             if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال به اینترنت...";
             if (!navigator.onLine) {
