@@ -955,6 +955,7 @@
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
+            seenQuestionHashes: new Set(), // <<--- NEW: To store hashes of seen questions
         };
 
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
@@ -977,6 +978,18 @@
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
+
+        // <<--- NEW: Simple non-cryptographic hash function
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return `h${Math.abs(hash)}`;
+        }
+
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -1205,6 +1218,7 @@
                         gameState.displayName = '';
                         gameState.publicUserId = '';
                         gameState.avatarUrl = '';
+                        gameState.seenQuestionHashes.clear();
                     }
                     isAuthReady = true;
                     updateUI();
@@ -1229,6 +1243,7 @@
                 gameState.displayName = '';
                 gameState.publicUserId = '';
                 gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
                 return;
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
@@ -1241,11 +1256,15 @@
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
+                    // <<--- MODIFIED: Load seen questions and convert to a Set for efficient lookup
+                    gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
+                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
                     console.log("No user profile found, setting default values.");
                     gameState.displayName = "";
                     gameState.publicUserId = "";
                     gameState.avatarUrl = '';
+                    gameState.seenQuestionHashes = new Set();
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
@@ -1253,6 +1272,7 @@
                 gameState.displayName = '';
                 gameState.publicUserId = '';
                 gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
             }
         }
 
@@ -1265,6 +1285,8 @@
                     publicUserId: gameState.publicUserId,
                     currentStage: gameState.currentStage,
                     avatarUrl: gameState.avatarUrl,
+                    // <<--- MODIFIED: Convert Set to Array for Firestore storage
+                    seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
                  console.log("User data saved successfully.");
@@ -1275,9 +1297,8 @@
         }
 
         // --- Gemini API Functions ---
-        // این کلید API برای تمام بخش‌های هوش مصنوعی بازی (دانستنی‌ها، سوالات، راهنمایی و...) استفاده می‌شود
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-2.0-flash";
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash"; // Using a slightly more advanced model for better quality
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
@@ -1313,7 +1334,6 @@
                     const text = result.candidates[0].content.parts[0].text;
                     return isJsonOutput ? JSON.parse(text) : text;
                 } else {
-                    // Check for safety ratings or other reasons for no content
                     if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
                          throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
                     }
@@ -1370,43 +1390,84 @@
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
-            if(questionText) questionText.textContent = "در حال تولید سوال جدید...";
-            if(optionsContainer) optionsContainer.innerHTML = "";
-            if(questionExplanation) questionExplanation.classList.add('hidden');
-            if(gameFeedback) gameFeedback.textContent = "";
+            if (questionText) questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
+            if (optionsContainer) optionsContainer.innerHTML = "";
+            if (questionExplanation) questionExplanation.classList.add('hidden');
+            if (gameFeedback) gameFeedback.textContent = "";
             
-            const prompt = `یک سوال چند گزینه ای با موضوع مافیا (تاریخچه، فیلم ها، اصطلاحات، یا سناریوهای مرتبط با مافیا) به زبان فارسی ایجاد کن.
-پاسخ شما باید فقط و فقط یک آبجکت JSON خام باشد و هیچ چیز دیگری در پاسخ نباشد.
-از قرار دادن بک‌تیک (\`\`\`) یا کلمه "json" در ابتدای و انتهای پاسخ خودداری کن.
-ساختار JSON باید دقیقا به این صورت باشد:
-{
-  "question": "متن سوال به فارسی",
-  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
-  "correctAnswerIndex": 0,
-  "explanation": "توضیح مختصر در مورد پاسخ صحیح به فارسی"
-}
-مقادیر باید رشته (string) معتبر باشند. correctAnswerIndex باید یک عدد بین 0 تا 3 باشد.`;
+            let attempts = 0;
+            const maxAttempts = 3;
+            let questionData = null;
 
-            try {
+            while (attempts < maxAttempts) {
+                // <<--- NEW: Determine difficulty based on stage
+                let difficulty = "آسان";
+                if (gameState.currentStage > 20) {
+                    difficulty = "بسیار سخت";
+                } else if (gameState.currentStage > 10) {
+                    difficulty = "سخت";
+                } else if (gameState.currentStage > 5) {
+                    difficulty = "متوسط";
+                }
+
+                // <<--- NEW: Professional and enhanced prompt
+                const prompt = `
+                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
+                
+                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                
+                موضوعات پیشنهادی (برای تنوع):
+                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
+                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا" (مانند دکتر لکتر، روانپزشک، مذاکره‌کننده، ناتاشا).
+                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
+                
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده و سوالی طرح کن که دانش کاربر را به چالش بکشد.
+                
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
+                ساختار JSON باید دقیقا به این صورت باشد:
+                {
+                  "question": "متن سوال به فارسی",
+                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
+                  "correctAnswerIndex": 0,
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
+                }
+                `;
+
                 const data = await callGeminiAPI(prompt, true);
+
                 if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
-                    gameState.currentQuestionData = data;
-                    displayQuestion();
+                    const questionHash = simpleHash(data.question);
+                    if (!gameState.seenQuestionHashes.has(questionHash)) {
+                        questionData = data;
+                        break; // Found a new, unique question
+                    } else {
+                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
+                        attempts++;
+                    }
                 } else {
                     console.error("Invalid question data structure received from AI:", data);
-                    throw new Error("ساختار سوال دریافت شده از AI معتبر نیست.");
+                    attempts++; // Count as a failed attempt
                 }
-            } catch (error) {
-                console.error("Error generating question:", error);
-                if(questionText) questionText.textContent = "خطا در بارگذاری سوال.";
-                showModal("خطا در سوال", `مشکلی در تولید سوال جدید پیش آمد. (${error.message}) آیا میخواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
-                    () => { hideModal(); generateQuestion(); },
-                    () => { hideModal(); if(mainScreen) showScreen(mainScreen); }
-                );
-            } finally {
-                gameState.isLoadingNextQuestion = false;
-                gameState.isQuestionActive = true;
             }
+
+            if (questionData) {
+                gameState.currentQuestionData = questionData;
+                displayQuestion();
+            } else {
+                console.error("Failed to generate a unique question after multiple attempts.");
+                if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
+                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                    () => { hideModal(); generateQuestion(); },
+                    () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
+                );
+            }
+            
+            gameState.isLoadingNextQuestion = false;
+            gameState.isQuestionActive = true;
         }
 
         function displayQuestion() {
@@ -1444,7 +1505,12 @@
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
+                
+                // <<--- MODIFIED: Add question hash to seen list and increment stage
+                const questionHash = simpleHash(question);
+                gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
+                
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
@@ -1467,6 +1533,8 @@
                     gameFeedback.textContent = "پاسخ اشتباه!";
                 }
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
+                // Note: We do NOT add the hash to the seen list on wrong answers, so they might see it again to learn.
+                // Or we could add it to prevent farming wrong answers, but for now, let's keep it this way.
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
             if (explanation && questionExplanation) {
@@ -1724,11 +1792,7 @@
                         () => {
                             hideModal();
                             if(gameScreen) showScreen(gameScreen);
-                            if (!gameState.currentQuestionData || gameState.currentQuestionData.stage !== gameState.currentStage) {
-                                generateQuestion();
-                            } else {
-                                displayQuestion();
-                            }
+                            generateQuestion();
                         }
                     );
                 });
