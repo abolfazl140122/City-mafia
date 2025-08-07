@@ -163,6 +163,13 @@
         .option-btn.correct { background-color: #28a745 !important; border-color: #1e7e34 !important; color: white !important; }
         .option-btn.incorrect { background-color: #dc3545 !important; border-color: #b02a37 !important; color: white !important; }
         .option-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .option-btn.fifty-fifty-removed {
+            opacity: 0.3 !important;
+            background-color: #2a2a2a !important;
+            border-color: #444 !important;
+            pointer-events: none;
+        }
+
 
         .loader {
             border: 8px solid #444;
@@ -370,6 +377,12 @@
             .user-info-item .value {
                 font-size: 1em;
             }
+        }
+
+        /* NEW: Rank display styles */
+        #rank-output-box .value {
+            color: #efbe5a;
+            text-shadow: 0 0 6px rgba(239, 190, 90, 0.6);
         }
 
         #display-name-output-container {
@@ -737,6 +750,63 @@
             color: #b8b8b8;
             line-height: 1.65;
         }
+        
+        /* NEW: Lifeline/Ability Styles */
+        #lifeline-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            padding: 8px;
+            background-color: rgba(10, 10, 10, 0.5);
+            border-radius: 12px;
+            border: 1px solid #c49730;
+        }
+
+        .lifeline-btn {
+            background-color: #4a4a4a;
+            color: #e0e0e0;
+            border: 2px solid #333333;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lifeline-btn:hover:not(:disabled) {
+            background-color: #5a5a5a;
+            color: #c49730;
+            transform: scale(1.05) translateY(-1px);
+        }
+        .lifeline-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .lifeline-icon {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .lifeline-count {
+            background-color: #c49730;
+            color: #1a1a1a;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .lifeline-btn:disabled .lifeline-count {
+            background-color: #7e6a3b;
+            color: #524425;
+        }
 
     </style>
 </head>
@@ -754,6 +824,11 @@
                     <span id="edit-name-btn" title="تغییر نام">✏️</span>
                     <div id="display-name-output" class="value"></div>
                 </div>
+            </div>
+            <!-- NEW: Rank Display -->
+            <div id="rank-output-box" class="user-info-item">
+                <div class="label">رتبه:</div>
+                <div id="rank-output" class="value">نامشخص</div>
             </div>
             <div id="public-user-id-output-box" class="user-info-item">
                 <div class="label">شناسه کاربری:</div>
@@ -820,6 +895,22 @@
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
                 <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
                 <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
+            </div>
+            
+            <!-- NEW: Lifeline/Ability Container -->
+            <div id="lifeline-container">
+                <button id="skip-lifeline-btn" class="lifeline-btn" title="رد کردن سوال">
+                    <span class="lifeline-icon">⏩</span>
+                    <span id="skip-lifeline-count" class="lifeline-count">0</span>
+                </button>
+                <button id="fifty-fifty-lifeline-btn" class="lifeline-btn" title="حذف دو گزینه">
+                    <span class="lifeline-icon">📊</span>
+                    <span id="fifty-fifty-lifeline-count" class="lifeline-count">0</span>
+                </button>
+                <button id="hint-lifeline-btn" class="lifeline-btn" title="راهنمایی از دان">
+                    <span class="lifeline-icon">💡</span>
+                    <span id="hint-lifeline-count" class="lifeline-count">0</span>
+                </button>
             </div>
 
             <div id="question-container" class="panel panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[150px] sm:min-h-[200px] flex flex-col justify-center">
@@ -951,18 +1042,25 @@
             displayName: '',
             publicUserId: '',
             currentStage: 1,
+            rank: 'نامشخص', // NEW: Player Rank
+            lifelines: { // NEW: Player abilities/lifelines
+                skip: 0,
+                fiftyFifty: 0,
+                hint: 0
+            },
             currentQuestionData: null,
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
-            seenQuestionHashes: new Set(), // <<--- NEW: To store hashes of seen questions
+            seenQuestionHashes: new Set(),
         };
 
+        // DOM Elements
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
-            publicUserIdOutput,
+            publicUserIdOutput, rankOutput, // NEW: rankOutput
             editNameBtn,
             mainScreenButtonsLayout,
             startGameBtn, mafiaFactBtn, devIntroBtnHeader,
@@ -973,19 +1071,23 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn;
+            developersPanelContainer, closeDevelopersPanelBtn,
+            // NEW: Lifeline buttons and counts
+            lifelineContainer, skipLifelineBtn, skipLifelineCount,
+            fiftyFiftyLifelineBtn, fiftyFiftyLifelineCount,
+            hintLifelineBtn, hintLifelineCount;
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
+        let fiftyFiftyUsedOnCurrentQuestion = false;
 
-        // <<--- NEW: Simple non-cryptographic hash function
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash |= 0; // Convert to 32bit integer
+                hash |= 0;
             }
             return `h${Math.abs(hash)}`;
         }
@@ -1116,11 +1218,37 @@
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
+        
+        // NEW: Function to determine player rank
+        function updatePlayerRank() {
+            const stage = gameState.currentStage;
+            if (stage >= 100) gameState.rank = "پدرخوانده";
+            else if (stage >= 75) gameState.rank = "دان (Don)";
+            else if (stage >= 50) gameState.rank = "مشاور (Consigliere)";
+            else if (stage >= 30) gameState.rank = "کاپو (Capo)";
+            else if (stage >= 15) gameState.rank = "عضو خانواده (Made Man)";
+            else if (stage >= 5) gameState.rank = "همدست (Associate)";
+            else gameState.rank = "سرباز صفر (Rookie)";
+        }
+
 
         function updateUI() {
             if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
             if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
             if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
+            if(rankOutput) rankOutput.textContent = gameState.rank; // NEW: Update Rank
+
+            // NEW: Update lifeline counts
+            if(skipLifelineCount) skipLifelineCount.textContent = gameState.lifelines.skip;
+            if(fiftyFiftyLifelineCount) fiftyFiftyLifelineCount.textContent = gameState.lifelines.fiftyFifty;
+            if(hintLifelineCount) hintLifelineCount.textContent = gameState.lifelines.hint;
+            
+            // NEW: Disable/enable lifeline buttons based on count and game state
+            const areLifelinesDisabled = !gameState.isQuestionActive || gameState.isLoadingNextQuestion;
+            if(skipLifelineBtn) skipLifelineBtn.disabled = areLifelinesDisabled || gameState.lifelines.skip <= 0;
+            if(fiftyFiftyLifelineBtn) fiftyFiftyLifelineBtn.disabled = areLifelinesDisabled || gameState.lifelines.fiftyFifty <= 0 || fiftyFiftyUsedOnCurrentQuestion;
+            if(hintLifelineBtn) hintLifelineBtn.disabled = areLifelinesDisabled || gameState.lifelines.hint <= 0;
+
 
             if(avatarImage && gameState.avatarUrl) {
                 avatarImage.src = gameState.avatarUrl;
@@ -1219,8 +1347,11 @@
                         gameState.publicUserId = '';
                         gameState.avatarUrl = '';
                         gameState.seenQuestionHashes.clear();
+                        // NEW: Reset lifelines on new anonymous user
+                        gameState.lifelines = { skip: 1, fiftyFifty: 1, hint: 1 };
                     }
                     isAuthReady = true;
+                    updatePlayerRank(); // Update rank based on loaded/default stage
                     updateUI();
 
                     if (loadingScreen && loadingScreen.classList.contains('active')) {
@@ -1240,10 +1371,6 @@
         async function loadUserData() {
             if (!currentUserId || !db) {
                 console.log("Cannot load user data: no currentUserId or db connection.");
-                gameState.displayName = '';
-                gameState.publicUserId = '';
-                gameState.avatarUrl = '';
-                gameState.seenQuestionHashes = new Set();
                 return;
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
@@ -1256,23 +1383,23 @@
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
-                    // <<--- MODIFIED: Load seen questions and convert to a Set for efficient lookup
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
-                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
+                    // NEW: Load lifelines, with default values if not present
+                    gameState.lifelines = data.lifelines || { skip: 1, fiftyFifty: 1, hint: 1 };
+                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions and lifelines.`);
                 } else {
                     console.log("No user profile found, setting default values.");
+                    // NEW: Set initial lifelines for new users
+                    gameState.lifelines = { skip: 1, fiftyFifty: 1, hint: 1 };
                     gameState.displayName = "";
                     gameState.publicUserId = "";
                     gameState.avatarUrl = '';
                     gameState.seenQuestionHashes = new Set();
                 }
+                updatePlayerRank(); // Ensure rank is calculated after loading data
             } catch (error) {
                 console.error("Error loading user data:", error);
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-                gameState.displayName = '';
-                gameState.publicUserId = '';
-                gameState.avatarUrl = '';
-                gameState.seenQuestionHashes = new Set();
             }
         }
 
@@ -1285,7 +1412,7 @@
                     publicUserId: gameState.publicUserId,
                     currentStage: gameState.currentStage,
                     avatarUrl: gameState.avatarUrl,
-                    // <<--- MODIFIED: Convert Set to Array for Firestore storage
+                    lifelines: gameState.lifelines, // NEW: Save lifelines
                     seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
@@ -1298,7 +1425,7 @@
 
         // --- Gemini API Functions ---
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash"; // Using a slightly more advanced model for better quality
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
@@ -1390,45 +1517,43 @@
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
+            fiftyFiftyUsedOnCurrentQuestion = false; // Reset 50/50 status for new question
             if (questionText) questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
             if (optionsContainer) optionsContainer.innerHTML = "";
             if (questionExplanation) questionExplanation.classList.add('hidden');
             if (gameFeedback) gameFeedback.textContent = "";
+            updateUI();
             
             let attempts = 0;
             const maxAttempts = 3;
             let questionData = null;
+            const isBossStage = gameState.currentStage % 10 === 0 && gameState.currentStage > 0;
 
             while (attempts < maxAttempts) {
-                // <<--- NEW: Determine difficulty based on stage
                 let difficulty = "آسان";
-                if (gameState.currentStage > 20) {
-                    difficulty = "بسیار سخت";
-                } else if (gameState.currentStage > 10) {
-                    difficulty = "سخت";
-                } else if (gameState.currentStage > 5) {
-                    difficulty = "متوسط";
-                }
+                if (gameState.currentStage > 50) difficulty = "بسیار سخت (در حد پدرخوانده)";
+                else if (gameState.currentStage > 25) difficulty = "سخت (در حد کاپو)";
+                else if (gameState.currentStage > 10) difficulty = "متوسط (در حد عضو خانواده)";
+                
+                let bossPromptPart = isBossStage ? "این یک مرحله ویژه (Boss Stage) است، پس سوال باید به طور خاص چالش‌برانگیز و عمیق باشد. موفقیت در این مرحله برای بازیکن اهمیت زیادی دارد." : "";
 
-                // <<--- NEW: Professional and enhanced prompt
                 const prompt = `
-                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
-                
+                شما یک طراح بازی حرفه‌ای و خلاق برای یک بازی مافیایی هستید.
                 وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
-                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} با رتبه "${gameState.rank}" است.
+                ${bossPromptPart}
                 
-                موضوعات پیشنهادی (برای تنوع):
-                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                موضوعات پیشنهادی برای تنوع:
+                - تاریخچه و ساختار مافیای سیسیل، کامورا یا اندرانگتا.
                 - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
                 - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
-                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
-                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا" (مانند دکتر لکتر، روانپزشک، مذاکره‌کننده، ناتاشا).
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
                 - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
                 
-                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده و سوالی طرح کن که دانش کاربر را به چالش بکشد.
+                مهم: سوال نباید کلیشه‌ای باشد. خلاقیت به خرج بده و سوالی طرح کن که دانش کاربر را به چالش بکشد.
                 
-                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
-                ساختار JSON باید دقیقا به این صورت باشد:
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) با ساختار زیر باشد:
                 {
                   "question": "متن سوال به فارسی",
                   "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
@@ -1443,14 +1568,14 @@
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
-                        break; // Found a new, unique question
+                        break;
                     } else {
                         console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
                         attempts++;
                     }
                 } else {
                     console.error("Invalid question data structure received from AI:", data);
-                    attempts++; // Count as a failed attempt
+                    attempts++;
                 }
             }
 
@@ -1460,7 +1585,7 @@
             } else {
                 console.error("Failed to generate a unique question after multiple attempts.");
                 if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
-                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
                     () => { hideModal(); generateQuestion(); },
                     () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
                 );
@@ -1468,6 +1593,7 @@
             
             gameState.isLoadingNextQuestion = false;
             gameState.isQuestionActive = true;
+            updateUI(); // Update UI again to enable lifeline buttons
         }
 
         function displayQuestion() {
@@ -1487,11 +1613,13 @@
             if(questionExplanation) questionExplanation.textContent = "";
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
+            updateUI();
         }
 
         async function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
             gameState.isQuestionActive = false;
+            updateUI(); // Disable lifelines immediately
 
             const selectedOptionButton = event.target.closest('.option-btn');
             if (!selectedOptionButton) return;
@@ -1503,45 +1631,154 @@
 
             if (selectedIndex === correctAnswerIndex) {
                 selectedOptionButton.classList.add('correct');
-                gameFeedback.textContent = "پاسخ صحیح!";
+                gameFeedback.textContent = "پاسخ صحیح! آماده مرحله بعد باش...";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
                 
-                // <<--- MODIFIED: Add question hash to seen list and increment stage
                 const questionHash = simpleHash(question);
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
                 
+                // NEW: Reward logic
+                let rewardMessage = "";
+                const stage = gameState.currentStage -1; // check based on the stage just completed
+                if (stage > 0 && stage % 5 === 0) {
+                    const rewardTypeIndex = (stage / 5 - 1) % 3;
+                    switch (rewardTypeIndex) {
+                        case 0:
+                            gameState.lifelines.skip++;
+                            rewardMessage = "پاداش: 1 عدد قابلیت «رد کردن سوال» ⏩ دریافت کردی!";
+                            break;
+                        case 1:
+                            gameState.lifelines.fiftyFifty++;
+                            rewardMessage = "پاداش: 1 عدد قابلیت «پنجاه-پنجاه» 📊 دریافت کردی!";
+                            break;
+                        case 2:
+                            gameState.lifelines.hint++;
+                            rewardMessage = "پاداش: 1 عدد قابلیت «راهنمایی از دان» 💡 دریافت کردی!";
+                            break;
+                    }
+                }
+
+                updatePlayerRank();
                 await saveUserData();
-                setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
+                
+                setTimeout(() => {
+                    if (rewardMessage) {
+                        showModal("تبریک!", rewardMessage, "عالی!", null, () => {
+                            hideModal();
+                            generateQuestion();
+                        });
+                    } else {
+                        generateQuestion();
+                    }
+                    updateUI();
+                }, 2000);
+
             } else {
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
 
-                const selectedOptionText = options[selectedIndex];
-                const correctAnswerText = options[correctAnswerIndex];
                 const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
                 سوال: "${question}"
-                پاسخ اشتباه بازیکن: "${selectedOptionText}"
-                پاسخ صحیح: "${correctAnswerText}"
-                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
+                پاسخ اشتباه بازیکن: "${options[selectedIndex]}"
+                پاسخ صحیح: "${options[correctAnswerIndex]}"
+                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن بگو.`;
 
                 const taunt = await callGeminiAPI(tauntPrompt);
-                if (taunt) {
-                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
-                } else {
-                    gameFeedback.textContent = "پاسخ اشتباه!";
-                }
+                gameFeedback.innerHTML = taunt ? taunt.replace(/\n/g, '<br>') : "پاسخ اشتباه! یک اشتباه در این خانواده گران تمام می‌شود.";
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
-                // Note: We do NOT add the hash to the seen list on wrong answers, so they might see it again to learn.
-                // Or we could add it to prevent farming wrong answers, but for now, let's keep it this way.
-                setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
+                
+                // Reset to the same stage for another try
+                setTimeout(() => {
+                    generateQuestion();
+                    updateUI();
+                }, 4000);
             }
             if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
         }
+
+        // --- NEW: Lifeline Functions ---
+
+        async function useSkipLifeline() {
+            if (gameState.lifelines.skip <= 0 || !gameState.isQuestionActive) return;
+            gameState.isQuestionActive = false;
+            gameState.lifelines.skip--;
+            await saveUserData();
+            updateUI();
+            showModal("سوال رد شد!", "در حال آماده کردن سوال بعدی...", "باشه", null, () => hideModal(), null);
+            setTimeout(() => {
+                hideModal();
+                generateQuestion();
+            }, 500);
+        }
+
+        function useFiftyFiftyLifeline() {
+            if (gameState.lifelines.fiftyFifty <= 0 || !gameState.isQuestionActive || fiftyFiftyUsedOnCurrentQuestion) return;
+            
+            gameState.lifelines.fiftyFifty--;
+            fiftyFiftyUsedOnCurrentQuestion = true;
+            saveUserData(); // Save immediately
+            updateUI(); // Update UI immediately
+
+            const { correctAnswerIndex } = gameState.currentQuestionData;
+            const incorrectOptions = [];
+            optionsContainer.querySelectorAll('.option-btn').forEach((btn, index) => {
+                if (index !== correctAnswerIndex) {
+                    incorrectOptions.push(btn);
+                }
+            });
+
+            // Shuffle and pick two to remove
+            incorrectOptions.sort(() => 0.5 - Math.random());
+            for (let i = 0; i < 2; i++) {
+                if (incorrectOptions[i]) {
+                    incorrectOptions[i].classList.add('fifty-fifty-removed');
+                    incorrectOptions[i].disabled = true;
+                }
+            }
+        }
+        
+        async function useHintLifeline() {
+            if (gameState.lifelines.hint <= 0 || !gameState.isQuestionActive) return;
+            
+            gameState.lifelines.hint--;
+            gameState.isQuestionActive = false; // Temporarily disable answering while hint loads
+            await saveUserData();
+            updateUI();
+
+            showModal("راهنمایی از دان 💡", "<div class='loader mx-auto my-3'></div><p>دان در حال فکر کردن است...</p>", "متوجه شدم", null, () => {
+                gameState.isQuestionActive = true;
+                updateUI();
+                hideModal();
+            });
+
+            const { question, options, correctAnswerIndex } = gameState.currentQuestionData;
+            const hintPrompt = `شما "دان" یک خانواده مافیایی هستید. یکی از اعضای جوان خانواده از شما برای پاسخ به این سوال کمک خواسته. یک راهنمایی کوتاه (یک جمله)، مرموز و غیرمستقیم به زبان فارسی به او بدهید. به هیچ وجه پاسخ صحیح را لو ندهید، فقط یک سرنخ کوچک.
+            سوال: "${question}"
+            گزینه‌ها: ${options.join(", ")}
+            پاسخ صحیح: "${options[correctAnswerIndex]}"`;
+
+            const hint = await callGeminiAPI(hintPrompt);
+            if (hint) {
+                showModal("راهنمایی از دان 💡", `دان می‌گوید: <br><br><i>"${hint.replace(/\n/g, '<br>')}"</i>`, "متوجه شدم", null, () => {
+                    gameState.isQuestionActive = true;
+                    updateUI();
+                    hideModal();
+                });
+            } else {
+                showModal("خطا", "دان در حال حاضر مشغول است. بعدا تلاش کن.", "باشه", null, () => {
+                    gameState.isQuestionActive = true;
+                    updateUI();
+                    hideModal();
+                    gameState.lifelines.hint++; // Give back the hint on failure
+                });
+            }
+        }
+
 
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
@@ -1725,6 +1962,7 @@
                     gameState.displayName = validatedName;
 
                     await saveUserData();
+                    updatePlayerRank(); // Set rank for the first time
                     updateUI();
                 });
             }
@@ -1787,8 +2025,8 @@
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
                     showModal(
                         "شروع بازی",
-                        "برای تجربه بهتر بازی لطفا از فیلترشکن در کشور ایالات‌متحده (آمریکا) استفاده کنید.",
-                        "متوجه شدم، ادامه بده", null,
+                        `آماده‌ای، ${gameState.rank}؟<br>برای تجربه بهتر بازی لطفا از فیلترشکن در کشور ایالات‌متحده (آمریکا) استفاده کنید.`,
+                        "بزن بریم!", null,
                         () => {
                             hideModal();
                             if(gameScreen) showScreen(gameScreen);
@@ -1797,6 +2035,11 @@
                     );
                 });
             }
+            
+            // NEW: Lifeline Event Listeners
+            if(skipLifelineBtn) skipLifelineBtn.addEventListener('click', useSkipLifeline);
+            if(fiftyFiftyLifelineBtn) fiftyFiftyLifelineBtn.addEventListener('click', useFiftyFiftyLifeline);
+            if(hintLifelineBtn) hintLifelineBtn.addEventListener('click', useHintLifeline);
 
             if (mafiaFactBtn) {
                 mafiaFactBtn.addEventListener('click', () => {
@@ -1838,6 +2081,7 @@
         }
 
         async function initializeGame() {
+            // Get all DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
@@ -1849,13 +2093,13 @@
             userIdDisplayInput = document.getElementById('user-id-display');
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
-
             userProfileArea = document.getElementById('user-profile-area');
             avatarContainer = document.getElementById('avatar-container');
             avatarImage = document.getElementById('avatar-image');
             userInfoBox = document.getElementById('user-info-box');
             displayNameOutput = document.getElementById('display-name-output');
             publicUserIdOutput = document.getElementById('public-user-id-output');
+            rankOutput = document.getElementById('rank-output'); // NEW
             editNameBtn = document.getElementById('edit-name-btn');
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
@@ -1884,6 +2128,15 @@
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+            // NEW Lifeline elements
+            lifelineContainer = document.getElementById('lifeline-container');
+            skipLifelineBtn = document.getElementById('skip-lifeline-btn');
+            skipLifelineCount = document.getElementById('skip-lifeline-count');
+            fiftyFiftyLifelineBtn = document.getElementById('fifty-fifty-lifeline-btn');
+            fiftyFiftyLifelineCount = document.getElementById('fifty-fifty-lifeline-count');
+            hintLifelineBtn = document.getElementById('hint-lifeline-btn');
+            hintLifelineCount = document.getElementById('hint-lifeline-count');
+
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
