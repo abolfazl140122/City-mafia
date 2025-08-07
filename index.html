@@ -3,33 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی مافیا - نسخه سایبری</title>
+    <title>بازی مافیا</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --dark-blue-bg: #050d2e;
-            --mid-blue-panel: rgba(15, 22, 60, 0.92);
-            --primary-glow: #00f5d4; /* Cyan */
-            --secondary-glow: #f72585; /* Magenta */
-            --text-primary: #e0f7fa;
-            --text-secondary: #a7d9e4;
-            --error-color: #ff4d4d;
-            --success-color: #00ff9f;
-        }
-
         body {
             font-family: 'Vazirmatn', sans-serif;
-            color: var(--text-primary);
-            background-color: var(--dark-blue-bg);
+            color: #e0e0e0;
             overflow-x: hidden;
         }
 
         .mafia-animated-bg {
-            background: radial-gradient(circle at center, rgba(30, 10, 60, 0.3) 0%, rgba(10, 5, 25, 1) 70%), 
-                        linear-gradient(300deg, #1d2b64, #f8cdda, #00f5d4, #050d2e);
-            background-size: 250% 250%;
-            animation: gradientAnimation 25s ease infinite;
+            background: linear-gradient(280deg, #0a0a0a, #181818, #101010, #202020, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientAnimation 30s ease infinite;
             position: fixed;
             top: 0;
             left: 0;
@@ -45,19 +32,17 @@
         }
 
         .panel {
-            background-color: var(--mid-blue-panel);
-            border: 1px solid var(--primary-glow);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3), inset 0 0 10px rgba(0, 245, 212, 0.2);
+            background-color: rgba(30, 30, 30, 0.95);
+            border: 1px solid #c49730;
+            box-shadow: 0 0 20px rgba(200, 150, 50, 0.5);
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            border-radius: 8px;
         }
 
         .panel-hidden {
             opacity: 0;
             transform: scale(0.9) translateY(-20px);
             pointer-events: none;
-            visibility: hidden;
+            visibility: hidden; /* Ensure it's not interactive when hidden */
         }
 
         .panel-visible {
@@ -67,21 +52,20 @@
         }
 
         .btn-mafia {
-            background-color: var(--secondary-glow);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            border-radius: 6px;
+            background-color: #c49730;
+            color: #1a1a1a;
+            border: 2px solid #a57c1a;
+            padding: 8px 16px; /* Base padding */
+            font-size: 0.9rem; /* Base font size */
+            border-radius: 8px;
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            box-shadow: 0 0 8px var(--secondary-glow), 0 0 15px var(--secondary-glow), inset 0 0 5px rgba(255,255,255,0.4);
-            white-space: nowrap;
-            display: inline-flex;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            white-space: nowrap; /* Prevent text wrapping inside buttons */
+            display: inline-flex; /* For aligning icon and text if any */
             align-items: center;
             justify-content: center;
-            text-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
         @media (min-width: 640px) {
             .btn-mafia {
@@ -89,50 +73,52 @@
                 font-size: 1rem;
             }
         }
+
         .btn-mafia:hover {
-            background-color: #ff45a1;
-            box-shadow: 0 0 12px var(--secondary-glow), 0 0 25px var(--secondary-glow), inset 0 0 8px rgba(255,255,255,0.5);
-            transform: translateY(-2px) scale(1.02);
+            background-color: #d4a840;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
         }
-        .btn-mafia:disabled {
-            background-color: #7d1343;
-            color: #a8a8a8;
+         .btn-mafia:disabled {
+            background-color: #7e6a3b;
+            color: #524425;
+            border-color: #6a531f;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
         }
 
+
         .btn-mafia-secondary {
-            background-color: transparent;
-            color: var(--primary-glow);
-            border: 2px solid var(--primary-glow);
+            background-color: #4a4a4a;
+            color: #e0e0e0;
+            border: 2px solid #333333;
             padding: 6px 12px;
             font-size: 0.8rem;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 5px var(--primary-glow);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        @media (min-width: 640px) {
+         @media (min-width: 640px) {
             .btn-mafia-secondary {
                 padding: 8px 16px;
                 font-size: 0.9rem;
             }
         }
         .btn-mafia-secondary:hover {
-            background-color: rgba(0, 245, 212, 0.1);
-            color: #fff;
-            transform: scale(1.05);
-            box-shadow: 0 0 10px var(--primary-glow), 0 0 15px var(--primary-glow);
+            background-color: #5a5a5a;
+            color: #c49730;
+            transform: scale(1.05) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .input-mafia {
-            background-color: rgba(5, 13, 46, 0.8);
-            border: 1px solid var(--primary-glow);
-            color: var(--text-primary);
-            border-radius: 6px;
+            background-color: #333;
+            border: 1px solid #c49730;
+            color: #e0e0e0;
+            border-radius: 8px;
             padding: 10px;
             font-size: 1rem;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
         @media (max-width: 639px) {
             .input-mafia {
@@ -140,272 +126,617 @@
                 padding: 8px;
             }
         }
+
         .input-mafia:focus {
             outline: none;
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.7);
-            border-color: #6efff1;
+            box-shadow: 0 0 10px rgba(200, 150, 50, 0.7);
         }
         .input-mafia.invalid {
-            border-color: var(--error-color);
-            box-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
+            border-color: #dc3545;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
         }
         .input-mafia:read-only {
-            background-color: rgba(5, 13, 46, 0.5);
+            background-color: #444;
             cursor: default;
         }
 
+
         .option-btn {
-            background-color: rgba(36, 47, 94, 0.8);
-            border: 1px solid var(--primary-glow);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
+            background-color: rgba(50, 50, 50, 0.8);
+            border: 1px solid #c49730;
+            color: #e0e0e0;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             font-size: 0.9rem;
             padding: 10px;
-            border-radius: 4px;
         }
         @media (min-width: 768px) {
-            .option-btn { font-size: 1rem; padding: 12px; }
+            .option-btn {
+                font-size: 1rem;
+                padding: 12px;
+            }
         }
-        .option-btn:hover:not(:disabled) {
-            background-color: rgba(50, 65, 130, 0.9);
+
+        .option-btn:hover {
+            background-color: rgba(70, 70, 70, 0.9);
             transform: scale(1.02);
-            box-shadow: 0 0 8px var(--primary-glow);
         }
-        .option-btn.correct { background-color: var(--success-color) !important; border-color: #00ff9f !important; color: var(--dark-blue-bg) !important; font-weight: bold; }
-        .option-btn.incorrect { background-color: var(--error-color) !important; border-color: #ff4d4d !important; color: #fff !important; }
+        .option-btn.correct { background-color: #28a745 !important; border-color: #1e7e34 !important; color: white !important; }
+        .option-btn.incorrect { background-color: #dc3545 !important; border-color: #b02a37 !important; color: white !important; }
         .option-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .loader {
-            border: 8px solid rgba(0, 245, 212, 0.2);
-            border-top: 8px solid var(--primary-glow);
+            border: 8px solid #444;
+            border-top: 8px solid #c49730;
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
         }
         @media (min-width: 640px) {
-            .loader { width: 60px; height: 60px; }
+            .loader {
+                width: 60px;
+                height: 60px;
+            }
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--dark-blue-bg); }
-        ::-webkit-scrollbar-thumb { background: var(--primary-glow); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #5ffff1; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #c49730; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a57c1a; }
 
         .screen {
-            position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
-            padding: 10px; box-sizing: border-box; opacity: 0; visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            padding: 10px; /* Base padding */
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 0.7s ease-in-out, visibility 0.7s;
-            display: flex; flex-direction: column; align-items: center; overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
         }
-        @media (min-width: 640px) { .screen { padding: 20px; } }
-        #main-screen { justify-content: flex-start; }
-        #loading-screen { justify-content: center; }
-        .screen.active { opacity: 1; visibility: visible; position: relative; z-index: 1; }
-        
-        .screen-content-wrapper {
-            width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;
-            padding-bottom: 10px; position: relative; z-index: 2;
-            display: flex; flex-direction: column; flex-grow: 1;
+        @media (min-width: 640px) { /* sm */
+            .screen {
+                padding: 20px; /* Increased padding for larger screens */
+            }
         }
-        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
-        #main-screen .screen-content-wrapper {
-            justify-content: space-between; min-height: calc(100vh - 20px);
-            padding-top: 60px;
-        }
-        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
-        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
 
-        /* User Profile Area Styling - Futuristic HUD */
+        #main-screen {
+            justify-content: flex-start;
+        }
+        #loading-screen {
+             justify-content: center;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            z-index: 1;
+            overflow-y: auto;
+        }
+        .screen-content-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        @media (min-width: 640px) {
+            .screen-content-wrapper {
+                 padding-bottom: 20px;
+            }
+        }
+        #main-screen .screen-content-wrapper {
+            justify-content: space-between;
+            min-height: calc(100vh - 20px); /* Base min-height */
+            padding-top: 60px; /* Initial padding for mobile to avoid user profile */
+        }
+        @media (min-width: 640px) { /* sm */
+            #main-screen .screen-content-wrapper {
+                min-height: calc(100vh - 40px); /* Adjusted min-height for sm screens */
+                padding-top: 80px; /* Increased padding for sm screens */
+            }
+        }
+         @media (min-width: 768px) { /* md, user profile moves to top-right */
+            #main-screen .screen-content-wrapper {
+                padding-top: 20px; /* Reset padding-top as user profile is no longer in the way */
+            }
+        }
+
+        /* User Profile Area Styling */
         #user-profile-area {
-            position: fixed; z-index: 100; display: flex; align-items: flex-start;
-            gap: 10px; transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: fixed;
+            z-index: 100;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        @media (max-width: 767px) {
-            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
+        @media (max-width: 767px) { /* Mobile: Centered at top */
+            #user-profile-area {
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%) translateY(0);
+            }
+            #user-profile-area.profile-area-hidden {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-150%);
+            }
         }
-        @media (min-width: 768px) {
-            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); align-items: center; }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
+        @media (min-width: 768px) { /* Desktop: Top right */
+            #user-profile-area {
+                top: 20px;
+                right: 20px; /* Changed from left: auto to ensure it's on the right */
+                left: auto;
+                transform: translateY(0);
+                align-items: center;
+            }
+            #user-profile-area.profile-area-hidden {
+                opacity: 0;
+                transform: translateY(-150%);
+            }
         }
 
         #user-info-box {
-            background-color: var(--mid-blue-panel);
-            border: 1px solid var(--primary-glow);
-            padding: 8px 10px; box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
-            display: flex; flex-direction: row; align-items: center; gap: 8px;
-            width: max-content; min-width: 0;
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            background-color: rgba(15, 15, 15, 0.85);
+            border: 1px solid #c49730;
+            border-radius: 10px;
+            padding: 8px 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            width: max-content;
+            min-width: 0;
         }
         @media (min-width: 768px) {
             #user-info-box {
-                flex-direction: column; align-items: stretch; gap: 10px;
-                border-width: 1px; padding: 12px 15px; min-width: 180px; max-width: 200px;
-                clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                border-width: 2px;
+                border-radius: 12px;
+                padding: 12px 15px;
+                min-width: 180px;
+                max-width: 200px;
+                width: auto;
             }
         }
+
+
         #user-info-box.hidden, #avatar-container.hidden {
-            opacity: 0; transform: translateY(-20px); pointer-events: none;
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
         }
-        @media (max-width: 767px) { #user-info-box.hidden { transform: translateX(-50%) translateY(-20px); } }
+        @media (max-width: 767px) {
+            #user-info-box.hidden {
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
 
         .user-info-item {
-            background-color: rgba(5, 13, 46, 0.7); padding: 4px 7px;
-            border-radius: 2px; border-left: 0px solid var(--secondary-glow);
-            display: flex; align-items: center; gap: 4px;
+            background-color: rgba(40, 40, 40, 0.7);
+            padding: 4px 7px;
+            border-radius: 6px;
+            border-left: 0px solid #c49730;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         @media (min-width: 768px) {
-            .user-info-item { padding: 6px 10px; border-radius: 4px; border-left-width: 3px; display: block; }
+            .user-info-item {
+                padding: 6px 10px;
+                border-radius: 8px;
+                border-left-width: 3px;
+                display: block;
+            }
         }
-        .user-info-item .label { font-size: 0.7em; color: var(--text-secondary); margin-bottom: 0; }
-        @media (min-width: 768px) { .user-info-item .label { font-size: 0.85em; margin-bottom: 1px; } }
-        .user-info-item .value { font-size: 0.85em; font-weight: bold; font-family: 'Rajdhani', sans-serif; }
-        @media (min-width: 768px) { .user-info-item .value { font-size: 1em; } }
 
-        #display-name-output-container { display: flex; align-items: center; gap: 6px; }
-        @media (max-width: 767px) { #display-name-output-container { flex-direction: row-reverse; } }
-        
-        #edit-name-btn { cursor: pointer; font-size: 0.85em; color: var(--primary-glow); transition: color 0.3s ease, text-shadow 0.3s ease; }
-        #edit-name-btn:hover { color: #fff; text-shadow: 0 0 5px var(--primary-glow); }
-        @media (min-width: 768px) { #edit-name-btn { font-size: 0.95em; } }
-        
-        #display-name-output-box .value { color: var(--text-primary); text-shadow: 0 0 5px var(--primary-glow); }
-        #public-user-id-output-box .value { color: var(--text-secondary); font-family: 'Rajdhani', monospace; font-size: 1.1em; letter-spacing: 1px; }
+        .user-info-item .label {
+            font-size: 0.7em;
+            color: #a0a0a0;
+            margin-bottom: 0;
+        }
+        @media (min-width: 768px) {
+            .user-info-item .label {
+                font-size: 0.85em;
+                margin-bottom: 1px;
+            }
+        }
+
+        .user-info-item .value {
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        @media (min-width: 768px) {
+            .user-info-item .value {
+                font-size: 1em;
+            }
+        }
+
+        #display-name-output-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        @media (max-width: 767px) {
+             #display-name-output-container {
+                flex-direction: row-reverse;
+            }
+        }
+
+        #edit-name-btn {
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #c49730;
+            transition: color 0.3s ease;
+        }
+        #edit-name-btn:hover {
+            color: #d4a840;
+        }
+        @media (min-width: 768px) {
+            #edit-name-btn {
+                font-size: 0.95em;
+            }
+        }
+
+        #display-name-output-box .value {
+            color: #e0e0e0;
+            text-shadow: 0 0 5px rgba(200, 150, 50, 0.5);
+        }
+        @media (min-width: 768px) {
+            #display-name-output-box .value {
+                text-shadow: 0 0 7px rgba(200, 150, 50, 0.6);
+            }
+        }
+        #public-user-id-output-box .value {
+            color: #a0a0a0;
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+        @media (min-width: 768px) {
+            #public-user-id-output-box .value {
+                font-size: 1em;
+            }
+        }
+
 
         #avatar-container {
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary-glow);
-            background-color: var(--dark-blue-bg); cursor: pointer; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
-        }
-        #avatar-container:hover {
-             box-shadow: 0 0 15px rgba(0, 245, 212, 0.8), 0 0 25px rgba(0, 245, 212, 0.5);
-             transform: scale(1.05);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #c49730;
+            background-color: #333;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         @media (min-width: 768px) {
-            #avatar-container { width: 70px; height: 70px; margin-right: 10px; }
+            #avatar-container {
+                width: 70px;
+                height: 70px;
+                margin-right: 10px;
+            }
         }
-        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
-        #avatar-placeholder-icon { font-size: 1.8rem; color: #777; }
-        @media (min-width: 768px) { #avatar-placeholder-icon { font-size: 2.2rem; } }
+
+        #avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #avatar-placeholder-icon {
+            font-size: 1.8rem;
+            color: #777;
+        }
+        @media (min-width: 768px) {
+            #avatar-placeholder-icon {
+                font-size: 2.2rem;
+            }
+        }
 
         #avatar-suggestions-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
         }
         .avatar-suggestion-item {
-            width: 100px; height: 100px; border-radius: 4px; border: 2px solid transparent;
-            cursor: pointer; overflow: hidden; transition: all 0.3s ease;
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            overflow: hidden;
+            transition: border-color 0.3s ease, transform 0.2s ease;
         }
-        .avatar-suggestion-item:hover { border-color: var(--primary-glow); transform: scale(1.05); }
+        .avatar-suggestion-item:hover {
+            border-color: #c49730;
+            transform: scale(1.05);
+        }
         .avatar-suggestion-item.selected {
-            border-color: var(--success-color);
-            box-shadow: 0 0 10px rgba(0, 255, 159, 0.7);
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
         }
 
         /* Main Screen Header Styling */
         #main-screen-header {
-            display: flex; justify-content: space-between; align-items: center; width: 100%;
-            padding-top: 0.5rem; padding-bottom: 1rem; margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding-top: 0.5rem; /* Reduced top padding for header itself */
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
         }
-        @media (min-width: 768px) { #main-screen-header { padding-top: 1rem; } }
+         @media (min-width: 768px) { /* md */
+             #main-screen-header {
+                padding-top: 1rem; /* Adjust for desktop if needed */
+             }
+        }
+
 
         #main-title {
-            text-align: center; flex-grow: 1; font-family: 'Rajdhani', sans-serif;
-            font-size: 2.5rem; font-weight: bold; color: var(--text-primary);
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--primary-glow), 0 0 35px var(--primary-glow), 0 0 40px var(--primary-glow);
-            margin-right: auto; margin-left: auto;
+            text-align: center;
+            flex-grow: 1;
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: bold;
+            color: #c49730;
+            text-shadow: 0 2px 2px rgba(0,0,0,0.8);
+            margin-right: auto; /* Pushes title towards center if icon is on left */
+            margin-left: auto; /* Pushes title towards center if icon is on right */
         }
-        @media (min-width: 640px) { #main-title { font-size: 3.5rem; } }
-        @media (min-width: 768px) { #main-title { font-size: 4.5rem; } }
+        @media (min-width: 640px) { /* sm */
+            #main-title {
+                font-size: 3rem; /* text-5xl */
+            }
+        }
+        @media (min-width: 768px) { /* md */
+            #main-title {
+                font-size: 3.75rem; /* text-6xl */
+            }
+        }
 
+        /* Developer Intro Icon Button - Header Position */
         #dev-intro-icon-btn-header {
-            background-color: transparent; color: var(--primary-glow);
-            border: 2px solid var(--primary-glow); padding: 0.5rem; border-radius: 50%;
-            font-weight: bold; transition: all 0.3s ease; box-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px; flex-shrink: 0;
+            background-color: transparent;
+            color: #c49730;
+            border: 2px solid #c49730;
+            padding: 0.5rem;
+            border-radius: 50%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0; /* Prevent shrinking */
         }
         #dev-intro-icon-btn-header:hover {
-            background-color: rgba(0, 245, 212, 0.1); color: #fff; border-color: #fff;
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.8), 0 0 20px rgba(0, 245, 212, 0.5);
+            background-color: rgba(196, 151, 48, 0.2);
+            color: #d4a840;
+            border-color: #d4a840;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
-        #dev-intro-icon-btn-header svg { width: 20px; height: 20px; }
-        @media (min-width: 640px) {
-            #dev-intro-icon-btn-header { width: 44px; height: 44px; padding: 0.6rem; }
-            #dev-intro-icon-btn-header svg { width: 22px; height: 22px; }
+        #dev-intro-icon-btn-header svg {
+            width: 20px;
+            height: 20px;
+        }
+         @media (min-width: 640px) {
+            #dev-intro-icon-btn-header {
+                width: 44px;
+                height: 44px;
+                padding: 0.6rem;
+            }
+            #dev-intro-icon-btn-header svg {
+                width: 22px;
+                height: 22px;
+            }
         }
 
         /* Bottom Action Buttons Layout */
         #main-screen-buttons-layout {
-            display: flex; flex-direction: column; align-items: center;
-            width: 100%; margin-top: auto; padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: auto;
+            padding-top: 1rem;
         }
-        #top-action-buttons {
-            display: flex; flex-wrap: wrap; justify-content: center;
-            align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px;
-        }
-        @media (min-width: 640px) { #top-action-buttons { gap: 1rem; flex-wrap: nowrap; } }
-        
-        #start-game-btn { order: 0; } /* Keep as primary */
 
-        /* Error Message Styles */
-        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
-            color: var(--error-color); font-size: 0.8rem; text-align: right; min-height: 1.2rem;
-            margin-top: 0.25rem; margin-bottom: 0.5rem;
-            text-shadow: 0 0 5px var(--error-color);
+        #top-action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding-bottom: 5px;
         }
-        @media (min-width: 640px) { #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error { font-size: 0.875rem; } }
-        .hidden { display: none !important; }
+        @media (min-width: 640px) {
+            #top-action-buttons {
+                gap: 0.75rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+        }
+        @media (min-width: 768px) {
+            #top-action-buttons {
+                gap: 1rem;
+            }
+        }
+
+        #top-action-buttons .btn-mafia:not(#start-game-btn) {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+        @media (min-width: 640px) {
+            #top-action-buttons .btn-mafia:not(#start-game-btn) {
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+        @media (min-width: 768px) {
+            #top-action-buttons .btn-mafia:not(#start-game-btn) {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+
+        #start-game-btn {
+             padding: 0.6rem 1.2rem !important;
+             font-size: 0.95rem !important;
+             order: 0;
+        }
+        @media (min-width: 640px) {
+            #start-game-btn {
+                padding: 0.7rem 1.5rem !important;
+                font-size: 1.05rem !important;
+            }
+        }
+        @media (min-width: 768px) {
+            #start-game-btn {
+                padding: 0.8rem 1.8rem !important;
+                font-size: 1.15rem !important;
+            }
+        }
+
+
+        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
+            color: #dc3545;
+            font-size: 0.8rem;
+            text-align: right;
+            min-height: 1.2rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
+                font-size: 0.875rem;
+            }
+        }
+        .hidden {
+            display: none !important;
+        }
 
         /* Styles for Developers Panel */
-        #developers-panel-container { background-color: rgba(5, 13, 46, 0.85); backdrop-filter: blur(10px); }
+        #developers-panel-container {
+            background-color: rgba(10, 10, 10, 0.92);
+        }
         #developers-panel {
-            background: var(--mid-blue-panel);
-            border: 1px solid var(--primary-glow);
-            box-shadow: 0 0 35px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.2);
-            max-height: 85vh; overflow-y: auto; border-radius: 12px;
+            background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
+            border: 2px solid #c49730;
+            box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 15px;
         }
         #close-developers-panel-btn {
-            position: absolute; top: 15px; right: 15px; width: 34px; height: 34px;
-            background-color: rgba(247, 37, 133, 0.8); color: #fff; border-radius: 50%;
-            border: none; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: bold; line-height: 1; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 0 10px var(--secondary-glow); z-index: 10;
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 34px;
+            height: 34px;
+            background-color: rgba(196, 151, 48, 0.85);
+            color: #101010;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+            z-index: 10;
         }
         #close-developers-panel-btn:hover {
-            background-color: var(--secondary-glow); transform: scale(1.1) rotate(180deg);
-            box-shadow: 0 0 15px var(--secondary-glow), 0 0 25px var(--secondary-glow);
+            background-color: #d4a840;
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         }
+
         .developer-item {
-            background-color: rgba(5, 13, 46, 0.8); padding: 1rem 1.2rem;
-            border-radius: 4px; border-left: 4px solid var(--primary-glow);
-            transition: all 0.3s ease; text-align: right; margin-bottom: 1rem;
+            background-color: rgba(28, 28, 35, 0.92);
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(196, 151, 48, 0.25);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: right;
+            margin-bottom: 1rem;
         }
-        .developer-item:last-child { margin-bottom: 0; }
+        .developer-item:last-child {
+            margin-bottom: 0;
+        }
         .developer-item:hover {
-            transform: translateX(-5px);
-            background-color: rgba(15, 22, 60, 1);
-            border-left-color: #fff;
-            box-shadow: 5px 0 15px rgba(0, 245, 212, 0.3);
+            transform: translateY(-5px) scale(1.015);
+            box-shadow: 0 10px 28px rgba(196, 151, 48, 0.45);
+            border-color: rgba(196, 151, 48, 0.6);
         }
+
         .dev-header {
-            display: flex; align-items: center; margin-bottom: 0.6rem;
-            border-bottom: 1px solid rgba(0, 245, 212, 0.2); padding-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(196, 151, 48, 0.2);
+            padding-bottom: 0.6rem;
         }
-        .dev-role-icon { font-size: 1.7em; color: var(--primary-glow); margin-left: 10px; width: 28px; text-align: center; line-height: 1; }
-        .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; }
+        .dev-role-icon {
+            font-size: 1.7em;
+            color: #c49730;
+            margin-left: 10px;
+            width: 28px;
+            text-align: center;
+            line-height: 1;
+        }
+        .dev-role {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #e8e8e8;
+        }
         .dev-username {
-            color: var(--secondary-glow); font-family: 'Rajdhani', monospace;
-            font-weight: bold; font-size: 1.25rem; display: block;
-            margin-bottom: 0.5rem; margin-top: 0.2rem;
-            text-shadow: 0 0 4px var(--secondary-glow);
+            color: #efbe5a;
+            font-family: 'Vazirmatn', 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.25rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            margin-top: 0.2rem;
         }
-        .dev-description { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; }
+        .dev-description {
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            line-height: 1.65;
+        }
 
     </style>
 </head>
@@ -414,18 +745,18 @@
 
     <div id="user-profile-area" class="hidden">
         <div id="avatar-container" class="hidden" title="تغییر آواتار">
-            <img id="avatar-image" src="https://placehold.co/80x80/050d2e/a7d9e4?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/050d2e/a7d9e4?text=?'">
+            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
         </div>
         <div id="user-info-box" class="hidden">
             <div id="display-name-output-box" class="user-info-item">
-                <div class="label">AGENT:</div>
+                <div class="label">بازیکن:</div>
                 <div id="display-name-output-container">
                     <span id="edit-name-btn" title="تغییر نام">✏️</span>
                     <div id="display-name-output" class="value"></div>
                 </div>
             </div>
             <div id="public-user-id-output-box" class="user-info-item">
-                <div class="label">USER ID:</div>
+                <div class="label">شناسه کاربری:</div>
                 <div id="public-user-id-output" class="value"></div>
             </div>
         </div>
@@ -433,16 +764,17 @@
 
     <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
         <div class="screen-content-wrapper justify-center">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-6" style="color: var(--primary-glow); text-shadow: 0 0 10px var(--primary-glow);">بارگذاری سیستم...</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 text-[#c49730]">بارگذاری بازی مافیا...</h1>
             <div class="loader mb-4"></div>
-            <p id="loading-message" class="text-lg sm:text-xl text-gray-300">برقراری اتصال امن...</p>
+            <p id="loading-message" class="text-lg sm:text-xl">در حال بررسی اتصال...</p>
         </div>
     </div>
 
     <div id="main-screen" class="screen">
-        <div class="screen-content-wrapper">
+        <div class="screen-content-wrapper"> <!-- Increased padding-top here -->
             <div>
                 <div id="main-screen-header">
+                    <!-- Developer Intro Icon Button - Moved to the left (visual right in RTL) -->
                     <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -452,45 +784,46 @@
                         </svg>
                     </button>
                     <h1 id="main-title">شهر مافیا</h1>
+                     <!-- Spacer on the right (visual left in RTL) to balance the icon button -->
                     <div style="width: 40px; flex-shrink: 0;"></div>
                 </div>
 
                 <div id="registration-form" class="mb-4 panel panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center" style="color: var(--primary-glow);">ورود به شبکه</h2>
-                    <input type="text" id="display-name-input" placeholder="کد ایجنت (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center text-[#c49730]">ثبت نام / ورود</h2>
+                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
                     <p id="input-error-message" class=""></p>
 
                     <div class="mt-3 mb-2">
                         <label for="user-id-display" class="block text-sm font-medium text-gray-300 mb-1">شناسه کاربری (5 رقمی):</label>
                         <div class="flex items-center gap-2">
-                            <input type="text" id="user-id-display" class="input-mafia w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="ایجاد شناسه">
-                            <button id="generate-user-id-btn" class="btn-mafia-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">ایجاد</button>
+                            <input type="text" id="user-id-display" class="input-mafia w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="ابتدا بسازید">
+                            <button id="generate-user-id-btn" class="btn-mafia-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">ساخت شناسه</button>
                         </div>
                         <p id="user-id-error-message" class=""></p>
                     </div>
 
-                    <button id="register-btn" class="btn-mafia w-full p-2 sm:p-3 text-base sm:text-lg mt-3">اتصال به سیستم</button>
+                    <button id="register-btn" class="btn-mafia w-full p-2 sm:p-3 text-base sm:text-lg mt-3">ورود به شهر</button>
                 </div>
             </div>
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
                 <div id="top-action-buttons" class="">
-                    <button id="start-game-btn" class="btn-mafia">شروع عملیات</button>
-                    <button id="mafia-fact-btn" class="btn-mafia-secondary" style="order: 1;">داده‌های محرمانه ✨</button>
+                    <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button>
+                    <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start">
+        <div class="screen-content-wrapper justify-start"> <!-- Default padding-top for game screen -->
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
                 <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
-                <div>مرحله: <span id="stage-display" class="font-bold" style="color: var(--primary-glow);">1</span></div>
+                <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
             </div>
 
             <div id="question-container" class="panel panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[150px] sm:min-h-[200px] flex flex-col justify-center">
-                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed">دریافت ماموریت...</p>
+                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed">سوال بارگذاری می‌شود...</p>
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4"></div>
                 <p id="question-explanation" class="text-xs sm:text-sm mt-3 sm:mt-4 text-gray-400 text-center hidden"></p>
             </div>
@@ -499,27 +832,28 @@
             
             <div id="ai-thinking-indicator" class="text-center mt-3 sm:mt-4 hidden">
                 <div class="loader inline-block"></div>
-                <p class="text-sm sm:text-base">پردازش اطلاعات توسط هوش مصنوعی...</p>
+                <p class="text-sm sm:text-base">دستیار هوش مصنوعی در حال فکر کردن است...</p>
             </div>
         </div>
     </div>
 
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-3 sm:p-4 panel-hidden z-50" style="backdrop-filter: blur(5px);">
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-3 sm:p-4 panel-hidden z-50">
         <div class="panel panel-visible p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
-            <h3 id="modal-title" class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4" style="color: var(--primary-glow); text-shadow: 0 0 8px var(--primary-glow);">هشدار سیستم</h3>
+            <h3 id="modal-title" class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#c49730]">توجه</h3>
             <div id="modal-content-dynamic">
                 <p id="modal-message" class="mb-2 sm:mb-3 text-sm sm:text-base"></p>
                 <div id="change-name-input-container" class="hidden mb-2">
-                    <input type="text" id="new-display-name-input" placeholder="کد ایجنت جدید (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
+                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
                     <p id="change-name-error-message" class=""></p>
                 </div>
                 <div id="avatar-generation-container" class="hidden">
-                    <button id="generate-avatar-btn" class="btn-mafia my-4">تولید آواتار با هوش مصنوعی</button>
+                    <button id="generate-avatar-btn" class="btn-mafia my-4">ساخت آواتار جدید با AI</button>
                     <div id="avatar-ai-loading" class="my-4 hidden">
                         <div class="loader mx-auto"></div>
-                        <p class="mt-2 text-sm text-gray-400">در حال ساخت چهره‌های پیشنهادی... (ممکن است زمان‌بر باشد)</p>
+                        <p class="mt-2 text-sm text-gray-400">در حال ساخت آواتارهای پیشنهادی... (ممکن است کمی طول بکشد)</p>
                     </div>
-                    <div id="avatar-suggestions-container"></div>
+                    <div id="avatar-suggestions-container">
+                        </div>
                     <p id="avatar-error-message" class="text-red-400 text-sm mt-2"></p>
                 </div>
             </div>
@@ -534,63 +868,61 @@
     <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[51]">
         <div id="developers-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
             <button id="close-developers-panel-btn">×</button>
-            <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center" style="color:var(--primary-glow); text-shadow: 0 0 8px var(--primary-glow);">تیم توسعه</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">سازندگان شهر مافیا</h3>
             <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y-auto pr-2 sm:pr-3 pl-1">
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">💻</span>
-                        <h4 class="dev-role">معمار سیستم</h4>
+                        <h4 class="dev-role">برنامه نویس ارشد</h4>
                     </div>
                     <p class="dev-username">abolfazl1401</p>
-                    <p class="dev-description">توسعه‌دهنده اصلی و طراح منطق مرکزی بازی شهر مافیا.</p>
+                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">🎨</span>
-                        <h4 class="dev-role">طراح رابط بصری</h4>
+                        <h4 class="dev-role">طراح گرافیک</h4>
                     </div>
                     <p class="dev-username">Vahid</p>
-                    <p class="dev-description">خالق هویت بصری، طراح رابط کاربری (UI) و تجربه کاربری (UX) سیستم.</p>
+                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">💡</span>
-                        <h4 class="dev-role">استراتژیست محتوا</h4>
+                        <h4 class="dev-role">ایده پرداز</h4>
                     </div>
                     <p class="dev-username">Ali.k</p>
-                    <p class="dev-description">ایده‌پرداز مراحل، چالش‌ها و روایت داستانی در دنیای سایبری مافیا.</p>
+                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
                 </div>
-                 <div class="developer-item">
+                <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">☁️</span>
-                        <h4 class="dev-role">مهندس زیرساخت</h4>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
                     <p class="dev-username">Neda_Tech</p>
-                    <p class="dev-description">متخصص پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت.</p>
+                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">⚙️</span>
-                        <h4 class="dev-role">مهندس زیرساخت</h4>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
                     <p class="dev-username">SinaCloud</p>
-                    <p class="dev-description">مسئول بهینه‌سازی شبکه و مدیریت پایگاه داده برای تجربه‌ای بدون تاخیر.</p>
+                    <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
                 </div>
                 <div class="developer-item">
                     <div class="dev-header">
                         <span class="dev-role-icon">🚀</span>
-                        <h4 class="dev-role">مهندس DevOps</h4>
+                        <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
                     </div>
                     <p class="dev-username">ParsaDevOps</p>
-                    <p class="dev-description">متمرکز بر فرآیندهای استقرار خودکار و مانیتورینگ عملکرد سرورها.</p>
+                    <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script type="module">
-        // The entire JavaScript code remains unchanged as the request was for a graphical overhaul.
-        // All class names and IDs used by this script are preserved in the new CSS.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -623,7 +955,7 @@
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
-            seenQuestionHashes: new Set(),
+            seenQuestionHashes: new Set(), // <<--- NEW: To store hashes of seen questions
         };
 
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
@@ -647,15 +979,17 @@
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
 
+        // <<--- NEW: Simple non-cryptographic hash function
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash |= 0;
+                hash |= 0; // Convert to 32bit integer
             }
             return `h${Math.abs(hash)}`;
         }
+
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -791,7 +1125,7 @@
             if(avatarImage && gameState.avatarUrl) {
                 avatarImage.src = gameState.avatarUrl;
             } else if (avatarImage) {
-                avatarImage.src = `https://placehold.co/80x80/050d2e/a7d9e4?text=?`;
+                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
             }
 
             let showRegistration = true;
@@ -890,7 +1224,7 @@
                     updateUI();
 
                     if (loadingScreen && loadingScreen.classList.contains('active')) {
-                        if(loadingMessage) loadingMessage.textContent = "اتصال برقرار شد. خوش آمدید!";
+                        if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
                             if(mainScreen) showScreen(mainScreen);
                         }, 500);
@@ -898,7 +1232,7 @@
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرورهای بازی.";
+                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
                 if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
             }
         }
@@ -922,6 +1256,7 @@
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
+                    // <<--- MODIFIED: Load seen questions and convert to a Set for efficient lookup
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
                     console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
@@ -950,6 +1285,7 @@
                     publicUserId: gameState.publicUserId,
                     currentStage: gameState.currentStage,
                     avatarUrl: gameState.avatarUrl,
+                    // <<--- MODIFIED: Convert Set to Array for Firestore storage
                     seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
@@ -962,7 +1298,7 @@
 
         // --- Gemini API Functions ---
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash"; // Using a slightly more advanced model for better quality
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
@@ -1064,6 +1400,7 @@
             let questionData = null;
 
             while (attempts < maxAttempts) {
+                // <<--- NEW: Determine difficulty based on stage
                 let difficulty = "آسان";
                 if (gameState.currentStage > 20) {
                     difficulty = "بسیار سخت";
@@ -1073,6 +1410,7 @@
                     difficulty = "متوسط";
                 }
 
+                // <<--- NEW: Professional and enhanced prompt
                 const prompt = `
                 شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
                 
@@ -1105,14 +1443,14 @@
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
-                        break;
+                        break; // Found a new, unique question
                     } else {
                         console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
                         attempts++;
                     }
                 } else {
                     console.error("Invalid question data structure received from AI:", data);
-                    attempts++;
+                    attempts++; // Count as a failed attempt
                 }
             }
 
@@ -1168,6 +1506,7 @@
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
                 
+                // <<--- MODIFIED: Add question hash to seen list and increment stage
                 const questionHash = simpleHash(question);
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
@@ -1194,6 +1533,8 @@
                     gameFeedback.textContent = "پاسخ اشتباه!";
                 }
                 gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
+                // Note: We do NOT add the hash to the seen list on wrong answers, so they might see it again to learn.
+                // Or we could add it to prevent farming wrong answers, but for now, let's keep it this way.
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
             if (explanation && questionExplanation) {
@@ -1205,7 +1546,7 @@
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
             avatarAiLoading.classList.remove('hidden');
-            const prompt = "Cool futuristic neon cyberpunk character avatar, portrait, dark blue and magenta theme, high detail, cinematic lighting, no text, no weapons, noir style";
+            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons";
             const suggestions = await callImagenAPI(prompt, 4);
 
             avatarSuggestionsContainer.innerHTML = '';
@@ -1263,17 +1604,17 @@
             const trimmedName = sanitizedValue.trim();
 
             if (trimmedName === '') {
-                errorElement.textContent = "کد ایجنت نمی‌تواند خالی باشد.";
+                errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
                 inputElement.classList.add('invalid');
                 return null;
             }
             if (trimmedName.length < 3) {
-                errorElement.textContent = "کد ایجنت باید حداقل ۳ کاراکتر باشد.";
+                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
                 inputElement.classList.add('invalid');
                 return null;
             }
             if (trimmedName.length > 20) {
-                errorElement.textContent = "کد ایجنت نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
+                errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
                 inputElement.classList.add('invalid');
                 return null;
             }
@@ -1288,7 +1629,7 @@
             if (!newName) return;
 
             if (newName === gameState.displayName) {
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = "کد جدید باید با کد فعلی متفاوت باشد.";
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
@@ -1297,16 +1638,16 @@
             await saveUserData();
             updateUI();
             hideModal();
-            showModal("موفقیت", "کد ایجنت شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
 
         async function generateMafiaFact() {
             const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
-            showModal("داده‌های محرمانه ✨", "<div class='loader mx-auto my-3'></div><p>جستجو در آرشیوهای رمزنگاری شده...</p>", "باشه", null, () => hideModal());
+            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
 
             const fact = await callGeminiAPI(prompt);
             if (fact) {
-                showModal("داده‌های محرمانه ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
+                showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
             } else {
                 showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
             }
@@ -1347,6 +1688,7 @@
                 });
             }
 
+
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
@@ -1367,7 +1709,7 @@
 
                     let isPublicIdValid = false;
                     if (!gameState.publicUserId) {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری ایجاد کنید.";
+                        if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
                         isPublicIdValid = false;
                     } else if (userIdDisplayInput && userIdDisplayInput.value !== gameState.publicUserId) {
                         if(userIdErrorMessage) userIdErrorMessage.textContent = "خطا: شناسه کاربری نمایش داده شده با شناسه ساخته شده مغایرت دارد.";
@@ -1391,9 +1733,9 @@
                 editNameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
                     showModal(
-                        "تغییر کد ایجنت",
-                        "تغییر کد ایجنت در این سیستم رایگان است.",
-                        "تغییر کد",
+                        "تغییر نام نمایشی",
+                        "تغییر نام در این بازی رایگان است.",
+                        "تغییر نام",
                         "لغو",
                         handleChangeDisplayName,
                         hideModal,
@@ -1407,9 +1749,9 @@
                     if (!isAuthReady || !gameState.displayName) return;
                     selectedAvatarForConfirmation = null;
                     showModal(
-                        "تغییر چهره (آواتار)",
+                        "تغییر آواتار",
                         "",
-                        "انتخاب این چهره",
+                        "انتخاب این آواتار",
                         "لغو",
                         confirmAvatarSelection,
                         hideModal,
@@ -1429,9 +1771,9 @@
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
                         event.stopPropagation();
                         showModal(
-                            "احراز هویت لازم است",
-                            "برای دسترسی به این بخش، ابتدا باید با وارد کردن کد ایجنت و ایجاد شناسه، به سیستم متصل شوید.",
-                            "متوجه شدم",
+                            "ثبت نام لازم است",
+                            "برای دسترسی به این بخش، ابتدا باید با وارد کردن نام نمایشی و ساخت شناسه کاربری، ثبت نام خود را کامل کنید.",
+                            "باشه",
                             null,
                             () => hideModal()
                         );
@@ -1444,8 +1786,8 @@
                 startGameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
                     showModal(
-                        "شروع عملیات",
-                        "برای بهترین عملکرد و اتصال به سرورهای هوش مصنوعی، توصیه می‌شود از یک اتصال پایدار (در صورت امکان VPN با سرور آمریکا) استفاده کنید.",
+                        "شروع بازی",
+                        "برای تجربه بهتر بازی لطفا از فیلترشکن در کشور ایالات‌متحده (آمریکا) استفاده کنید.",
                         "متوجه شدم، ادامه بده", null,
                         () => {
                             hideModal();
@@ -1507,6 +1849,7 @@
             userIdDisplayInput = document.getElementById('user-id-display');
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
+
             userProfileArea = document.getElementById('user-profile-area');
             avatarContainer = document.getElementById('avatar-container');
             avatarImage = document.getElementById('avatar-image');
@@ -1543,22 +1886,23 @@
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
-            if(loadingMessage) loadingMessage.textContent = "بررسی اتصال به شبکه...";
+
+            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال به اینترنت...";
             if (!navigator.onLine) {
-                showModal("قطع اتصال", "اتصال به اینترنت برقرار نیست. لطفاً شبکه خود را بررسی و مجدداً تلاش کنید.", "تلاش مجدد", null, () => {
+                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
                     hideModal();
                     if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
                 });
                 return;
             }
-            if(loadingMessage) loadingMessage.textContent = "آماده‌سازی برای ورود اولیه...";
+            if(loadingMessage) loadingMessage.textContent = "در حال آماده سازی اولین ورود...";
 
             try {
                 setupEventListeners();
                 await initFirebase();
             } catch (error) {
                 console.error("Error during initializeGame:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در راه‌اندازی سیستم.";
+                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
             }
         }
 
