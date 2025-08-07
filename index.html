@@ -28,13 +28,49 @@
             --clash-panel-border-dark: #2a4166;
         }
 
+        /* --- KEYFRAME ANIMATIONS --- */
+        @keyframes clash-panel-intro {
+            0% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+            70% { opacity: 1; transform: scale(1.05) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #a07200; }
+            50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.3), 0 8px 0 #a07200; }
+        }
+
+        @keyframes subtle-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
         body {
-            font-family: 'Vazirmatn', sans-serif; /* Fallback for Persian text */
+            font-family: 'Vazirmatn', sans-serif;
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow-x: hidden;
+            overflow: hidden; /* Changed to hidden for better control with screens */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* Animated Background Layer */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 200%; height: 200%;
+            background-image: url('https://www.transparenttextures.com/patterns/dust.png');
+            opacity: 0.15;
+            z-index: 0;
+            animation: subtle-pan 120s linear infinite;
         }
 
         .clash-font {
@@ -51,27 +87,46 @@
             border-left-color: var(--clash-panel-border);
             border-radius: 16px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
         }
+        
+        /* Panel Corner Rivets */
+        .panel-clash::before, .panel-clash::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--clash-gold);
+            border-radius: 50%;
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 0 3px #000;
+        }
+        .panel-clash::before { top: 10px; left: 10px; }
+        .panel-clash::after { top: 10px; right: 10px; }
+        
+        #developers-panel::before, #developers-panel::after { top: 15px; }
+
 
         .panel-hidden {
             opacity: 0;
             transform: scale(0.9) translateY(-20px);
             pointer-events: none;
-            visibility: hidden; /* Ensure it's not interactive when hidden */
+            visibility: hidden;
         }
 
         .panel-visible {
             opacity: 1;
             transform: scale(1) translateY(0);
             visibility: visible;
+            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .btn-clash {
             border-radius: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.15s ease-out;
+            transition: all 0.1s ease-out; /* Faster transition */
             cursor: pointer;
             position: relative;
             white-space: nowrap;
@@ -104,8 +159,14 @@
             box-shadow: 0 8px 0 #a07200;
         }
         .btn-clash-primary:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #a07200;
+            transform: translateY(4px) !important;
+            box-shadow: 0 2px 0 #a07200 !important;
+            transition-duration: 0.05s;
+        }
+        
+        /* Breathing animation for start button */
+        #start-game-btn.breathing {
+            animation: breathe 2.5s ease-in-out infinite;
         }
         
         /* --- Secondary Button (Blue) --- */
@@ -126,8 +187,9 @@
             box-shadow: 0 7px 0 #2e5185;
         }
         .btn-clash-secondary:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #2e5185;
+            transform: translateY(3px) !important;
+            box-shadow: 0 2px 0 #2e5185 !important;
+            transition-duration: 0.05s;
         }
 
         .input-clash {
@@ -192,11 +254,7 @@
             height: 60px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
         ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 5px; border: 2px solid var(--clash-blue-dark); }
@@ -206,21 +264,22 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             padding: 10px; /* Base padding */
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.7s ease-in-out, visibility 0.7s;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow-y: auto;
+            z-index: 1; /* Ensure screens are on top of the background */
         }
         @media (min-width: 640px) { .screen { padding: 20px; } }
         #main-screen { justify-content: flex-start; }
         #loading-screen { justify-content: center; }
-        .screen.active { opacity: 1; visibility: visible; position: relative; z-index: 1; overflow-y: auto; }
+        .screen.active { opacity: 1; visibility: visible; position: relative; }
         
         .screen-content-wrapper {
             width: 100%;
@@ -273,7 +332,7 @@
         }
         #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
         
-        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 4px; border: 1px solid #4a2f20; }
+        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
         .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
         .user-info-item .value { font-size: 0.9em; font-weight: bold; }
         @media (min-width: 768px) {
@@ -301,18 +360,30 @@
         .avatar-suggestion-item:hover { transform: scale(1.05); }
         .avatar-suggestion-item.selected { border-color: var(--clash-green); box-shadow: 0 0 10px var(--clash-green); }
 
-        #main-screen-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 0; margin-bottom: 1rem; }
+        #main-screen-header { 
+            display: flex; justify-content: space-between; align-items: center; width: 100%; 
+            padding: 0.5rem; margin-bottom: 1rem; 
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            background-color: #6e4a31;
+            border-radius: 12px;
+            border: 4px solid #4a2f20;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+        }
         
         #main-title {
             text-align: center;
             flex-grow: 1;
-            font-size: 3rem; /* text-5xl */
+            font-size: 3rem;
             color: var(--clash-gold);
             text-shadow: 
                 -3px -3px 0 var(--clash-brown-dark),  
                  3px -3px 0 var(--clash-brown-dark),
                 -3px  3px 0 var(--clash-brown-dark),
                  3px  3px 0 var(--clash-brown-dark),
+                 -3px 0 0 var(--clash-brown-dark),
+                 3px 0 0 var(--clash-brown-dark),
+                 0 -3px 0 var(--clash-brown-dark),
+                 0 3px 0 var(--clash-brown-dark),
                  6px 6px 8px rgba(0,0,0,0.7);
         }
         @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
@@ -377,14 +448,20 @@
         </div>
         <div id="user-info-box" class="hidden">
             <div id="display-name-output-box" class="user-info-item">
-                <div class="label">بازیکن:</div>
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
+                    <span>بازیکن:</span>
+                </div>
                 <div id="display-name-output-container" class="flex items-center gap-2">
                     <span id="edit-name-btn" title="تغییر نام">✏️</span>
                     <div id="display-name-output" class="value clash-font"></div>
                 </div>
             </div>
             <div id="public-user-id-output-box" class="user-info-item">
-                <div class="label">شناسه:</div>
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
+                    <span>شناسه:</span>
+                </div>
                 <div id="public-user-id-output" class="value"></div>
             </div>
         </div>
@@ -464,7 +541,7 @@
     </div>
 
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
-        <div class="panel-clash panel-visible p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
+        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
             <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
             <div id="modal-content-dynamic">
                 <p id="modal-message" class="mb-3 text-base"></p>
@@ -546,14 +623,46 @@
             </div>
         </div>
     </div>
+    
+    <!-- Audio Elements -->
+    <div id="audio-container" class="hidden">
+        <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-close" src="https://assets.mixkit.co/sfx/preview/mixkit-gate-latch-click-1929.mp3" preload="auto"></audio>
+        <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
+        <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
+        <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
+    </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (UNCHANGED) ---
-        // The entire script content from the original file goes here.
-        // I am including it to ensure the file is complete and runnable.
+        // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- NEW: AUDIO MANAGER ---
+        const audioManager = {
+            sounds: {},
+            init() {
+                this.sounds.click = document.getElementById('sfx-click');
+                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
+                this.sounds.panelClose = document.getElementById('sfx-panel-close');
+                this.sounds.correct = document.getElementById('sfx-correct');
+                this.sounds.incorrect = document.getElementById('sfx-incorrect');
+                this.sounds.startGame = document.getElementById('sfx-start-game');
+
+                Object.values(this.sounds).forEach(sound => {
+                    if (sound) sound.volume = 0.4; // Adjust volume globally
+                });
+            },
+            play(soundName) {
+                const sound = this.sounds[soundName];
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.warn("Audio play failed:", e));
+                }
+            }
+        };
 
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
@@ -624,9 +733,9 @@
             screenElement.classList.add('active');
 
             const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
-            document.body.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
-            document.documentElement.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
-
+            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            
             screenElement.scrollTop = 0;
             updateUI();
         }
@@ -637,6 +746,13 @@
                 return;
             }
 
+            audioManager.play('panelOpen'); // Sound Effect
+
+            modalContainer.classList.remove('panel-hidden');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
+            void modalContainer.offsetWidth; // Trigger reflow
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
+            
             modalTitle.textContent = title;
 
             modalMessage.classList.add('hidden');
@@ -684,16 +800,17 @@
             } else {
                 modalCancelBtn.classList.add('hidden');
             }
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.classList.add('panel-visible');
         }
 
         function hideModal() {
             if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
                 return;
             }
+            
+            audioManager.play('panelClose'); // Sound Effect
             modalContainer.classList.add('panel-hidden');
-            modalContainer.classList.remove('panel-visible');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
             modalConfirmCallback = null;
             modalCancelCallback = null;
             changeNameInputContainer.classList.add('hidden');
@@ -731,8 +848,13 @@
 
         function showDevelopersPanel() {
             if (!developersPanelContainer) return;
+            audioManager.play('panelOpen'); // Sound Effect
+
             developersPanelContainer.classList.remove('panel-hidden');
-            developersPanelContainer.classList.add('panel-visible');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            void developersPanelContainer.offsetWidth; // Trigger reflow
+            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
+
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
@@ -740,8 +862,11 @@
 
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
+            audioManager.play('panelClose'); // Sound Effect
+
             developersPanelContainer.classList.add('panel-hidden');
-            developersPanelContainer.classList.remove('panel-visible');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
              if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
                (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
@@ -766,6 +891,7 @@
             if (isAuthReady && gameState.displayName && gameState.publicUserId) {
                 showRegistration = false;
                 showActionButtons = true;
+                if(startGameBtn) startGameBtn.classList.add('breathing'); // Add breathing animation
                 if (mainScreen && mainScreen.classList.contains('active')) {
                     showUserInfoAndAvatar = true;
                 }
@@ -773,10 +899,12 @@
                 showRegistration = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
             } else {
                 showRegistration = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
             }
 
             if(registrationForm){
@@ -798,8 +926,8 @@
             }
 
             if(userProfileArea){
-                const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) ||
-                                        (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
+                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
+                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                     userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
@@ -1122,6 +1250,7 @@
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
             if (selectedIndex === correctAnswerIndex) {
+                audioManager.play('correct'); // Sound effect
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
@@ -1133,6 +1262,7 @@
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
+                audioManager.play('incorrect'); // Sound effect
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
@@ -1179,6 +1309,7 @@
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
                     imgWrapper.addEventListener('click', () => {
+                        audioManager.play('click'); // Sound effect
                         const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
                         if (currentSelected) {
                             currentSelected.classList.remove('selected');
@@ -1289,6 +1420,13 @@
         }
         
         function setupEventListeners() {
+            // Add a global click sound listener for all clash buttons
+            document.body.addEventListener('click', (event) => {
+                if (event.target.closest('.btn-clash:not(:disabled)')) {
+                    audioManager.play('click');
+                }
+            });
+
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
@@ -1391,6 +1529,7 @@
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    audioManager.play('startGame'); // Special Sound
                     showModal(
                         "شروع بازی",
                         "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
@@ -1483,6 +1622,8 @@
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+
+            audioManager.init(); // Initialize the audio manager
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
