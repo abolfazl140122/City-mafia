@@ -105,7 +105,7 @@
         .panel-clash::before { top: 10px; left: 10px; }
         .panel-clash::after { top: 10px; right: 10px; }
         
-        #developers-panel::before, #developers-panel::after, #player-list-panel::before, #player-list-panel::after { top: 15px; }
+        #developers-panel::before, #developers-panel::after { top: 15px; }
 
 
         .panel-hidden {
@@ -373,7 +373,7 @@
         #main-title {
             text-align: center;
             flex-grow: 1;
-            font-size: 2.5rem; /* Adjusted for smaller screens */
+            font-size: 3rem;
             color: var(--clash-gold);
             text-shadow: 
                 -3px -3px 0 var(--clash-brown-dark),  
@@ -389,14 +389,14 @@
         @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
         @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
 
-        .header-icon-btn {
+        #dev-intro-icon-btn-header {
             background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
             padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
             align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
         }
-        .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
-        .header-icon-btn svg { width: 22px; height: 22px; }
+        #dev-intro-icon-btn-header:hover { background-color: #6c98d8; transform: scale(1.1); }
+        #dev-intro-icon-btn-header svg { width: 22px; height: 22px; }
         
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
@@ -408,9 +408,15 @@
         }
         .hidden { display: none !important; }
 
-        /* Styles for Pop-up Panels (Developers & Player List) */
-        .popup-panel-container { background-color: rgba(10, 10, 10, 0.85); z-index: 51; }
-        .close-popup-panel-btn {
+        /* Styles for Developers Panel */
+        #developers-panel-container { background-color: rgba(10, 10, 10, 0.85); }
+        #developers-panel {
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+        }
+        #close-developers-panel-btn {
             position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
             border: 2px solid #7c2425;
@@ -418,8 +424,8 @@
             color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
             font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
         }
-        .close-popup-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        .close-popup-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
+        #close-developers-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        #close-developers-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
 
         .developer-item {
             background-color: rgba(42, 65, 102, 0.9);
@@ -431,26 +437,6 @@
         .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
-        
-        /* NEW: Player List Styles */
-        #player-list-content { max-height: calc(80vh - 150px); overflow-y: auto; padding-right: 12px; }
-        .player-list-item {
-            display: flex; align-items: center; gap: 15px;
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 12px; border-radius: 12px;
-            border: 2px solid rgba(157, 194, 255, 0.4);
-        }
-        .player-list-item-avatar {
-            width: 50px; height: 50px; border-radius: 50%;
-            background-color: #2a4166; flex-shrink: 0;
-            border: 3px solid var(--clash-panel-border);
-            object-fit: cover;
-        }
-        .player-list-item-info { flex-grow: 1; }
-        .player-list-item-name { font-size: 1.2rem; color: var(--clash-gold); }
-        .player-list-item-id { font-size: 0.8rem; color: #b0c8ef; font-family: monospace; }
-        .player-list-loading { text-align: center; padding: 2rem; }
-
     </style>
 </head>
 <body>
@@ -493,7 +479,7 @@
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
-                    <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
+                    <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
@@ -502,10 +488,7 @@
                         </svg>
                     </button>
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    <!-- NEW: Player List Button -->
-                    <button id="player-list-btn-header" class="header-icon-btn" title="لیست بازیکنان">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 6c1.103 0 2-.897 2-2s-.897-2-2-2-2 .897-2 2 .897 2 2 2zm0 2c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4zm0 2c-2.733 0-5.463.303-5.832 3H17.832C17.463 10.303 14.733 10 12 10zM4.168 15C4.537 12.303 7.267 12 10 12h4c2.733 0 5.463.303 5.832 3H20v2h-2.002c-.011.033-.022.065-.034.097A3.983 3.983 0 0 1 15 22H9a3.983 3.983 0 0 1-2.964-4.903c-.012-.032-.023-.064-.034-.097H4v-2h.168z"></path></svg>
-                    </button>
+                    <div style="width: 44px; flex-shrink: 0;"></div> <!-- Spacer -->
                 </div>
 
                 <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
@@ -584,9 +567,9 @@
     </div>
     
     <!-- Developers Panel -->
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden popup-panel-container">
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
         <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
-            <button id="close-developers-panel-btn" class="close-popup-panel-btn">×</button>
+            <button id="close-developers-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
             <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
                 <div class="developer-item">
@@ -640,21 +623,6 @@
             </div>
         </div>
     </div>
-
-    <!-- NEW: Player List Panel -->
-    <div id="player-list-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden popup-panel-container">
-        <div id="player-list-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
-            <button id="close-player-list-panel-btn" class="close-popup-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران مافیا شهر</h3>
-            <div id="player-list-content" class="space-y-3">
-                <!-- Player items will be dynamically inserted here -->
-                <div class="player-list-loading">
-                    <div class="loader mx-auto"></div>
-                    <p class="mt-2">در حال بارگذاری لیست بازیکنان...</p>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- Audio Elements -->
     <div id="audio-container" class="hidden">
@@ -670,7 +638,7 @@
         // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, deleteDoc, serverTimestamp, collection, getDocs, onSnapshot, query, orderBy, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- NEW: AUDIO MANAGER ---
         const audioManager = {
@@ -735,7 +703,6 @@
             editNameBtn,
             mainScreenButtonsLayout,
             startGameBtn, mafiaFactBtn, devIntroBtnHeader,
-            playerListBtnHeader, // NEW
             stageDisplay, questionText,
             optionsContainer, questionExplanation, backToMainBtn,
             gameFeedback, aiThinkingIndicator,
@@ -743,8 +710,7 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn,
-            playerListPanelContainer, closePlayerListPanelBtn, playerListContent; // NEW
+            developersPanelContainer, closeDevelopersPanelBtn;
 
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
@@ -775,14 +741,17 @@
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalContainer) return;
+            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
+                console.error("[showModal] Modal elements not found, cannot show modal.");
+                return;
+            }
 
-            audioManager.play('panelOpen');
+            audioManager.play('panelOpen'); // Sound Effect
 
             modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void modalContainer.offsetWidth;
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
+            void modalContainer.offsetWidth; // Trigger reflow
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
             
             modalTitle.textContent = title;
 
@@ -793,24 +762,25 @@
             if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
 
+
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
 
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
-                newDisplayNameInput.value = gameState.displayName;
-                changeNameErrorMessage.textContent = '';
-                newDisplayNameInput.classList.remove('invalid');
+                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
+                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
                 if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
                 avatarGenerationContainer.classList.remove('hidden');
-                avatarSuggestionsContainer.innerHTML = '';
-                avatarErrorMessage.textContent = '';
-                avatarAiLoading.classList.add('hidden');
+                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = '';
+                if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
                  if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
@@ -833,9 +803,11 @@
         }
 
         function hideModal() {
-            if (!modalContainer) return;
+            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
+                return;
+            }
             
-            audioManager.play('panelClose');
+            audioManager.play('panelClose'); // Sound Effect
             modalContainer.classList.add('panel-hidden');
             modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
 
@@ -844,11 +816,8 @@
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
-            
-            const isAnyPopupOpen = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                  (playerListPanelContainer && !playerListPanelContainer.classList.contains('panel-hidden'));
-
-            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyPopupOpen) {
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
@@ -858,7 +827,7 @@
                 try {
                     modalConfirmCallback();
                 } catch (e) {
-                    console.error("Error in modal confirm callback:", e);
+                    console.error("[handleModalConfirm] Error in modal confirm callback:", e);
                     hideModal();
                 }
             } else {
@@ -871,36 +840,35 @@
                 try {
                     modalCancelCallback();
                 } catch (e) {
-                    console.error("Error in modal cancel callback:", e);
+                    console.error("[handleModalCancel] Error in modal cancel callback:", e);
                 }
             }
             hideModal();
         }
 
-        // --- NEW: Generic Popup Panel Functions ---
-        function showPopupPanel(panelContainer) {
-            if (!panelContainer) return;
-            audioManager.play('panelOpen');
+        function showDevelopersPanel() {
+            if (!developersPanelContainer) return;
+            audioManager.play('panelOpen'); // Sound Effect
 
-            panelContainer.classList.remove('panel-hidden');
-            panelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void panelContainer.offsetWidth; // Trigger reflow
-            panelContainer.querySelector('.panel-clash').classList.add('panel-visible');
+            developersPanelContainer.classList.remove('panel-hidden');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            void developersPanelContainer.offsetWidth; // Trigger reflow
+            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
 
-            if(userProfileArea && mainScreen.classList.contains('active')) {
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
         }
 
-        function hidePopupPanel(panelContainer) {
-            if (!panelContainer) return;
-            audioManager.play('panelClose');
+        function hideDevelopersPanel() {
+            if (!developersPanelContainer) return;
+            audioManager.play('panelClose'); // Sound Effect
 
-            panelContainer.classList.add('panel-hidden');
-            panelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            developersPanelContainer.classList.add('panel-hidden');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
 
-            const isAnyModalOpen = modalContainer && !modalContainer.classList.contains('panel-hidden');
-            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyModalOpen) {
+             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
@@ -916,32 +884,62 @@
                 avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
             }
 
-            const showRegistration = !isAuthReady || !gameState.displayName || !gameState.publicUserId;
-            const showActionButtons = isAuthReady && gameState.displayName && gameState.publicUserId;
+            let showRegistration = true;
+            let showActionButtons = false;
             let showUserInfoAndAvatar = false;
-            
-            if(startGameBtn) startGameBtn.classList.toggle('breathing', showActionButtons);
-            if (showActionButtons && mainScreen && mainScreen.classList.contains('active')) {
-                showUserInfoAndAvatar = true;
+
+            if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                showRegistration = false;
+                showActionButtons = true;
+                if(startGameBtn) startGameBtn.classList.add('breathing'); // Add breathing animation
+                if (mainScreen && mainScreen.classList.contains('active')) {
+                    showUserInfoAndAvatar = true;
+                }
+            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            } else {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
             }
 
-            if(registrationForm) {
-                registrationForm.classList.toggle('panel-hidden', !showRegistration);
-                registrationForm.classList.toggle('panel-visible', showRegistration);
+            if(registrationForm){
+                if (showRegistration) {
+                    registrationForm.classList.remove('panel-hidden');
+                    registrationForm.classList.add('panel-visible');
+                } else {
+                    registrationForm.classList.add('panel-hidden');
+                    registrationForm.classList.remove('panel-visible');
+                }
             }
 
-            if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.toggle('hidden', !showActionButtons);
+            if(mainScreenButtonsLayout){
+                if (showActionButtons) {
+                    mainScreenButtonsLayout.classList.remove('hidden');
+                } else {
+                    mainScreenButtonsLayout.classList.add('hidden');
+                }
+            }
 
             if(userProfileArea){
                 const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
-                                          (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                          (playerListPanelContainer && !playerListPanelContainer.classList.contains('panel-hidden'));
-
+                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                     userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
-                    if(avatarContainer) avatarContainer.classList.toggle('hidden', window.innerWidth < 768);
+                    if(avatarContainer){
+                        if(window.innerWidth >= 768) {
+                            avatarContainer.classList.remove('hidden');
+                        } else {
+                            avatarContainer.classList.add('hidden');
+                        }
+                    }
                     if(userInfoBox) userInfoBox.classList.remove('hidden');
+
                 } else if (!showUserInfoAndAvatar) {
                     userProfileArea.classList.add('hidden');
                     if(avatarContainer) avatarContainer.classList.add('hidden');
@@ -970,7 +968,7 @@
                             try {
                                 await signInWithCustomToken(auth, __initial_auth_token);
                             } catch (error) {
-                                console.error("Custom token sign-in error, trying anonymous:", error);
+                                console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
                                 await signInAnonymously(auth);
                             }
                         } else {
@@ -991,8 +989,7 @@
                         }, 500);
                     }
                 });
-            } catch (error)
-            {
+            } catch (error) {
                 console.error("Firebase initialization error:", error);
                 if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
                 if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
@@ -1000,87 +997,62 @@
         }
         
         async function loadUserData() {
-            if (!currentUserId || !db) return;
+            if (!currentUserId || !db) {
+                console.log("Cannot load user data: no currentUserId or db connection.");
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
+                return;
+            }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
+                    console.log("User data found, loading profile.");
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
+                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
-                    Object.assign(gameState, { displayName: "", publicUserId: "", avatarUrl: '', seenQuestionHashes: new Set() });
+                    console.log("No user profile found, setting default values.");
+                    gameState.displayName = "";
+                    gameState.publicUserId = "";
+                    gameState.avatarUrl = '';
+                    gameState.seenQuestionHashes = new Set();
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه");
-                Object.assign(gameState, { displayName: "", publicUserId: "", avatarUrl: '', seenQuestionHashes: new Set() });
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
             }
         }
-        
-        // --- NEW: Check if a display name is already taken ---
-        async function isDisplayNameTaken(name) {
-            const nameToCheck = name.toLowerCase();
-            const nameDocRef = doc(db, `artifacts/${appId}/displayNames`, nameToCheck);
-            try {
-                const docSnap = await getDoc(nameDocRef);
-                // If the doc exists AND it belongs to a different user, the name is taken.
-                return docSnap.exists() && docSnap.data().uid !== currentUserId;
-            } catch (error) {
-                console.error("Error checking display name:", error);
-                showModal("خطا", "مشکلی در بررسی نام کاربری پیش آمد. لطفاً دوباره تلاش کنید.");
-                return true; // Fail safe, assume it's taken if there's an error
-            }
-        }
-        
-        async function saveUserData(oldName = null) {
+
+        async function saveUserData() {
             if (!currentUserId || !db) return;
-            
-            const batch = writeBatch(db);
-
-            // 1. Main profile document
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-            const userData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
-                lastUpdated: serverTimestamp()
-            };
-            batch.set(userDocRef, userData, { merge: true });
-
-            // 2. Public profile document (for the player list)
-            const publicProfileRef = doc(db, `artifacts/${appId}/publicProfiles`, currentUserId);
-            const publicData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                avatarUrl: gameState.avatarUrl,
-            };
-            batch.set(publicProfileRef, publicData, { merge: true });
-            
-            // 3. Unique display name document
-            const newNameRef = doc(db, `artifacts/${appId}/displayNames`, gameState.displayName.toLowerCase());
-            batch.set(newNameRef, { uid: currentUserId });
-
-            // 4. If changing name, delete the old display name document
-            if (oldName && oldName.toLowerCase() !== gameState.displayName.toLowerCase()) {
-                const oldNameRef = doc(db, `artifacts/${appId}/displayNames`, oldName.toLowerCase());
-                batch.delete(oldNameRef);
-            }
-
             try {
-                await batch.commit();
-                console.log("User data and related documents saved successfully.");
+                await setDoc(userDocRef, {
+                    displayName: gameState.displayName,
+                    publicUserId: gameState.publicUserId,
+                    currentStage: gameState.currentStage,
+                    avatarUrl: gameState.avatarUrl,
+                    seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
+                    lastUpdated: serverTimestamp()
+                }, { merge: true });
+                 console.log("User data saved successfully.");
             } catch (error) {
-                console.error("Error saving user data with batch:", error);
-                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
+                console.error("Error saving user data:", error);
+                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
-
+        
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
         const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
@@ -1088,24 +1060,45 @@
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
             if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+
             if (isJsonOutput) {
-                payload.generationConfig = { responseMimeType: "application/json" };
-                if (schema) payload.generationConfig.responseSchema = schema;
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                };
+                if (schema) {
+                    payload.generationConfig.responseSchema = schema;
+                }
             }
+
             try {
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}: ${await response.text()}`);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+                }
                 const result = await response.json();
-                if (result.candidates?.[0]?.content?.parts?.[0]) {
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
                     const text = result.candidates[0].content.parts[0].text;
                     return isJsonOutput ? JSON.parse(text) : text;
+                } else {
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
+                         throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
+                    }
+                    throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
                 }
-                throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates?.[0]?.finishReason || 'نامشخص'})`);
             } catch (error) {
                 console.error("Error calling Gemini API:", error);
                 if (!prompt.includes("offensive, hateful, or contain profanity")) {
-                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه");
+                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
                 }
                 return null;
             } finally {
@@ -1116,14 +1109,29 @@
         async function callImagenAPI(prompt, sampleCount = 1) {
             if(avatarAiLoading) avatarAiLoading.classList.remove('hidden');
             if(avatarErrorMessage) avatarErrorMessage.textContent = '';
-            const payload = { instances: [{ prompt }], parameters: { "sampleCount": sampleCount } };
+
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": sampleCount }
+            };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
+
             try {
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API request failed: ${response.status} ${await response.text()}`);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed: ${response.status} ${errorBody}`);
+                }
                 const result = await response.json();
-                if (result.predictions?.length > 0) return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
-                throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
+                if (result.predictions && result.predictions.length > 0) {
+                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
+                } else {
+                    throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
+                }
             } catch (error) {
                 console.error("Error calling Imagen API:", error);
                 if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
@@ -1146,21 +1154,50 @@
             let questionData = null;
 
             while (attempts < maxAttempts) {
-                let difficulty = gameState.currentStage > 20 ? "بسیار سخت" : gameState.currentStage > 10 ? "سخت" : gameState.currentStage > 5 ? "متوسط" : "آسان";
-                const prompt = `شما یک طراح بازی حرفه‌ای و خلاق برای یک بازی مافیایی هستید. یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا (تاریخچه، فیلم‌ها، اصطلاحات) ایجاد کن. سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است. سوال نباید کلیشه‌ای باشد. خروجی باید فقط یک آبجکت JSON خام با ساختار {"question": "...", "options": ["...", "...", "...", "..."], "correctAnswerIndex": 0, "explanation": "..."} باشد.`;
+                let difficulty = "آسان";
+                if (gameState.currentStage > 20) {
+                    difficulty = "بسیار سخت";
+                } else if (gameState.currentStage > 10) {
+                    difficulty = "سخت";
+                } else if (gameState.currentStage > 5) {
+                    difficulty = "متوسط";
+                }
+                
+                const prompt = `
+                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
+                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                موضوعات پیشنهادی (برای تنوع):
+                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
+                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
+                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
+                ساختار JSON باید دقیقا به این صورت باشد:
+                {
+                  "question": "متن سوال به فارسی",
+                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
+                  "correctAnswerIndex": 0,
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
+                }
+                `;
 
                 const data = await callGeminiAPI(prompt, true);
-                if (data?.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
+
+                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
                         break;
                     } else {
-                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying...`);
+                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
                         attempts++;
                     }
                 } else {
-                    console.error("Invalid question data structure from AI:", data);
+                    console.error("Invalid question data structure received from AI:", data);
                     attempts++;
                 }
             }
@@ -1169,12 +1206,16 @@
                 gameState.currentQuestionData = questionData;
                 displayQuestion();
             } else {
-                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید بسازیم. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                console.error("Failed to generate a unique question after multiple attempts.");
+                if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
+                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
                     () => { hideModal(); generateQuestion(); },
                     () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
                 );
             }
+            
             gameState.isLoadingNextQuestion = false;
+            gameState.isQuestionActive = true;
         }
 
         function displayQuestion() {
@@ -1191,40 +1232,55 @@
                 optionsContainer.appendChild(button);
             });
             if(questionExplanation) questionExplanation.classList.add('hidden');
+            if(questionExplanation) questionExplanation.textContent = "";
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
         }
         
         async function handleAnswerSelection(event) {
-            if (!gameState.isQuestionActive) return;
+            if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
             gameState.isQuestionActive = false;
 
             const selectedOptionButton = event.target.closest('.option-btn');
             if (!selectedOptionButton) return;
-            
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
             const selectedIndex = parseInt(selectedOptionButton.dataset.index);
             const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
-            
+
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+
             if (selectedIndex === correctAnswerIndex) {
-                audioManager.play('correct');
+                audioManager.play('correct'); // Sound effect
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
                 
-                gameState.seenQuestionHashes.add(simpleHash(question));
+                const questionHash = simpleHash(question);
+                gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
+                
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
-                audioManager.play('incorrect');
+                audioManager.play('incorrect'); // Sound effect
                 selectedOptionButton.classList.add('incorrect');
-                optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`)?.classList.add('correct');
-                
-                const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده: سوال: "${question}"، پاسخ اشتباه: "${options[selectedIndex]}". یک طعنه کوتاه و بامزه (۱-۲ جمله) به فارسی بگو.`;
+                const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+                if (correctButton) correctButton.classList.add('correct');
+
+                const selectedOptionText = options[selectedIndex];
+                const correctAnswerText = options[correctAnswerIndex];
+                const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
+                سوال: "${question}"
+                پاسخ اشتباه بازیکن: "${selectedOptionText}"
+                پاسخ صحیح: "${correctAnswerText}"
+                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
+
                 const taunt = await callGeminiAPI(tauntPrompt);
-                gameFeedback.innerHTML = taunt?.replace(/\n/g, '<br>') || "پاسخ اشتباه!";
+                if (taunt) {
+                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
+                } else {
+                    gameFeedback.textContent = "پاسخ اشتباه!";
+                }
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
                 
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
@@ -1244,7 +1300,7 @@
             avatarSuggestionsContainer.innerHTML = '';
             selectedAvatarForConfirmation = null;
 
-            if (suggestions?.length > 0) {
+            if (suggestions && suggestions.length > 0) {
                 suggestions.forEach(base64Url => {
                     const imgWrapper = document.createElement('div');
                     imgWrapper.className = 'avatar-suggestion-item';
@@ -1253,8 +1309,11 @@
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
                     imgWrapper.addEventListener('click', () => {
-                        audioManager.play('click');
-                        avatarSuggestionsContainer.querySelector('.selected')?.classList.remove('selected');
+                        audioManager.play('click'); // Sound effect
+                        const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
+                        if (currentSelected) {
+                            currentSelected.classList.remove('selected');
+                        }
                         imgWrapper.classList.add('selected');
                         selectedAvatarForConfirmation = base64Url;
                         modalConfirmBtn.disabled = false;
@@ -1276,7 +1335,7 @@
                 await saveUserData();
                 updateUI();
                 hideModal();
-                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!");
+                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
             } else {
                 if(avatarErrorMessage) avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
             }
@@ -1284,19 +1343,37 @@
 
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
             if (!inputElement || !errorElement) return null;
-            const sanitizedValue = nameValue.replace(/[^a-zA-Z0-9_.-]/g, '');
-            if (nameValue !== sanitizedValue) inputElement.value = sanitizedValue;
+            const regex = /[^a-zA-Z0-9_.-]/g;
+            let sanitizedValue = nameValue.replace(regex, '');
+
+            if (nameValue !== sanitizedValue) {
+                inputElement.value = sanitizedValue;
+            }
 
             const trimmedName = sanitizedValue.trim();
-            let error = null;
-            if (trimmedName === '') error = "نام نمایشی نمی‌تواند خالی باشد.";
-            else if (trimmedName.length < 3) error = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
-            else if (trimmedName.length > 20) error = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
-            
-            errorElement.textContent = error || '';
-            errorElement.classList.toggle('hidden', !error);
-            inputElement.classList.toggle('invalid', !!error);
-            return error ? null : trimmedName;
+
+            if (trimmedName === '') {
+                errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            if (trimmedName.length < 3) {
+                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            if (trimmedName.length > 20) {
+                errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            errorElement.textContent = '';
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('invalid');
+            return trimmedName;
         }
 
         async function handleChangeDisplayName() {
@@ -1304,83 +1381,46 @@
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
-            if (newName.toLowerCase() === gameState.displayName.toLowerCase()) {
-                changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-                changeNameErrorMessage.classList.remove('hidden');
-                newDisplayNameInput.classList.add('invalid');
+            if (newName === gameState.displayName) {
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
-            
-            // NEW: Check if name is taken
-            if (await isDisplayNameTaken(newName)) {
-                changeNameErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری انتخاب شده است.";
-                changeNameErrorMessage.classList.remove('hidden');
-                newDisplayNameInput.classList.add('invalid');
-                return;
-            }
-            
-            const oldName = gameState.displayName;
+
             gameState.displayName = newName;
-            await saveUserData(oldName); // Pass old name to handle deletion
+            await saveUserData();
             updateUI();
             hideModal();
-            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!");
+            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
 
         async function generateMafiaFact() {
-            const prompt = "یک حقیقت جالب و کمتر شنیده شده (۲-۴ جمله) در مورد دنیای مافیا به زبان فارسی برای من تعریف کن.";
-            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه");
+            const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
+            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
+
             const fact = await callGeminiAPI(prompt);
-            showModal("دانستنی مافیا ✨", fact?.replace(/\n/g, '<br>') || "متاسفانه نکته‌ای پیدا نشد!", "جالب بود!");
+            if (fact) {
+                showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
+            } else {
+                showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
+            }
         }
         
         function generateAlphanumericPublicUserId(length = 5) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = '';
+            const charactersLength = characters.length;
             for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
         }
         
-        async function fetchAndDisplayPlayers() {
-            if (!playerListContent) return;
-            showPopupPanel(playerListPanelContainer);
-
-            playerListContent.innerHTML = `<div class="player-list-loading"><div class="loader mx-auto"></div><p class="mt-2">در حال بارگذاری لیست بازیکنان...</p></div>`;
-
-            try {
-                const q = query(collection(db, `artifacts/${appId}/publicProfiles`));
-                const querySnapshot = await getDocs(q);
-                
-                playerListContent.innerHTML = ''; // Clear loading
-                
-                if (querySnapshot.empty) {
-                    playerListContent.innerHTML = `<p class="text-center text-gray-300">هنوز هیچ بازیکنی ثبت نام نکرده است!</p>`;
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const player = doc.data();
-                    const playerElement = document.createElement('div');
-                    playerElement.className = 'player-list-item';
-                    playerElement.innerHTML = `
-                        <img src="${player.avatarUrl || 'https://placehold.co/50x50/2a4166/ffffff?text=?'}" alt="Avatar" class="player-list-item-avatar" onerror="this.src='https://placehold.co/50x50/2a4166/ffffff?text=?'">
-                        <div class="player-list-item-info">
-                            <p class="player-list-item-name clash-font">${player.displayName || 'نامشخص'}</p>
-                            <p class="player-list-item-id">شناسه: ${player.publicUserId || '---'}</p>
-                        </div>
-                    `;
-                    playerListContent.appendChild(playerElement);
-                });
-
-            } catch (error) {
-                console.error("Error fetching player list:", error);
-                playerListContent.innerHTML = `<p class="text-center text-red-300">خطا در بارگذاری لیست بازیکنان. لطفاً قوانین فایربیس را بررسی کنید.</p>`;
-            }
-        }
-        
         function setupEventListeners() {
+            // Add a global click sound listener for all clash buttons
             document.body.addEventListener('click', (event) => {
                 if (event.target.closest('.btn-clash:not(:disabled)')) {
                     audioManager.play('click');
@@ -1391,8 +1431,15 @@
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
             if (displayNameInput) {
-                displayNameInput.addEventListener('input', () => validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput));
-                displayNameInput.addEventListener('keydown', (e) => e.key === 'Enter' && registerBtn?.click());
+                displayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+                });
+                displayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        if(registerBtn) registerBtn.click();
+                    }
+                });
             }
 
             if (generateUserIdBtn) {
@@ -1405,43 +1452,41 @@
             }
 
             if (newDisplayNameInput) {
-                newDisplayNameInput.addEventListener('input', () => validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput));
-                newDisplayNameInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && modalConfirmCallback === handleChangeDisplayName) modalConfirmBtn?.click();
+                newDisplayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+                });
+                newDisplayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                         if (modalConfirmCallback === handleChangeDisplayName) {
+                            if(modalConfirmBtn) modalConfirmBtn.click();
+                        }
+                    }
                 });
             }
 
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
-                    registerBtn.disabled = true;
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                    const isPublicIdValid = !!gameState.publicUserId;
 
-                    if (!isPublicIdValid) {
-                        userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
-                        userIdErrorMessage.classList.remove('hidden');
+                    let isPublicIdValid = false;
+                    if (!gameState.publicUserId) {
+                        if(userIdErrorMessage) {
+                            userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
+                            userIdErrorMessage.classList.remove('hidden');
+                        }
+                        isPublicIdValid = false;
                     } else {
-                         userIdErrorMessage.classList.add('hidden');
+                        if(userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+                        isPublicIdValid = true;
                     }
 
-                    if (!validatedName || !isPublicIdValid) {
-                        registerBtn.disabled = false;
-                        return;
-                    }
-                    
-                    // NEW: Check if name is taken before registering
-                    if (await isDisplayNameTaken(validatedName)) {
-                        inputErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری انتخاب شده است.";
-                        inputErrorMessage.classList.remove('hidden');
-                        displayNameInput.classList.add('invalid');
-                        registerBtn.disabled = false;
-                        return;
-                    }
+                    if (!validatedName || !isPublicIdValid) return;
 
                     gameState.displayName = validatedName;
+
                     await saveUserData();
                     updateUI();
-                    registerBtn.disabled = false;
                 });
             }
 
@@ -1453,7 +1498,7 @@
                     );
                 });
             }
-            
+
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
@@ -1468,89 +1513,137 @@
             if (generateAvatarBtn) {
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
-            
-            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader, playerListBtnHeader].filter(Boolean);
+
+            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
-                    if (button !== devIntroBtnHeader && (!isAuthReady || !gameState.displayName || !gameState.publicUserId)) {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
                         event.stopPropagation();
-                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.", "باشه");
+                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.",
+                            "باشه", null, () => hideModal()
+                        );
                     }
                 }, true);
             });
 
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
-                    audioManager.play('startGame');
-                    showModal("شروع بازی", "پیشنهاد می‌شود از یک اتصال اینترنت پایدار استفاده کنید.", "ادامه", null,
-                        () => { hideModal(); showScreen(gameScreen); generateQuestion(); }
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    audioManager.play('startGame'); // Special Sound
+                    showModal(
+                        "شروع بازی",
+                        "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
+                        "ادامه", null,
+                        () => {
+                            hideModal();
+                            if(gameScreen) showScreen(gameScreen);
+                            generateQuestion();
+                        }
                     );
                 });
             }
-            if (mafiaFactBtn) mafiaFactBtn.addEventListener('click', generateMafiaFact);
-            if (devIntroBtnHeader) devIntroBtnHeader.addEventListener('click', () => showPopupPanel(developersPanelContainer));
-            if (closeDevelopersPanelBtn) closeDevelopersPanelBtn.addEventListener('click', () => hidePopupPanel(developersPanelContainer));
+
+            if (mafiaFactBtn) {
+                mafiaFactBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    generateMafiaFact();
+                });
+            }
             
-            // NEW: Player List Listeners
-            if (playerListBtnHeader) playerListBtnHeader.addEventListener('click', fetchAndDisplayPlayers);
-            if (closePlayerListPanelBtn) closePlayerListPanelBtn.addEventListener('click', () => hidePopupPanel(playerListPanelContainer));
-            
+            if (devIntroBtnHeader) {
+                devIntroBtnHeader.addEventListener('click', () => {
+                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                        showDevelopersPanel();
+                    }
+                });
+            }
+
+            if (closeDevelopersPanelBtn) {
+                closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
+            }
+
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
                     await saveUserData();
                     gameState.currentQuestionData = null;
-                    showScreen(mainScreen);
+                    if(mainScreen) showScreen(mainScreen);
                 });
             }
 
-            window.addEventListener('resize', updateUI);
+            window.addEventListener('resize', () => {
+                updateUI();
+            });
         }
         
         async function initializeGame() {
-            // Cache all DOM elements
-            const ids = [
-                'loading-screen', 'loading-message', 'main-screen', 'game-screen', 'registration-form',
-                'display-name-input', 'register-btn', 'input-error-message', 'user-id-display', 'generate-user-id-btn',
-                'user-id-error-message', 'user-profile-area', 'avatar-container', 'avatar-image', 'user-info-box',
-                'display-name-output', 'public-user-id-output', 'edit-name-btn', 'main-screen-buttons-layout',
-                'start-game-btn', 'mafia-fact-btn', 'dev-intro-icon-btn-header', 'player-list-btn-header', 'stage-display',
-                'question-text', 'options-container', 'question-explanation', 'back-to-main-btn', 'game-feedback',
-                'ai-thinking-indicator', 'modal-container', 'modal-title', 'modal-content-dynamic', 'modal-message',
-                'change-name-input-container', 'new-display-name-input', 'change-name-error-message',
-                'avatar-generation-container', 'generate-avatar-btn', 'avatar-ai-loading', 'avatar-suggestions-container',
-                'avatar-error-message', 'modal-confirm-btn', 'modal-cancel-btn', 'developers-panel-container',
-                'close-developers-panel-btn', 'player-list-panel-container', 'close-player-list-panel-btn', 'player-list-content'
-            ];
-            const elements = {};
-            ids.forEach(id => elements[id.replace(/-(\w)/g, (m, p1) => p1.toUpperCase())] = document.getElementById(id));
-            Object.assign(window, elements); // Makes variables globally accessible in this script block
-            
-            loadingScreen = elements.loadingScreen; loadingMessage = elements.loadingMessage; mainScreen = elements.mainScreen; gameScreen = elements.gameScreen;
-            registrationForm = elements.registrationForm; displayNameInput = elements.displayNameInput; registerBtn = elements.registerBtn; inputErrorMessage = elements.inputErrorMessage;
-            userIdDisplayInput = elements.userIdDisplay; generateUserIdBtn = elements.generateUserIdBtn; userIdErrorMessage = elements.userIdErrorMessage; userProfileArea = elements.userProfileArea;
-            avatarContainer = elements.avatarContainer; avatarImage = elements.avatarImage; userInfoBox = elements.userInfoBox; displayNameOutput = elements.displayNameOutput;
-            publicUserIdOutput = elements.publicUserIdOutput; editNameBtn = elements.editNameBtn; mainScreenButtonsLayout = elements.mainScreenButtonsLayout; startGameBtn = elements.startGameBtn;
-            mafiaFactBtn = elements.mafiaFactBtn; devIntroBtnHeader = elements.devIntroIconBtnHeader; playerListBtnHeader = elements.playerListBtnHeader; stageDisplay = elements.stageDisplay;
-            questionText = elements.questionText; optionsContainer = elements.optionsContainer; questionExplanation = elements.questionExplanation; backToMainBtn = elements.backToMainBtn;
-            gameFeedback = elements.gameFeedback; aiThinkingIndicator = elements.aiThinkingIndicator; modalContainer = elements.modalContainer; modalTitle = elements.modalTitle;
-            modalContentDynamic = elements.modalContentDynamic; modalMessage = elements.modalMessage; changeNameInputContainer = elements.changeNameInputContainer; newDisplayNameInput = elements.newDisplayNameInput;
-            changeNameErrorMessage = elements.changeNameErrorMessage; avatarGenerationContainer = elements.avatarGenerationContainer; generateAvatarBtn = elements.generateAvatarBtn; avatarAiLoading = elements.avatarAiLoading;
-            avatarSuggestionsContainer = elements.avatarSuggestionsContainer; avatarErrorMessage = elements.avatarErrorMessage; modalConfirmBtn = elements.modalConfirmBtn; modalCancelBtn = elements.modalCancelBtn;
-            developersPanelContainer = elements.developersPanelContainer; closeDevelopersPanelBtn = elements.closeDevelopersPanelBtn; playerListPanelContainer = elements.playerListPanelContainer;
-            closePlayerListPanelBtn = elements.closePlayerListPanelBtn; playerListContent = elements.playerListContent;
+            loadingScreen = document.getElementById('loading-screen');
+            loadingMessage = document.getElementById('loading-message');
+            mainScreen = document.getElementById('main-screen');
+            gameScreen = document.getElementById('game-screen');
+            registrationForm = document.getElementById('registration-form');
+            displayNameInput = document.getElementById('display-name-input');
+            registerBtn = document.getElementById('register-btn');
+            inputErrorMessage = document.getElementById('input-error-message');
+            userIdDisplayInput = document.getElementById('user-id-display');
+            generateUserIdBtn = document.getElementById('generate-user-id-btn');
+            userIdErrorMessage = document.getElementById('user-id-error-message');
 
-            audioManager.init();
-            userProfileArea.classList.add('hidden');
-            loadingMessage.textContent = "در حال بررسی اتصال...";
-            
+            userProfileArea = document.getElementById('user-profile-area');
+            avatarContainer = document.getElementById('avatar-container');
+            avatarImage = document.getElementById('avatar-image');
+            userInfoBox = document.getElementById('user-info-box');
+            displayNameOutput = document.getElementById('display-name-output');
+            publicUserIdOutput = document.getElementById('public-user-id-output');
+            editNameBtn = document.getElementById('edit-name-btn');
+            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
+            startGameBtn = document.getElementById('start-game-btn');
+            mafiaFactBtn = document.getElementById('mafia-fact-btn');
+            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
+            stageDisplay = document.getElementById('stage-display');
+            questionText = document.getElementById('question-text');
+            optionsContainer = document.getElementById('options-container');
+            questionExplanation = document.getElementById('question-explanation');
+            backToMainBtn = document.getElementById('back-to-main-btn');
+            gameFeedback = document.getElementById('game-feedback');
+            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
+            modalContainer = document.getElementById('modal-container');
+            modalTitle = document.getElementById('modal-title');
+            modalContentDynamic = document.getElementById('modal-content-dynamic');
+            modalMessage = document.getElementById('modal-message');
+            changeNameInputContainer = document.getElementById('change-name-input-container');
+            newDisplayNameInput = document.getElementById('new-display-name-input');
+            changeNameErrorMessage = document.getElementById('change-name-error-message');
+            avatarGenerationContainer = document.getElementById('avatar-generation-container');
+            generateAvatarBtn = document.getElementById('generate-avatar-btn');
+            avatarAiLoading = document.getElementById('avatar-ai-loading');
+            avatarSuggestionsContainer = document.getElementById('avatar-suggestions-container');
+            avatarErrorMessage = document.getElementById('avatar-error-message');
+            modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            modalCancelBtn = document.getElementById('modal-cancel-btn');
+            developersPanelContainer = document.getElementById('developers-panel-container');
+            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+
+            audioManager.init(); // Initialize the audio manager
+
+            if(userProfileArea) userProfileArea.classList.add('hidden');
+
+            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
             if (!navigator.onLine) {
-                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => window.location.reload());
+                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
+                    hideModal();
+                    if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
+                });
                 return;
             }
-            
-            loadingMessage.textContent = "آماده سازی برای ورود...";
-            setupEventListeners();
-            await initFirebase();
+            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
+
+            try {
+                setupEventListeners();
+                await initFirebase();
+            } catch (error) {
+                console.error("Error during initializeGame:", error);
+                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
+            }
         }
 
         if (document.readyState === 'loading') {
