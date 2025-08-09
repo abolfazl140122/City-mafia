@@ -637,8 +637,8 @@
     <script type="module">
         // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- NEW: AUDIO MANAGER ---
         const audioManager = {
@@ -950,57 +950,59 @@
             }
         }
         
-        // =========================================================================
-        // START: REFACTORED AUTHENTICATION AND LOADING LOGIC
-        // =========================================================================
-        async function authenticateAndLoadGameData() {
+        async function initFirebase() {
             try {
-                // 1. Initialize Firebase services
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
                 console.log("Firebase initialized.");
 
-                // 2. Wait for a user to be authenticated.
-                if (loadingMessage) loadingMessage.textContent = "در حال احراز هویت...";
-
-                // This promise will resolve only when onAuthStateChanged provides a valid user.
-                const user = await new Promise((resolve, reject) => {
-                    const unsubscribe = onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            unsubscribe(); // Stop listening to prevent re-triggering
-                            resolve(user);
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        console.log("User is signed in:", user.uid);
+                        currentUserId = user.uid;
+                        await loadUserData();
+                    } else {
+                        console.log("User is signed out. Attempting to sign in.");
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            try {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } catch (error) {
+                                console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
+                                await signInAnonymously(auth);
+                            }
+                        } else {
+                            await signInAnonymously(auth);
                         }
-                        // If user is null, we just wait. The signInAnonymously call below will trigger this.
-                    }, reject); // Reject the promise on auth errors
+                        gameState.displayName = '';
+                        gameState.publicUserId = '';
+                        gameState.avatarUrl = '';
+                        gameState.seenQuestionHashes.clear();
+                    }
+                    isAuthReady = true;
+                    updateUI();
+
+                    if (loadingScreen && loadingScreen.classList.contains('active')) {
+                        if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
+                        setTimeout(() => {
+                            if(mainScreen) showScreen(mainScreen);
+                        }, 500);
+                    }
                 });
-                
-                // If we get here, the user is signed in.
-                console.log("User is signed in:", user.uid);
-                currentUserId = user.uid;
-                
-                // 3. Load user data from Firestore.
-                if (loadingMessage) loadingMessage.textContent = "در حال بارگذاری اطلاعات...";
-                await loadUserData();
-
-                // 4. All data is ready. Finalize and transition to the main screen.
-                isAuthReady = true;
-                if (loadingMessage) loadingMessage.textContent = "خوش آمدید!";
-                setTimeout(() => {
-                    if (mainScreen) showScreen(mainScreen);
-                }, 500);
-
             } catch (error) {
-                console.error("Critical initialization error:", error);
-                if (loadingMessage) loadingMessage.textContent = `خطا در راه اندازی بازی: ${error.message}. لطفاً صفحه را رفرش کنید.`;
-                // The loading screen will remain visible, which is appropriate for a critical failure.
+                console.error("Firebase initialization error:", error);
+                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
+                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
             }
         }
-
-        // This function is now only called when we are sure we have a user ID.
+        
         async function loadUserData() {
             if (!currentUserId || !db) {
                 console.log("Cannot load user data: no currentUserId or db connection.");
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
                 return;
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
@@ -1024,17 +1026,13 @@
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
-                // We'll show a modal but allow the game to continue with default data.
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد. ممکن است با اطلاعات پیش‌فرض ادامه دهید.", "باشه", null, () => hideModal());
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
                 gameState.displayName = '';
                 gameState.publicUserId = '';
                 gameState.avatarUrl = '';
                 gameState.seenQuestionHashes = new Set();
             }
         }
-        // =========================================================================
-        // END: REFACTORED AUTHENTICATION AND LOADING LOGIC
-        // =========================================================================
 
         async function saveUserData() {
             if (!currentUserId || !db) return;
@@ -1578,7 +1576,6 @@
         }
         
         async function initializeGame() {
-            // 1. Get all DOM element references
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
@@ -1590,6 +1587,7 @@
             userIdDisplayInput = document.getElementById('user-id-display');
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
+
             userProfileArea = document.getElementById('user-profile-area');
             avatarContainer = document.getElementById('avatar-container');
             avatarImage = document.getElementById('avatar-image');
@@ -1625,22 +1623,29 @@
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
-            // 2. Initialize necessary modules like audio and event listeners
-            audioManager.init();
-            setupEventListeners();
+            audioManager.init(); // Initialize the audio manager
+
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
-            // 3. Start the robust authentication and data loading process
-            await authenticateAndLoadGameData();
-            
-            // 4. After authentication, trigger a sign-in if no user is present.
-            // This will be caught by the onAuthStateChanged listener inside the loading function.
-            if (!getAuth().currentUser) {
-                await signInAnonymously(getAuth());
+            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
+            if (!navigator.onLine) {
+                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
+                    hideModal();
+                    if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
+                });
+                return;
+            }
+            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
+
+            try {
+                setupEventListeners();
+                await initFirebase();
+            } catch (error) {
+                console.error("Error during initializeGame:", error);
+                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
             }
         }
 
-        // Start the game initialization when the document is ready.
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
