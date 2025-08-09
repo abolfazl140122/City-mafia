@@ -356,11 +356,6 @@
         @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
         #avatar-image { width: 100%; height: 100%; object-fit: cover; }
         
-        #avatar-suggestions-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
-        .avatar-suggestion-item { width: 100px; height: 100px; border-radius: 8px; border: 4px solid transparent; cursor: pointer; overflow: hidden; transition: border-color 0.3s ease, transform 0.2s ease; }
-        .avatar-suggestion-item:hover { transform: scale(1.05); }
-        .avatar-suggestion-item.selected { border-color: var(--clash-green); box-shadow: 0 0 10px var(--clash-green); }
-
         #main-screen-header { 
             display: flex; justify-content: space-between; align-items: center; width: 100%; 
             padding: 0.5rem; margin-bottom: 1rem; 
@@ -405,7 +400,7 @@
         #start-game-btn { order: 0; }
         #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
         
-        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
+        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
         .hidden { display: none !important; }
@@ -498,6 +493,47 @@
             font-size: 1.1em;
             margin-right: 4px;
         }
+
+        /* --- NEW STYLES for Avatar Upload --- */
+        #avatar-preview-container {
+            margin: 1rem auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--clash-gold);
+            overflow: hidden;
+            background-color: var(--clash-panel-border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #avatar-preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #avatar-upload-progress-container {
+            width: 90%;
+            margin: 1rem auto 0;
+            background-color: var(--clash-panel-border-dark);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--clash-panel-border);
+        }
+        #avatar-upload-progress-bar {
+            width: 0%;
+            height: 12px;
+            background-color: var(--clash-green);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        #avatar-upload-status {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            color: var(--clash-text-light);
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
@@ -614,15 +650,23 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <div id="avatar-generation-container" class="hidden">
-                    <button id="generate-avatar-btn" class="btn-clash btn-clash-primary my-4 clash-font">ساخت آواتار جدید با AI</button>
-                    <div id="avatar-ai-loading" class="my-4 hidden">
-                        <div class="loader mx-auto"></div>
-                        <p class="mt-2 text-sm text-gray-300">در حال ساخت آواتارهای پیشنهادی...</p>
+                <!-- === NEW: AVATAR UPLOAD UI === -->
+                <div id="avatar-upload-ui-container" class="hidden">
+                    <input type="file" id="avatar-file-input" class="hidden" accept="image/png, image/jpeg, image/gif">
+                    <button id="select-avatar-file-btn" class="btn-clash btn-clash-secondary my-4 clash-font">انتخاب فایل از گالری</button>
+                    
+                    <div id="avatar-preview-container" class="hidden">
+                        <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
                     </div>
-                    <div id="avatar-suggestions-container"></div>
-                    <p id="avatar-error-message" class="text-red-300 text-sm mt-2"></p>
+
+                    <div id="avatar-upload-progress-container" class="hidden">
+                        <div id="avatar-upload-progress-bar"></div>
+                        <p id="avatar-upload-status"></p>
+                    </div>
+
+                    <p id="avatar-error-message" class="hidden"></p>
                 </div>
+                <!-- === END OF AVATAR UPLOAD UI === -->
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -720,6 +764,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // --- NEW: Import Firebase Storage modules ---
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -762,6 +808,7 @@
         let app;
         let auth;
         let db;
+        let storage; // <-- NEW: Firebase Storage instance
         let currentUserId = null;
         let isAuthReady = false;
 
@@ -789,15 +836,18 @@
             gameFeedback, aiThinkingIndicator,
             modalContainer, modalTitle, modalContentDynamic, modalMessage,
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
-            avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
-            avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
+            modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardIconBtnHeader, leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
-
-
+        
+        // --- NEW: Elements for avatar upload ---
+        let avatarUploadUiContainer, avatarFileInput, selectAvatarFileBtn,
+            avatarPreviewContainer, avatarPreviewImage, avatarUploadProgressContainer,
+            avatarUploadProgressBar, avatarUploadStatus, avatarErrorMessage;
+        
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
-        let selectedAvatarForConfirmation = null;
+        let selectedAvatarFile = null; // --- NEW: To store the selected file for upload
 
         function simpleHash(str) {
             let hash = 0;
@@ -824,7 +874,7 @@
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
+            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
                 console.error("[showModal] Modal elements not found, cannot show modal.");
                 return;
             }
@@ -840,7 +890,7 @@
 
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
-            avatarGenerationContainer.classList.add('hidden');
+            avatarUploadUiContainer.classList.add('hidden');
             if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
             if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
@@ -861,11 +911,15 @@
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
-                avatarGenerationContainer.classList.remove('hidden');
-                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = '';
-                if(avatarErrorMessage) avatarErrorMessage.textContent = '';
-                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
-                 if (message && message.trim() !== "") {
+                avatarUploadUiContainer.classList.remove('hidden');
+                // Reset avatar upload UI
+                if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
+                if(avatarUploadProgressContainer) avatarUploadProgressContainer.classList.add('hidden');
+                if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
+                if(avatarFileInput) avatarFileInput.value = '';
+                selectedAvatarFile = null;
+
+                if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
@@ -875,6 +929,7 @@
             }
 
             modalConfirmBtn.textContent = confirmText;
+            modalConfirmBtn.disabled = (modalType === 'avatar'); // Disable confirm until a file is chosen
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
 
@@ -887,7 +942,7 @@
         }
 
         function hideModal() {
-            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
+            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer) {
                 return;
             }
             
@@ -898,7 +953,7 @@
             modalConfirmCallback = null;
             modalCancelCallback = null;
             changeNameInputContainer.classList.add('hidden');
-            avatarGenerationContainer.classList.add('hidden');
+            avatarUploadUiContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
 
             const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
@@ -1068,7 +1123,8 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                console.log("Firebase initialized.");
+                storage = getStorage(app); // --- NEW: Initialize Firebase Storage
+                console.log("Firebase initialized (Auth, Firestore, Storage).");
 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
@@ -1182,7 +1238,6 @@
         
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
         const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
-        const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
             if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
@@ -1233,41 +1288,6 @@
             }
         }
 
-        async function callImagenAPI(prompt, sampleCount = 1) {
-            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden');
-            if(avatarErrorMessage) avatarErrorMessage.textContent = '';
-
-            const payload = {
-                instances: [{ prompt: prompt }],
-                parameters: { "sampleCount": sampleCount }
-            };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    const errorBody = await response.text();
-                    throw new Error(`API request failed: ${response.status} ${errorBody}`);
-                }
-                const result = await response.json();
-                if (result.predictions && result.predictions.length > 0) {
-                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
-                } else {
-                    throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
-                }
-            } catch (error) {
-                console.error("Error calling Imagen API:", error);
-                if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
-                return null;
-            } finally {
-                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
-            }
-        }
-        
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
@@ -1417,57 +1437,127 @@
                 questionExplanation.classList.remove('hidden');
             }
         }
-        
-        async function generateAndDisplayAvatars() {
-            if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
-            avatarAiLoading.classList.remove('hidden');
-            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons, cartoonish, stylized, game art style";
-            const suggestions = await callImagenAPI(prompt, 4);
 
-            avatarSuggestionsContainer.innerHTML = '';
-            selectedAvatarForConfirmation = null;
+        // --- NEW: Function to resize image before upload ---
+        function resizeImage(file, maxWidth, maxHeight, quality) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
 
-            if (suggestions && suggestions.length > 0) {
-                suggestions.forEach(base64Url => {
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.className = 'avatar-suggestion-item';
-                    const img = document.createElement('img');
-                    img.src = base64Url;
-                    img.alt = "پیشنهاد آواتار";
-                    imgWrapper.appendChild(img);
-                    imgWrapper.addEventListener('click', () => {
-                        audioManager.play('click');
-                        const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
-                        if (currentSelected) {
-                            currentSelected.classList.remove('selected');
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
                         }
-                        imgWrapper.classList.add('selected');
-                        selectedAvatarForConfirmation = base64Url;
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.toBlob(blob => {
+                        resolve(blob);
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = (error) => reject(error);
+            });
+        }
+        
+        // --- NEW: Function to handle file selection from input ---
+        function handleAvatarFileSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validation
+            if (!file.type.startsWith('image/')) {
+                avatarErrorMessage.textContent = 'فقط فایل‌های تصویری مجاز هستند.';
+                avatarErrorMessage.classList.remove('hidden');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) { // 5 MB limit
+                avatarErrorMessage.textContent = 'حجم فایل نباید بیشتر از 5 مگابایت باشد.';
+                avatarErrorMessage.classList.remove('hidden');
+                return;
+            }
+            
+            avatarErrorMessage.classList.add('hidden');
+            selectedAvatarFile = file;
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                avatarPreviewImage.src = e.target.result;
+                avatarPreviewContainer.classList.remove('hidden');
+                modalConfirmBtn.disabled = false; // Enable upload button
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- NEW: Function to upload the selected and resized avatar ---
+        async function uploadAndSaveAvatar() {
+            if (!selectedAvatarFile || !currentUserId || !storage) {
+                avatarErrorMessage.textContent = 'فایلی برای آپلود انتخاب نشده است.';
+                avatarErrorMessage.classList.remove('hidden');
+                return;
+            }
+
+            modalConfirmBtn.disabled = true;
+            modalCancelBtn.disabled = true;
+            selectAvatarFileBtn.disabled = true;
+
+            avatarUploadProgressContainer.classList.remove('hidden');
+            avatarUploadStatus.textContent = 'در حال آماده‌سازی تصویر...';
+
+            try {
+                const resizedBlob = await resizeImage(selectedAvatarFile, 400, 400, 0.85); // Resize to 400x400 max, 85% quality
+
+                const filePath = `artifacts/${appId}/user_avatars/${currentUserId}.jpg`;
+                const storageRef = ref(storage, filePath);
+                const uploadTask = uploadBytesResumable(storageRef, resizedBlob);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        avatarUploadProgressBar.style.width = progress + '%';
+                        avatarUploadStatus.textContent = `در حال آپلود: ${Math.round(progress)}%`;
+                    }, 
+                    (error) => {
+                        console.error("Upload failed:", error);
+                        avatarErrorMessage.textContent = 'خطا در آپلود تصویر. لطفاً دوباره تلاش کنید.';
+                        avatarErrorMessage.classList.remove('hidden');
                         modalConfirmBtn.disabled = false;
-                    });
-                    avatarSuggestionsContainer.appendChild(imgWrapper);
-                });
-                modalConfirmBtn.textContent = "انتخاب";
-                modalConfirmBtn.disabled = true;
-            } else {
-                if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
-                modalConfirmBtn.textContent = "تایید";
-                modalConfirmBtn.disabled = true;
+                        modalCancelBtn.disabled = false;
+                        selectAvatarFileBtn.disabled = false;
+                    }, 
+                    async () => {
+                        avatarUploadStatus.textContent = 'آپلود کامل شد. در حال ذخیره...';
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        
+                        gameState.avatarUrl = downloadURL;
+                        await saveUserData();
+                        updateUI();
+                        hideModal();
+                        showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
+                    }
+                );
+            } catch (error) {
+                 console.error("Image processing/upload error:", error);
+                 avatarErrorMessage.textContent = 'خطا در پردازش تصویر.';
+                 avatarErrorMessage.classList.remove('hidden');
+                 modalConfirmBtn.disabled = false;
+                 modalCancelBtn.disabled = false;
+                 selectAvatarFileBtn.disabled = false;
             }
         }
         
-        async function confirmAvatarSelection() {
-            if (selectedAvatarForConfirmation) {
-                gameState.avatarUrl = selectedAvatarForConfirmation;
-                await saveUserData();
-                updateUI();
-                hideModal();
-                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
-            } else {
-                if(avatarErrorMessage) avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
-            }
-        }
-
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
             if (!inputElement || !errorElement) return null;
             const regex = /[^a-zA-Z0-9_.-]/g;
@@ -1685,16 +1775,24 @@
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
-                    selectedAvatarForConfirmation = null;
-                    showModal( "تغییر آواتار", "", "انتخاب", "لغو",
-                        confirmAvatarSelection, hideModal, "avatar"
+                    // --- UPDATED: Show avatar upload modal ---
+                    showModal(
+                        "تغییر آواتار",
+                        "یک تصویر برای آواتار خود انتخاب کنید. (حداکثر حجم: 5MB)",
+                        "آپلود و ذخیره", "لغو",
+                        uploadAndSaveAvatar, // onConfirm
+                        hideModal,           // onCancel
+                        "avatar"
                     );
-                    if(modalConfirmBtn) modalConfirmBtn.disabled = true;
                 });
             }
-
-            if (generateAvatarBtn) {
-                generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
+            
+            // --- NEW: Event listeners for avatar upload UI ---
+            if(selectAvatarFileBtn) {
+                selectAvatarFileBtn.addEventListener('click', () => avatarFileInput.click());
+            }
+            if(avatarFileInput) {
+                avatarFileInput.addEventListener('change', handleAvatarFileSelected);
             }
 
             const allActionButtons = [startGameBtn, mafiaFactBtn].filter(btn => btn !== null);
@@ -1762,6 +1860,7 @@
         }
         
         async function initializeGame() {
+            // ... (keep existing initializations)
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
@@ -1799,11 +1898,18 @@
             changeNameInputContainer = document.getElementById('change-name-input-container');
             newDisplayNameInput = document.getElementById('new-display-name-input');
             changeNameErrorMessage = document.getElementById('change-name-error-message');
-            avatarGenerationContainer = document.getElementById('avatar-generation-container');
-            generateAvatarBtn = document.getElementById('generate-avatar-btn');
-            avatarAiLoading = document.getElementById('avatar-ai-loading');
-            avatarSuggestionsContainer = document.getElementById('avatar-suggestions-container');
+            
+            // --- NEW: Avatar upload UI element initialization ---
+            avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
+            avatarFileInput = document.getElementById('avatar-file-input');
+            selectAvatarFileBtn = document.getElementById('select-avatar-file-btn');
+            avatarPreviewContainer = document.getElementById('avatar-preview-container');
+            avatarPreviewImage = document.getElementById('avatar-preview-image');
+            avatarUploadProgressContainer = document.getElementById('avatar-upload-progress-container');
+            avatarUploadProgressBar = document.getElementById('avatar-upload-progress-bar');
+            avatarUploadStatus = document.getElementById('avatar-upload-status');
             avatarErrorMessage = document.getElementById('avatar-error-message');
+
             modalConfirmBtn = document.getElementById('modal-confirm-btn');
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
