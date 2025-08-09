@@ -2,123 +2,1223 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحه پیدا نشد - 404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>شهر مافیا - نسخه کلش</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- تنظیمات کلی و فونت --- */
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+        /* --- CLASH OF CLANS / CLASH ROYALE THEME --- */
 
         :root {
-            --primary-color: #007bff; /* رنگ اصلی (آبی) */
-            --background-color: #f8f9fa; /* رنگ پس‌زمینه */
-            --text-color: #333; /* رنگ متن اصلی */
-            --light-text-color: #6c757d; /* رنگ متن فرعی */
-            --container-bg-color: #ffffff; /* رنگ پس‌زمینه کادر */
-            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --clash-blue-dark: #3a5b8a;
+            --clash-blue-light: #5c88c8;
+            --clash-gold: #ffc83a;
+            --clash-gold-dark: #e5a500;
+            --clash-brown-dark: #5b3a29;
+            --clash-text-light: #ffffff;
+            --clash-text-dark: #333333;
+            --clash-green: #59a845;
+            --clash-green-dark: #3a752b;
+            --clash-red: #c74243;
+            --clash-red-dark: #8f2a2b;
+            --clash-panel-bg: #4468a0;
+            --clash-panel-border: #9dc2ff;
+            --clash-panel-border-dark: #2a4166;
+        }
+
+        /* --- KEYFRAME ANIMATIONS --- */
+        @keyframes clash-panel-intro {
+            0% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+            70% { opacity: 1; transform: scale(1.05) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #a07200; }
+            50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.3), 0 8px 0 #a07200; }
+        }
+
+        @keyframes subtle-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
+            color: var(--clash-text-light);
+            background-color: #1a283e;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
+            overflow: hidden; /* Prevent body scroll */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* Animated Background Layer */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 200%; height: 200%;
+            background-image: url('https://www.transparenttextures.com/patterns/dust.png');
+            opacity: 0.15;
+            z-index: 0;
+            animation: subtle-pan 120s linear infinite;
+        }
+
+        .clash-font {
+            font-family: 'Lilita One', cursive;
+            letter-spacing: 1px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .panel-clash {
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
+        }
+        
+        /* Panel Corner Rivets */
+        .panel-clash::before, .panel-clash::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--clash-gold);
+            border-radius: 50%;
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 0 3px #000;
+        }
+        .panel-clash::before { top: 10px; left: 10px; }
+        .panel-clash::after { top: 10px; right: 10px; }
+        #developers-panel::before, #developers-panel::after, #leaderboard-panel::before, #leaderboard-panel::after { top: 15px; }
+
+        .panel-hidden {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .panel-visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            visibility: visible;
+            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-clash {
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.1s ease-out; /* Faster transition */
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            display: inline-flex;
             align-items: center;
-            min-height: 100vh; /* تمام ارتفاع صفحه را بگیرد */
-            text-align: center;
+            justify-content: center;
+            color: var(--clash-text-dark);
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+        }
+        .btn-clash:disabled {
+            filter: grayscale(80%);
+            cursor: not-allowed;
+            box-shadow: 0 4px 0 #555 !important;
+            transform: translateY(0) !important;
         }
 
-        /* --- کادر اصلی --- */
-        .container {
-            background-color: var(--container-bg-color);
-            padding: 40px 50px;
-            border-radius: 15px;
-            box-shadow: var(--box-shadow);
-            max-width: 500px;
-            width: 90%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        /* --- عدد 404 --- */
-        .error-code {
-            font-size: 10rem; /* اندازه بسیار بزرگ */
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 0;
-            line-height: 1;
-            text-shadow: 2px 2px 5px rgba(0, 123, 255, 0.2);
-        }
-
-        /* --- عنوان اصلی خطا --- */
-        .error-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        /* --- توضیحات خطا --- */
-        .error-description {
+        /* --- Primary Button (Gold) --- */
+        .btn-clash-primary {
+            background: linear-gradient(to bottom, #ffe47a, var(--clash-gold));
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 6px 0 #a07200;
+            padding: 10px 24px;
             font-size: 1.1rem;
-            color: var(--light-text-color);
-            margin-bottom: 30px;
         }
+        @media (min-width: 640px) { .btn-clash-primary { padding: 12px 30px; font-size: 1.25rem; } }
 
-        /* --- دکمه بازگشت به خانه --- */
-        .home-button {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: #ffffff;
-            font-size: 1rem;
-            font-weight: 700;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+        .btn-clash-primary:hover {
+            background: linear-gradient(to bottom, #fff0a0, #ffda5a);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #a07200;
         }
-
-        .home-button:hover {
-            background-color: #0056b3; /* رنگ تیره‌تر هنگام هاور */
-            transform: scale(1.05);
+        .btn-clash-primary:active {
+            transform: translateY(4px) !important;
+            box-shadow: 0 2px 0 #a07200 !important;
+            transition-duration: 0.05s;
         }
         
-        /* --- استایل برای دستگاه‌های کوچک‌تر (موبایل) --- */
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            .error-code {
-                font-size: 7rem;
-            }
-
-            .error-title {
-                font-size: 1.5rem;
-            }
-
-            .error-description {
-                font-size: 1rem;
-            }
+        #start-game-btn.breathing { animation: breathe 2.5s ease-in-out infinite; }
+        
+        .btn-clash-secondary {
+            background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light));
+            border: 2px solid var(--clash-panel-border-dark);
+            box-shadow: 0 5px 0 #2e5185;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
+        @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
+
+        .btn-clash-secondary:hover {
+            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #2e5185;
+        }
+        .btn-clash-secondary:active {
+            transform: translateY(3px) !important;
+            box-shadow: 0 2px 0 #2e5185 !important;
+            transition-duration: 0.05s;
+        }
+
+        .input-clash {
+            background-color: var(--clash-panel-border-dark);
+            border: 2px solid #2a4166;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 1rem;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
+            direction: ltr; /* For English input */
+            text-align: left;
+        }
+        .input-clash:focus {
+            outline: none;
+            border-color: var(--clash-gold);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 10px var(--clash-gold);
+        }
+        .input-clash.invalid { border-color: var(--clash-red); }
+        .input-clash:read-only { background-color: #314a70; cursor: default; }
+        
+        .option-btn {
+            background: linear-gradient(to bottom, #7da8e8, #5c88c8);
+            border: 2px solid #2a4166;
+            box-shadow: 0 4px 0 #2e5185;
+            color: white;
+            transition: all 0.15s ease;
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .option-btn:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2e5185;
+        }
+        .option-btn.correct {
+            background: linear-gradient(to bottom, #8fdd7d, var(--clash-green)) !important;
+            border-color: #2e6221 !important;
+            box-shadow: 0 4px 0 var(--clash-green-dark) !important;
+            transform: translateY(0) !important;
+        }
+        .option-btn.incorrect {
+            background: linear-gradient(to bottom, #e87b7c, var(--clash-red)) !important;
+            border-color: #7c2425 !important;
+            box-shadow: 0 4px 0 var(--clash-red-dark) !important;
+            transform: translateY(0) !important;
+        }
+        .option-btn:disabled { opacity: 0.8; cursor: not-allowed; }
+
+        .loader {
+            border: 8px solid #3a5b8a;
+            border-top: 8px solid var(--clash-gold);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 5px; border: 2px solid var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--clash-gold-dark); }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            z-index: 1;
+        }
+        @media (min-width: 640px) { .screen { padding: 20px; } }
+        #main-screen { justify-content: flex-start; }
+        #loading-screen { justify-content: center; }
+        .screen.active { opacity: 1; visibility: visible; position: relative; }
+        
+        .screen-content-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
+        #main-screen .screen-content-wrapper {
+            justify-content: space-between;
+            min-height: calc(100vh - 20px);
+            padding-top: 60px; /* Space for profile area on mobile */
+        }
+        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
+
+        #user-profile-area {
+            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px;
+            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        /* Mobile: Centered at top */
+        @media (max-width: 767px) {
+            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
+        }
+        /* Desktop: Top right */
+        @media (min-width: 768px) {
+            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
+        }
+
+        #user-info-box {
+            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
+            border: 4px solid #4a2f20;
+            border-top-color: #c89673;
+            border-left-color: #c89673;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            display: flex; flex-direction: column; gap: 6px; /* Vertical stacking for mobile */
+            width: max-content; min-width: 160px;
+        }
+        @media (min-width: 768px) {
+            #user-info-box { gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
+        }
+        #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        
+        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: block; border: 1px solid #4a2f20; }
+        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; font-family: 'Vazirmatn'; }
+        .user-info-item .value { font-size: 1em; font-weight: bold; }
+        #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
+        #public-user-id-output-box .value { color: #eee; font-family: monospace; }
+        #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
+        #edit-name-btn:hover { color: #fff8a8; }
+
+        #avatar-container {
+            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
+            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
+            background-color: #333; cursor: pointer; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
+        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
+        
+        #main-screen-header { 
+            display: flex; justify-content: space-between; align-items: center; width: 100%; 
+            padding: 0.5rem; margin-bottom: 1rem; 
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            background-color: #6e4a31;
+            border-radius: 12px;
+            border: 4px solid #4a2f20;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+        }
+        
+        #main-title {
+            text-align: center;
+            flex-grow: 1;
+            font-size: 2.8rem; /* smaller for mobile */
+            color: var(--clash-gold);
+            text-shadow: 
+                -2px -2px 0 var(--clash-brown-dark), 2px -2px 0 var(--clash-brown-dark),
+                -2px 2px 0 var(--clash-brown-dark), 2px 2px 0 var(--clash-brown-dark),
+                4px 4px 6px rgba(0,0,0,0.7);
+        }
+        @media (min-width: 640px) { #main-title { font-size: 4.5rem; text-shadow: -3px -3px 0 var(--clash-brown-dark), 3px -3px 0 var(--clash-brown-dark), -3px 3px 0 var(--clash-brown-dark), 3px 3px 0 var(--clash-brown-dark), 6px 6px 8px rgba(0,0,0,0.7); } }
+        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
+
+        .header-icon-btn {
+            background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
+            padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
+            align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
+        }
+        .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
+        .header-icon-btn svg { width: 24px; height: 24px; }
+        
+        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
+        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
+        #start-game-btn { order: 0; }
+        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
+        
+        #input-error-message, #user-id-error-message, #change-name-error-message, #avatar-error-message {
+            color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
+        }
+        .hidden { display: none !important; }
+
+        #developers-panel-container, #leaderboard-panel-container { background-color: rgba(10, 10, 10, 0.85); }
+        #developers-panel, #leaderboard-panel {
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+        }
+        #close-developers-panel-btn, #close-leaderboard-panel-btn {
+            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
+            background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
+            border: 2px solid #7c2425;
+            box-shadow: 0 4px 0 #8f2a2b;
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
+        }
+        #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        
+        .developer-item {
+            background-color: rgba(42, 65, 102, 0.9);
+            padding: 1rem 1.2rem; border-radius: 12px;
+            border: 2px solid rgba(157, 194, 255, 0.4);
+        }
+        
+        #leaderboard-list {
+            space-y-2; /* Using Tailwind class equivalent */
+            max-height-[calc(85vh-150px)]; overflow-y-auto; padding-right: 0.75rem; padding-left: 0.25rem;
+        }
+        .leaderboard-item {
+            display: flex; align-items: center; background-color: rgba(42, 65, 102, 0.9);
+            padding: 0.75rem; border-radius: 12px; border: 2px solid rgba(157, 194, 255, 0.4);
+            gap: 1rem; transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .leaderboard-item:hover { background-color: rgba(60, 85, 122, 0.9); transform: scale(1.02); }
+        .leaderboard-rank {
+            font-family: 'Lilita One', cursive; font-size: 1.75rem; color: var(--clash-gold);
+            -webkit-text-stroke: 1.5px var(--clash-brown-dark); text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            width: 40px; text-align: center; flex-shrink: 0;
+        }
+        .leaderboard-avatar {
+            width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--clash-gold-dark);
+            object-fit: cover; background-color: #2a4166; flex-shrink: 0;
+        }
+        .leaderboard-name {
+            font-family: 'Lilita One', cursive; font-size: 1.2rem; color: #ffffff;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .leaderboard-stage { font-size: 0.9rem; color: #d0e0ff; font-weight: bold; }
+
+        /* --- NEW/MODIFIED STYLES for Avatar Link --- */
+        #avatar-preview-container {
+            margin: 1rem auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--clash-gold);
+            overflow: hidden;
+            background-color: var(--clash-panel-border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        #avatar-preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1 class="error-code">403</h1>
-        <h2 class="error-title">صفحه پیدا نشد</h2>
-        <p class="error-description">
-            متأسفیم، صفحه‌ای که به دنبال آن بودید در این سایت وجود ندارد. ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه حذف شده باشد.
-        </p>
-        <a href="/" class="home-button">بازگشت به صفحه اصلی</a>
+    <div id="user-profile-area" class="hidden">
+        <div id="avatar-container" class="hidden" title="تغییر آواتار">
+            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.onerror=null; this.src='https://placehold.co/80x80/333333/777777?text=?'">
+        </div>
+        <div id="user-info-box" class="hidden">
+            <div id="display-name-output-box" class="user-info-item">
+                <div class="label flex items-center gap-1 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
+                    <span>بازیکن:</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="edit-name-btn" title="تغییر نام">✏️</span>
+                    <div id="display-name-output" class="value clash-font"></div>
+                </div>
+            </div>
+            <div id="public-user-id-output-box" class="user-info-item">
+                <div class="label flex items-center gap-1 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
+                    <span>شناسه:</span>
+                </div>
+                <div id="public-user-id-output" class="value"></div>
+            </div>
+        </div>
     </div>
 
+    <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
+        <div class="screen-content-wrapper justify-center">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
+            <div class="loader mb-4"></div>
+            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
+        </div>
+    </div>
+
+    <div id="main-screen" class="screen">
+        <div class="screen-content-wrapper">
+            <div>
+                <div id="main-screen-header">
+                    <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
+                    </button>
+                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                    <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M17 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </button>
+                </div>
+
+                <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
+                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
+                    <p id="input-error-message" class="hidden"></p>
+
+                    <div class="mt-3 mb-2">
+                        <label for="user-id-display" class="block text-sm font-medium mb-1 text-right">شناسه کاربری (5 رقمی):</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="user-id-display" class="input-clash w-full p-3 text-lg text-center" readonly placeholder="بساز!">
+                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-4 py-3 text-sm clash-font">ساخت شناسه</button>
+                        </div>
+                        <p id="user-id-error-message" class="hidden"></p>
+                    </div>
+
+                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-3 text-lg mt-4 clash-font">ورود به شهر</button>
+                </div>
+            </div>
+
+            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
+                <div id="top-action-buttons">
+                    <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
+                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 1;">دانستنی‌ها ✨</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="screen-content-wrapper justify-start">
+            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
+                <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
+                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
+            </div>
+
+            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
+                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
+                <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
+            </div>
+
+            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
+            
+            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
+                <div class="loader inline-block"></div>
+                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
+        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
+            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
+            <div id="modal-content-dynamic">
+                <p id="modal-message" class="mb-3 text-base"></p>
+                <div id="change-name-input-container" class="hidden mb-2">
+                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
+                    <p id="change-name-error-message" class="hidden"></p>
+                </div>
+                <!-- === AVATAR URL UI === -->
+                <div id="avatar-url-ui-container" class="hidden">
+                    <div class="flex items-center gap-2 my-4">
+                        <input type="url" id="avatar-url-input" placeholder="لینک مستقیم عکس را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr;">
+                        <button id="check-avatar-url-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 clash-font">بررسی</button>
+                    </div>
+                    
+                    <div id="avatar-preview-container" class="hidden">
+                        <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
+                    </div>
+
+                    <p id="avatar-error-message" class="hidden"></p>
+                </div>
+                <!-- === END OF AVATAR URL UI === -->
+            </div>
+            <div id="modal-actions" class="flex justify-center gap-4 mt-5">
+                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
+                <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font">لغو</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
+        <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
+            <button id="close-developers-panel-btn">×</button>
+            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
+            <div class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
+                <!-- Developer items -->
+            </div>
+        </div>
+    </div>
+
+    <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
+        <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
+            <button id="close-leaderboard-panel-btn">×</button>
+            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
+            <div id="leaderboard-list" class="space-y-2">
+                <!-- Leaderboard items will be populated here -->
+            </div>
+        </div>
+    </div>
+    
+    <div id="audio-container" class="hidden">
+        <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-close" src="https://assets.mixkit.co/sfx/preview/mixkit-gate-latch-click-1929.mp3" preload="auto"></audio>
+        <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
+        <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
+        <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
+    </div>
+
+    <script type="module">
+        // --- JAVASCRIPT LOGIC (MOBILE OPTIMIZED & AVATAR URL) ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        const audioManager = {
+            sounds: {},
+            init() {
+                this.sounds.click = document.getElementById('sfx-click');
+                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
+                this.sounds.panelClose = document.getElementById('sfx-panel-close');
+                this.sounds.correct = document.getElementById('sfx-correct');
+                this.sounds.incorrect = document.getElementById('sfx-incorrect');
+                this.sounds.startGame = document.getElementById('sfx-start-game');
+                Object.values(this.sounds).forEach(sound => { if (sound) sound.volume = 0.4; });
+            },
+            play(soundName) {
+                const sound = this.sounds[soundName];
+                if (sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
+            }
+        };
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : {
+                apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
+                authDomain: "city-mafia.firebaseapp.com",
+                projectId: "city-mafia",
+                storageBucket: "city-mafia.appspot.com",
+                messagingSenderId: "66458127103",
+                appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
+                measurementId: "G-8M0M6BJ0GG"
+              };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
+
+        let app, auth, db, currentUserId = null, isAuthReady = false;
+
+        const gameState = {
+            displayName: '',
+            publicUserId: '',
+            currentStage: 1,
+            avatarUrl: '',
+            seenQuestionHashes: new Set(),
+            currentQuestionData: null,
+            isQuestionActive: false,
+            isLoadingNextQuestion: false,
+        };
+
+        let loadingScreen, mainScreen, gameScreen, registrationForm, displayNameInput,
+            registerBtn, inputErrorMessage, userIdDisplayInput, generateUserIdBtn,
+            userIdErrorMessage, userProfileArea, avatarContainer, avatarImage, userInfoBox,
+            displayNameOutput, publicUserIdOutput, editNameBtn, mainScreenButtonsLayout,
+            startGameBtn, mafiaFactBtn, devIntroBtnHeader, stageDisplay, questionText,
+            optionsContainer, questionExplanation, backToMainBtn, gameFeedback,
+            aiThinkingIndicator, modalContainer, modalTitle, modalMessage,
+            changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
+            modalConfirmBtn, modalCancelBtn, developersPanelContainer,
+            closeDevelopersPanelBtn, leaderboardIconBtnHeader, leaderboardPanelContainer,
+            leaderboardList, closeLeaderboardPanelBtn;
+        
+        // --- Avatar URL UI Elements ---
+        let avatarUrlUiContainer, avatarUrlInput, checkAvatarUrlBtn,
+            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
+        
+        let modalConfirmCallback = null, modalCancelCallback = null;
+        let validatedAvatarUrl = null;
+
+        function domReady(fn) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fn);
+            } else {
+                fn();
+            }
+        }
+        
+        function getDOMElements() {
+            loadingScreen = document.getElementById('loading-screen');
+            mainScreen = document.getElementById('main-screen');
+            gameScreen = document.getElementById('game-screen');
+            registrationForm = document.getElementById('registration-form');
+            displayNameInput = document.getElementById('display-name-input');
+            registerBtn = document.getElementById('register-btn');
+            inputErrorMessage = document.getElementById('input-error-message');
+            userIdDisplayInput = document.getElementById('user-id-display');
+            generateUserIdBtn = document.getElementById('generate-user-id-btn');
+            userIdErrorMessage = document.getElementById('user-id-error-message');
+            userProfileArea = document.getElementById('user-profile-area');
+            avatarContainer = document.getElementById('avatar-container');
+            avatarImage = document.getElementById('avatar-image');
+            userInfoBox = document.getElementById('user-info-box');
+            displayNameOutput = document.getElementById('display-name-output');
+            publicUserIdOutput = document.getElementById('public-user-id-output');
+            editNameBtn = document.getElementById('edit-name-btn');
+            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
+            startGameBtn = document.getElementById('start-game-btn');
+            mafiaFactBtn = document.getElementById('mafia-fact-btn');
+            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
+            stageDisplay = document.getElementById('stage-display');
+            questionText = document.getElementById('question-text');
+            optionsContainer = document.getElementById('options-container');
+            questionExplanation = document.getElementById('question-explanation');
+            backToMainBtn = document.getElementById('back-to-main-btn');
+            gameFeedback = document.getElementById('game-feedback');
+            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
+            modalContainer = document.getElementById('modal-container');
+            modalTitle = document.getElementById('modal-title');
+            modalMessage = document.getElementById('modal-message');
+            changeNameInputContainer = document.getElementById('change-name-input-container');
+            newDisplayNameInput = document.getElementById('new-display-name-input');
+            changeNameErrorMessage = document.getElementById('change-name-error-message');
+            modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            modalCancelBtn = document.getElementById('modal-cancel-btn');
+            developersPanelContainer = document.getElementById('developers-panel-container');
+            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+            leaderboardIconBtnHeader = document.getElementById('leaderboard-icon-btn-header');
+            leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
+            leaderboardList = document.getElementById('leaderboard-list');
+            closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
+
+            // Avatar URL elements
+            avatarUrlUiContainer = document.getElementById('avatar-url-ui-container');
+            avatarUrlInput = document.getElementById('avatar-url-input');
+            checkAvatarUrlBtn = document.getElementById('check-avatar-url-btn');
+            avatarPreviewContainer = document.getElementById('avatar-preview-container');
+            avatarPreviewImage = document.getElementById('avatar-preview-image');
+            avatarErrorMessage = document.getElementById('avatar-error-message');
+        }
+
+        function showScreen(screenElement) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            screenElement.classList.add('active');
+            document.body.style.overflowY = (screenElement.id === 'loading-screen') ? 'hidden' : 'auto';
+            screenElement.scrollTop = 0;
+            updateUI();
+        }
+
+        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
+            audioManager.play('panelOpen');
+            const panel = modalContainer.querySelector('.panel-clash');
+            modalContainer.classList.remove('panel-hidden');
+            panel.classList.remove('panel-visible'); 
+            void panel.offsetWidth; 
+            panel.classList.add('panel-visible'); 
+            
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+            modalMessage.classList.toggle('hidden', !message);
+            
+            changeNameInputContainer.classList.add('hidden');
+            avatarUrlUiContainer.classList.add('hidden');
+            [inputErrorMessage, userIdErrorMessage, changeNameErrorMessage, avatarErrorMessage].forEach(el => el.classList.add('hidden'));
+
+            if (userProfileArea && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+
+            if (modalType === "changeName") {
+                changeNameInputContainer.classList.remove('hidden');
+                newDisplayNameInput.value = gameState.displayName;
+                newDisplayNameInput.classList.remove('invalid');
+            } else if (modalType === "avatar") {
+                avatarUrlUiContainer.classList.remove('hidden');
+                avatarPreviewContainer.classList.add('hidden');
+                avatarUrlInput.value = gameState.avatarUrl || '';
+                validatedAvatarUrl = null;
+                modalConfirmBtn.disabled = true;
+            }
+
+            modalConfirmBtn.textContent = confirmText;
+            modalConfirmCallback = onConfirm;
+            modalCancelCallback = onCancel;
+            
+            modalCancelBtn.textContent = cancelText || "لغو";
+            modalCancelBtn.classList.toggle('hidden', !(cancelText || modalType === "changeName" || modalType === "avatar"));
+        }
+
+        function hideModal() {
+            audioManager.play('panelClose');
+            modalContainer.classList.add('panel-hidden');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            modalConfirmCallback = modalCancelCallback = null;
+
+            const isAnyPanelVisible = !developersPanelContainer.classList.contains('panel-hidden') || !leaderboardPanelContainer.classList.contains('panel-hidden');
+            if (userProfileArea && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
+        }
+        
+        function showPanel(panelContainer) {
+            audioManager.play('panelOpen');
+            panelContainer.classList.remove('panel-hidden');
+            const panel = panelContainer.querySelector('.panel-clash');
+            panel.classList.remove('panel-visible');
+            void panel.offsetWidth;
+            panel.classList.add('panel-visible');
+            if (userProfileArea && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+            if(panelContainer === leaderboardPanelContainer) fetchAndDisplayLeaderboard();
+        }
+
+        function hidePanel(panelContainer) {
+            audioManager.play('panelClose');
+            panelContainer.classList.add('panel-hidden');
+            panelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            const isAnyOtherPanelVisible = !modalContainer.classList.contains('panel-hidden') || (panelContainer === developersPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')) || (panelContainer === leaderboardPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
+            if (userProfileArea && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
+        }
+        
+        function updateUI() {
+            displayNameOutput.textContent = gameState.displayName || "مهمان";
+            publicUserIdOutput.textContent = gameState.publicUserId || "---";
+            stageDisplay.textContent = gameState.currentStage;
+            avatarImage.src = gameState.avatarUrl || 'https://placehold.co/80x80/333333/777777?text=?';
+
+            const isLoggedIn = isAuthReady && gameState.displayName && gameState.publicUserId;
+            registrationForm.classList.toggle('panel-hidden', isLoggedIn);
+            registrationForm.classList.toggle('panel-visible', !isLoggedIn);
+            mainScreenButtonsLayout.classList.toggle('hidden', !isLoggedIn);
+            startGameBtn.classList.toggle('breathing', isLoggedIn);
+            
+            const isAnyPanelVisible = !modalContainer.classList.contains('panel-hidden') || !developersPanelContainer.classList.contains('panel-hidden') || !leaderboardPanelContainer.classList.contains('panel-hidden');
+            
+            const showProfile = isLoggedIn && mainScreen.classList.contains('active');
+            userProfileArea.classList.toggle('hidden', !showProfile);
+            avatarContainer.classList.toggle('hidden', !showProfile);
+            userInfoBox.classList.toggle('hidden', !showProfile);
+            
+            if (showProfile && !isAnyPanelVisible) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            } else if (showProfile && isAnyPanelVisible) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+        }
+        
+        async function initFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                console.log("Firebase initialized.");
+                const loadingMessage = document.getElementById('loading-message');
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        await loadUserData();
+                    } else {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                           try { await signInWithCustomToken(auth, __initial_auth_token); } catch { await signInAnonymously(auth); }
+                        } else { await signInAnonymously(auth); }
+                    }
+                    isAuthReady = true;
+                    updateUI();
+                    if (loadingScreen.classList.contains('active')) {
+                        loadingMessage.textContent = "خوش آمدید!";
+                        setTimeout(() => showScreen(mainScreen), 500);
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase init error:", error);
+                document.getElementById('loading-message').textContent = "خطا در اتصال به سرور.";
+            }
+        }
+        
+        async function loadUserData() {
+            if (!currentUserId) return;
+            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    gameState.displayName = data.displayName || "";
+                    gameState.publicUserId = data.publicUserId || "";
+                    gameState.currentStage = data.currentStage || 1;
+                    gameState.avatarUrl = data.avatarUrl || '';
+                    gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
+                }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه");
+            }
+        }
+
+        async function saveUserData() {
+            if (!currentUserId) return;
+            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            const privateData = {
+                displayName: gameState.displayName,
+                publicUserId: gameState.publicUserId,
+                currentStage: gameState.currentStage,
+                avatarUrl: gameState.avatarUrl,
+                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
+                lastUpdated: serverTimestamp()
+            };
+            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${currentUserId}`);
+            const publicData = {
+                displayName: gameState.displayName,
+                currentStage: gameState.currentStage,
+                avatarUrl: gameState.avatarUrl,
+                lastUpdated: serverTimestamp()
+            };
+            try {
+                await Promise.all([
+                    setDoc(userDocRef, privateData, { merge: true }),
+                    setDoc(leaderboardDocRef, publicData, { merge: true })
+                ]);
+                console.log("User data and leaderboard data saved.");
+            } catch (error) {
+                console.error("Error saving user data:", error);
+                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
+            }
+        }
+        
+        async function callGeminiAPI(prompt, isJsonOutput = false) {
+            aiThinkingIndicator.classList.remove('hidden');
+            const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+            if (isJsonOutput) { payload.generationConfig = { responseMimeType: "application/json" }; }
+            
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) throw new Error("پاسخ نامعتبر از هوش مصنوعی.");
+                return isJsonOutput ? JSON.parse(text) : text;
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن مطمئن شوید و دوباره تلاش کنید.`);
+                return null;
+            } finally {
+                aiThinkingIndicator.classList.add('hidden');
+            }
+        }
+        
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+            return `h${Math.abs(hash)}`;
+        }
+
+        async function generateQuestion() {
+            if (gameState.isLoadingNextQuestion) return;
+            gameState.isLoadingNextQuestion = true;
+            questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
+            optionsContainer.innerHTML = "";
+            questionExplanation.classList.add('hidden');
+            gameFeedback.textContent = "";
+            
+            let attempts = 0, questionData = null;
+            while (attempts < 3) {
+                let difficulty = gameState.currentStage > 10 ? "سخت" : (gameState.currentStage > 5 ? "متوسط" : "آسان");
+                const prompt = `یک سوال 4 گزینه‌ای به زبان فارسی با موضوع مافیا (تاریخچه، فیلم، اصطلاحات) با سطح دشواری "${difficulty}" برای مرحله ${gameState.currentStage} طراحی کن. خروجی باید فقط یک آبجکت JSON با کلیدهای "question", "options" (آرایه 4 تایی), "correctAnswerIndex", "explanation" باشد.`;
+                const data = await callGeminiAPI(prompt, true);
+                if (data?.question && data.options?.length === 4) {
+                    if (!gameState.seenQuestionHashes.has(simpleHash(data.question))) {
+                        questionData = data;
+                        break;
+                    }
+                }
+                attempts++;
+            }
+
+            if (questionData) {
+                gameState.currentQuestionData = questionData;
+                displayQuestion();
+            } else {
+                showModal("خطا در تولید سوال", "نتوانستیم سوال جدید بسازیم. آیا می‌خواهید دوباره تلاش کنید؟", "تلاش مجدد", "صفحه اصلی",
+                    () => { hideModal(); generateQuestion(); },
+                    () => { hideModal(); showScreen(mainScreen); }
+                );
+            }
+            gameState.isLoadingNextQuestion = false;
+        }
+
+        function displayQuestion() {
+            const { question, options } = gameState.currentQuestionData;
+            questionText.textContent = question;
+            optionsContainer.innerHTML = "";
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right';
+                button.textContent = `${index + 1}. ${option}`;
+                button.dataset.index = index;
+                button.onclick = handleAnswerSelection;
+                optionsContainer.appendChild(button);
+            });
+            gameState.isQuestionActive = true;
+        }
+        
+        async function handleAnswerSelection(event) {
+            if (!gameState.isQuestionActive) return;
+            gameState.isQuestionActive = false;
+
+            const selectedBtn = event.target.closest('.option-btn');
+            const selectedIndex = parseInt(selectedBtn.dataset.index);
+            const { question, correctAnswerIndex, explanation } = gameState.currentQuestionData;
+            
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+
+            if (selectedIndex === correctAnswerIndex) {
+                audioManager.play('correct');
+                selectedBtn.classList.add('correct');
+                gameFeedback.textContent = "پاسخ صحیح!";
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#aaffaa] clash-font';
+                
+                gameState.seenQuestionHashes.add(simpleHash(question));
+                gameState.currentStage++;
+                await saveUserData();
+                
+                setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
+            } else {
+                audioManager.play('incorrect');
+                selectedBtn.classList.add('incorrect');
+                optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`).classList.add('correct');
+                gameFeedback.textContent = "پاسخ اشتباه!";
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
+                setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
+            }
+
+            if (explanation) {
+                questionExplanation.textContent = `توضیح: ${explanation}`;
+                questionExplanation.classList.remove('hidden');
+            }
+        }
+        
+        async function previewAvatarFromUrl() {
+            const url = avatarUrlInput.value.trim();
+            validatedAvatarUrl = null;
+            avatarPreviewContainer.classList.add('hidden');
+            avatarErrorMessage.classList.add('hidden');
+            modalConfirmBtn.disabled = true;
+            
+            if (!url) {
+                avatarErrorMessage.textContent = "لطفاً یک لینک وارد کنید.";
+                avatarErrorMessage.classList.remove('hidden');
+                return;
+            }
+            
+            try { new URL(url); } catch (_) {
+                avatarErrorMessage.textContent = "لینک وارد شده معتبر نیست.";
+                avatarErrorMessage.classList.remove('hidden');
+                return;
+            }
+
+            checkAvatarUrlBtn.disabled = true;
+            checkAvatarUrlBtn.textContent = '...';
+
+            const img = new Image();
+            img.onload = () => {
+                avatarPreviewImage.src = img.src;
+                avatarPreviewContainer.classList.remove('hidden');
+                validatedAvatarUrl = img.src;
+                modalConfirmBtn.disabled = false;
+                checkAvatarUrlBtn.disabled = false;
+                checkAvatarUrlBtn.textContent = 'بررسی';
+            };
+            img.onerror = () => {
+                avatarErrorMessage.textContent = "خطا در بارگذاری تصویر. لینک ممکن است اشتباه یا غیرقابل دسترس باشد.";
+                avatarErrorMessage.classList.remove('hidden');
+                checkAvatarUrlBtn.disabled = false;
+                checkAvatarUrlBtn.textContent = 'بررسی';
+            };
+            img.src = url;
+        }
+
+        async function saveAvatarUrl() {
+            if (!validatedAvatarUrl) {
+                showModal("خطا", "ابتدا باید یک لینک معتبر را بررسی و تایید کنید.", "باشه");
+                return;
+            }
+            gameState.avatarUrl = validatedAvatarUrl;
+            await saveUserData();
+            updateUI();
+            hideModal();
+            showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!");
+        }
+
+        function validateAndSanitizeName(nameValue, errorElement, inputElement) {
+            const sanitizedValue = nameValue.replace(/[^a-zA-Z0-9_.-]/g, '');
+            if (nameValue !== sanitizedValue) inputElement.value = sanitizedValue;
+            const trimmedName = sanitizedValue.trim();
+            
+            if (trimmedName.length < 3 || trimmedName.length > 20) {
+                errorElement.textContent = "نام باید بین ۳ تا ۲۰ کاراکتر انگلیسی باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('invalid');
+            return trimmedName;
+        }
+
+        async function fetchAndDisplayLeaderboard() {
+            leaderboardList.innerHTML = `<div class="text-center py-8"><div class="loader mx-auto"></div><p class="mt-3 font-bold">در حال بارگذاری...</p></div>`;
+            try {
+                const q = query(collection(db, `artifacts/${appId}/publicLeaderboard`), orderBy("currentStage", "desc"), limit(50));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-gray-300">هنوز کسی در لیست برترها نیست!</p>`;
+                    return;
+                }
+                const users = querySnapshot.docs.map(doc => doc.data());
+                renderLeaderboardList(users);
+            } catch (error) {
+                console.error("Leaderboard fetch error:", error);
+                leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-red-300">خطا در دریافت اطلاعات.</p>`;
+            }
+        }
+
+        function renderLeaderboardList(users) {
+            leaderboardList.innerHTML = users.map((user, index) => `
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">${index + 1}</span>
+                    <img src="${user.avatarUrl || 'https://placehold.co/50x50/2a4166/ffffff?text=?'}" alt="Avatar" class="leaderboard-avatar" onerror="this.onerror=null; this.src='https://placehold.co/50x50/2a4166/ffffff?text=?'">
+                    <div class="flex-grow">
+                        <div class="leaderboard-name">${user.displayName || "بی‌نام"}</div>
+                        <div class="leaderboard-stage">مرحله: <span class="clash-font text-lg text-yellow-300">${user.currentStage || 1}</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupEventListeners() {
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-clash:not(:disabled)')) audioManager.play('click');
+            });
+
+            modalConfirmBtn.addEventListener('click', () => modalConfirmCallback && modalConfirmCallback());
+            modalCancelBtn.addEventListener('click', () => { hideModal(); if (modalCancelCallback) modalCancelCallback(); });
+            
+            generateUserIdBtn.addEventListener('click', () => {
+                gameState.publicUserId = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('').sort(() => 0.5 - Math.random()).slice(0, 5).join('');
+                userIdDisplayInput.value = gameState.publicUserId;
+                userIdErrorMessage.classList.add('hidden');
+            });
+            
+            registerBtn.addEventListener('click', async () => {
+                const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+                if (!gameState.publicUserId) userIdErrorMessage.textContent = "لطفاً یک شناسه بسازید.";
+                userIdErrorMessage.classList.toggle('hidden', !!gameState.publicUserId);
+                if (validatedName && gameState.publicUserId) {
+                    gameState.displayName = validatedName;
+                    await saveUserData();
+                    updateUI();
+                }
+            });
+            
+            editNameBtn.addEventListener('click', () => showModal("تغییر نام", "نام نمایشی جدید خود را وارد کنید.", "تغییر", "لغو", async () => {
+                const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+                if(newName) {
+                    gameState.displayName = newName;
+                    await saveUserData();
+                    updateUI();
+                    hideModal();
+                }
+            }, null, "changeName"));
+
+            avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "لینک مستقیم تصویر مورد نظر خود را برای استفاده به عنوان آواتار وارد کنید.", "تایید و ذخیره", "لغو", saveAvatarUrl, null, "avatar"));
+
+            checkAvatarUrlBtn.addEventListener('click', previewAvatarFromUrl);
+            
+            [startGameBtn, mafiaFactBtn].forEach(btn => btn.addEventListener('click', (e) => {
+                if (!isAuthReady || !gameState.displayName) {
+                    e.stopPropagation();
+                    showModal("ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا ثبت نام کنید.", "باشه");
+                }
+            }, true));
+
+            startGameBtn.addEventListener('click', () => {
+                if (!gameState.displayName) return;
+                audioManager.play('startGame');
+                showModal("شروع بازی", "آیا برای ورود به دنیای پر رمز و راز مافیا آماده‌اید؟", "ادامه", "انصراف", () => {
+                    hideModal();
+                    showScreen(gameScreen);
+                    generateQuestion();
+                });
+            });
+
+            mafiaFactBtn.addEventListener('click', async () => {
+                if (!gameState.displayName) return;
+                showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div>", "جالب بود!");
+                const fact = await callGeminiAPI("یک حقیقت جالب و کوتاه در مورد دنیای مافیا به زبان فارسی بگو.");
+                if (fact) modalMessage.innerHTML = fact.replace(/\n/g, '<br>');
+                else modalMessage.textContent = "متاسفانه نکته‌ای یافت نشد!";
+            });
+
+            devIntroBtnHeader.addEventListener('click', () => showPanel(developersPanelContainer));
+            closeDevelopersPanelBtn.addEventListener('click', () => hidePanel(developersPanelContainer));
+            leaderboardIconBtnHeader.addEventListener('click', () => showPanel(leaderboardPanelContainer));
+            closeLeaderboardPanelBtn.addEventListener('click', () => hidePanel(leaderboardPanelContainer));
+            backToMainBtn.addEventListener('click', () => { saveUserData(); showScreen(mainScreen); });
+        }
+
+        domReady(() => {
+            getDOMElements();
+            audioManager.init();
+            setupEventListeners();
+            userProfileArea.classList.add('hidden');
+            if (navigator.onLine) {
+                initFirebase();
+            } else {
+                showModal("عدم اتصال", "لطفاً اتصال اینترنت خود را بررسی کرده و صفحه را دوباره بارگذاری کنید.", "باشه");
+            }
+        });
+    </script>
 </body>
 </html>
