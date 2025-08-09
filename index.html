@@ -4,27 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بازی مافیا - نسخه کلش</title>
-
-    <!-- START: SCRIPT DETEKSI PERANGKAT DAN REDIRECT -->
-    <script>
-        (function() {
-            // این تابع بررسی می‌کند که آیا کاربر از یک دستگاه موبایل استفاده می‌کند یا خیر
-            // این کار با جستجوی کلمات کلیدی رایج در رشته User Agent مرورگر انجام می‌شود.
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            // اگر دستگاه، موبایل تشخیص داده شد
-            if (isMobile) {
-                // برای جلوگیری از حلقه ریدایرکت (redirect loop)، چک می‌کنیم که در حال حاضر در صفحه موبایل نباشیم
-                if (window.location.pathname.toLowerCase().indexOf('indroidUI.html') === -1) {
-                    // کاربر را به صفحه طراحی شده برای موبایل منتقل می‌کنیم
-                    window.location.href = 'indroidUI.htm';
-                }
-            }
-            // در غیر این صورت (اگر دسکتاپ یا لپ‌تاپ بود)، هیچ کاری انجام نمی‌شود و همین صفحه بارگذاری می‌شود.
-        })();
-    </script>
-    <!-- END: SCRIPT DETEKSI PERANGKAT -->
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
