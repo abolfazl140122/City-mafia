@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه پیدا نشد - 404</title>
+    <style>
+        /* --- تنظیمات کلی و فونت --- */
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
 
+        :root {
+            --primary-color: #007bff; /* رنگ اصلی (آبی) */
+            --background-color: #f8f9fa; /* رنگ پس‌زمینه */
+            --text-color: #333; /* رنگ متن اصلی */
+            --light-text-color: #6c757d; /* رنگ متن فرعی */
+            --container-bg-color: #ffffff; /* رنگ پس‌زمینه کادر */
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* تمام ارتفاع صفحه را بگیرد */
+            text-align: center;
+        }
+
+        /* --- کادر اصلی --- */
+        .container {
+            background-color: var(--container-bg-color);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: var(--box-shadow);
+            max-width: 500px;
+            width: 90%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- عدد 404 --- */
+        .error-code {
+            font-size: 10rem; /* اندازه بسیار بزرگ */
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+            line-height: 1;
+            text-shadow: 2px 2px 5px rgba(0, 123, 255, 0.2);
+        }
+
+        /* --- عنوان اصلی خطا --- */
+        .error-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* --- توضیحات خطا --- */
+        .error-description {
+            font-size: 1.1rem;
+            color: var(--light-text-color);
+            margin-bottom: 30px;
+        }
+
+        /* --- دکمه بازگشت به خانه --- */
+        .home-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .home-button:hover {
+            background-color: #0056b3; /* رنگ تیره‌تر هنگام هاور */
+            transform: scale(1.05);
+        }
+        
+        /* --- استایل برای دستگاه‌های کوچک‌تر (موبایل) --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .error-code {
+                font-size: 7rem;
+            }
+
+            .error-title {
+                font-size: 1.5rem;
+            }
+
+            .error-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">صفحه پیدا نشد</h2>
+        <p class="error-description">
+            متأسفیم، صفحه‌ای که به دنبال آن بودید در این سایت وجود ندارد. ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه حذف شده باشد.
+        </p>
+        <a href="/" class="home-button">بازگشت به صفحه اصلی</a>
+    </div>
+
+</body>
+</html>
