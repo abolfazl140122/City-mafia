@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بازی مافیا - نسخه کلش</title>
+
+    <!-- START: SCRIPT DETECT DEVICE AND REDIRECT -->
+    <!-- این اسکریپت برای تشخیص دستگاه کاربر اضافه شده است -->
+    <script>
+        (function() {
+            // این عبارت باقاعده (Regex) رشته User Agent مرورگر را برای کلمات کلیدی رایج موبایل بررسی می‌کند
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // اگر دستگاه موبایل تشخیص داده شود، کاربر به صفحه مخصوص موبایل هدایت می‌شود
+            if (isMobile) {
+                window.location.href = 'indroidUI.html';
+            }
+            // در غیر این صورت (اگر دسکتاپ باشد)، اسکریپت کاری انجام نمی‌دهد و این صفحه به طور عادی بارگذاری می‌شود
+        })();
+    </script>
+    <!-- END: SCRIPT DETECT DEVICE AND REDIRECT -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
