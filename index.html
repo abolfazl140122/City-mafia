@@ -369,13 +369,12 @@
             border-radius: 12px;
             border: 4px solid #4a2f20;
             box-shadow: 0 6px 10px rgba(0,0,0,0.5);
-            gap: 0.5rem;
         }
         
         #main-title {
             text-align: center;
             flex-grow: 1;
-            font-size: 3rem;
+            font-size: 2.5rem; /* Adjusted for more buttons */
             color: var(--clash-gold);
             text-shadow: 
                 -3px -3px 0 var(--clash-brown-dark),  
@@ -388,14 +387,8 @@
                  0 3px 0 var(--clash-brown-dark),
                  6px 6px 8px rgba(0,0,0,0.7);
         }
-        @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
-        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
-
-        #header-icons-container {
-            display: flex;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
+        @media (min-width: 640px) { #main-title { font-size: 4rem; } }
+        @media (min-width: 768px) { #main-title { font-size: 5rem; } }
 
         .header-icon-btn {
             background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
@@ -405,6 +398,7 @@
         }
         .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
         .header-icon-btn svg { width: 22px; height: 22px; }
+        #header-buttons-container { display: flex; gap: 8px; }
         
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
@@ -416,7 +410,9 @@
         }
         .hidden { display: none !important; }
 
-        .close-panel-btn {
+        /* Styles for Pop-up Panels */
+        .popup-panel-container { background-color: rgba(10, 10, 10, 0.85); z-index: 51; }
+        .close-popup-panel-btn {
             position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
             border: 2px solid #7c2425;
@@ -424,19 +420,14 @@
             color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
             font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
         }
-        .close-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        .close-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
-
-        #developers-panel-container, #leaderboard-panel-container { background-color: rgba(10, 10, 10, 0.85); }
-        #developers-panel, #leaderboard-panel {
-            background-color: var(--clash-panel-bg);
-            border: 4px solid var(--clash-panel-border-dark);
-            border-top-color: var(--clash-panel-border);
-            border-left-color: var(--clash-panel-border);
+        .close-popup-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        .close-popup-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
+        .panel-list-container {
+            max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1 text-right;
         }
+
         .developer-item {
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 1rem 1.2rem; border-radius: 12px;
+            background-color: rgba(42, 65, 102, 0.9); padding: 1rem 1.2rem; border-radius: 12px;
             border: 2px solid rgba(157, 194, 255, 0.4);
         }
         .dev-header { border-bottom: 2px solid rgba(157, 194, 255, 0.3); }
@@ -444,42 +435,82 @@
         .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
-
+        
+        /* --- NEW: LEADERBOARD STYLES --- */
         .leaderboard-item {
             background-color: rgba(42, 65, 102, 0.9);
-            padding: 0.75rem; border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
             border: 2px solid rgba(157, 194, 255, 0.4);
-            display: flex; align-items: center; gap: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.3s;
         }
-        .leaderboard-rank {
-            font-size: 1.5rem; font-weight: bold; color: var(--clash-gold);
-            width: 40px; text-align: center; flex-shrink: 0;
-            text-shadow: 2px 2px 2px #000;
+        .leaderboard-item:hover {
+            background-color: rgba(60, 85, 125, 0.9);
         }
-        .leaderboard-avatar {
-            width: 50px; height: 50px; border-radius: 50%;
-            border: 3px solid var(--clash-gold);
-            object-fit: cover; background-color: #333;
+        .rank-number {
+            font-family: 'Lilita One', cursive;
+            font-size: 1.8rem;
+            color: var(--clash-gold-dark);
+            -webkit-text-stroke: 1.5px var(--clash-brown-dark);
+            width: 40px;
+            text-align: center;
             flex-shrink: 0;
         }
-        .leaderboard-info { flex-grow: 1; }
+        .leaderboard-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--clash-panel-border);
+            object-fit: cover;
+            background-color: #2a4166;
+            flex-shrink: 0;
+        }
+        .leaderboard-user-info {
+            flex-grow: 1;
+            overflow: hidden;
+            text-align: right;
+        }
         .leaderboard-name {
-            font-size: 1.2rem; font-weight: bold; color: #fff;
             font-family: 'Lilita One', cursive;
+            font-size: 1.2rem;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 2px #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .leaderboard-id { font-size: 0.8rem; color: #c0d8ff; font-family: monospace; }
+        .leaderboard-id {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #b0c8f0;
+        }
         .leaderboard-level {
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 1.1rem; font-weight: bold;
-            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(30, 20, 15, 0.6);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid #4a2f20;
         }
-        .leaderboard-level-value {
+        .leaderboard-level .label {
+            font-size: 0.7rem;
+            color: #f0d5bf;
+        }
+        .leaderboard-level .value {
             font-family: 'Lilita One', cursive;
-            font-size: 1.4rem; color: var(--clash-gold);
+            font-size: 1.5rem;
+            color: var(--clash-gold);
+            line-height: 1.1;
         }
+
     </style>
 </head>
 <body>
+    <!-- The old background is gone, body style handles the new one -->
 
     <div id="user-profile-area" class="hidden">
         <div id="avatar-container" class="hidden" title="تغییر آواتار">
@@ -518,8 +549,8 @@
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
-                    <div id="header-icons-container">
-                        <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
+                    <div id="header-buttons-container">
+                        <button id="dev-intro-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="9" cy="7" r="4"></circle>
@@ -527,17 +558,14 @@
                                 <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
                         </button>
-                        <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="کاربران برتر شهر">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path fill-rule="evenodd" d="M13.842 2.5a.75.75 0 0 1 .158.5V21a.75.75 0 0 1-1.22.616l-3.38-2.624a.75.75 0 0 0-.92 0L5.097 21.615A.75.75 0 0 1 3.878 21V3a.75.75 0 0 1 .75-.75h8.922c.153 0 .3.045.434.125.135.08.243.207.358.375zM15 3a.75.75 0 0 1 .75.75v16.5a.75.75 0 0 1-1.22.615l-3.38-2.624a.75.75 0 0 0-.92 0L6.855 20.865A.75.75 0 0 1 5.636 20.25V3.75A.75.75 0 0 1 6.386 3H15z" clip-rule="evenodd"/>
-                                <path d="M18 3.75a.75.75 0 0 0-1.5 0v16.5a.75.75 0 0 0 1.5 0V3.75z"/>
+                        <button id="leaderboard-btn-header" class="header-icon-btn" title="کاربران شهر مافیا">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15.402 2.248a.998.998 0 0 0-1.804 0l-1.56 4.79-4.908.435a1 1 0 0 0-.573 1.756l3.656 3.24-1.048 4.883a1 1 0 0 0 1.473 1.083l4.244-2.52 4.244 2.52a1 1 0 0 0 1.473-1.084l-1.048-4.883 3.656-3.24a1 1 0 0 0-.573-1.756l-4.908-.435-1.56-4.79zM8.5 22C7.122 22 6 20.878 6 19.5S7.122 17 8.5 17h7c1.378 0 2.5 1.122 2.5 2.5S16.878 22 15.5 22h-7zM2 18h2v-7H2v7zm18 0h2v-7h-2v7z"></path>
                             </svg>
                         </button>
                     </div>
-
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    
-                    <div id="header-spacer" style="width: 98px; flex-shrink: 0;"></div>
+                    <div style="min-width: 96px; flex-shrink: 0;"></div> <!-- Spacer -->
                 </div>
 
                 <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
@@ -615,11 +643,12 @@
         </div>
     </div>
     
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
+    <!-- Developers Panel -->
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden popup-panel-container">
         <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
-            <button id="close-developers-panel-btn" class="close-panel-btn">×</button>
+            <button id="close-developers-panel-btn" class="close-popup-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
+            <div id="developers-list" class="space-y-4 panel-list-container">
                 <div class="developer-item">
                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💻</span>
@@ -672,16 +701,22 @@
         </div>
     </div>
 
-    <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
-            <button id="close-leaderboard-panel-btn" class="close-panel-btn">×</button>
+    <!-- NEW: Leaderboard Panel -->
+    <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden popup-panel-container">
+        <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
+            <button id="close-leaderboard-panel-btn" class="close-popup-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران شهر مافیا</h3>
-            <div id="leaderboard-list" class="space-y-3 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- User items will be injected here by JavaScript -->
+            <div id="leaderboard-list" class="space-y-3 panel-list-container">
+                <!-- User items will be injected here by JS -->
+                <div class="text-center py-8">
+                    <div class="loader mx-auto"></div>
+                    <p class="mt-4 font-bold">در حال بارگذاری لیست کاربران...</p>
+                </div>
             </div>
         </div>
     </div>
     
+    <!-- Audio Elements -->
     <div id="audio-container" class="hidden">
         <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
         <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
@@ -692,11 +727,12 @@
     </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH LEADERBOARD) ---
+        // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- NEW: AUDIO MANAGER ---
         const audioManager = {
             sounds: {},
             init() {
@@ -708,7 +744,7 @@
                 this.sounds.startGame = document.getElementById('sfx-start-game');
 
                 Object.values(this.sounds).forEach(sound => {
-                    if (sound) sound.volume = 0.4;
+                    if (sound) sound.volume = 0.4; // Adjust volume globally
                 });
             },
             play(soundName) {
@@ -750,8 +786,7 @@
             avatarUrl: '',
             seenQuestionHashes: new Set(),
         };
-        
-        // --- GLOBAL UI ELEMENT VARIABLES ---
+
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
             registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
@@ -773,8 +808,6 @@
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
-        
-        const isUserLoggedIn = () => isAuthReady && gameState.displayName && gameState.publicUserId;
 
         function simpleHash(str) {
             let hash = 0;
@@ -786,26 +819,35 @@
             return `h${Math.abs(hash)}`;
         }
 
+
         function showScreen(screenElement) {
             if (!screenElement) return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
+
             const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
             document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
             document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            
             screenElement.scrollTop = 0;
             updateUI();
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalContainer) return;
-            audioManager.play('panelOpen');
+            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
+                console.error("[showModal] Modal elements not found, cannot show modal.");
+                return;
+            }
+
+            audioManager.play('panelOpen'); // Sound Effect
+
             modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void modalContainer.offsetWidth;
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
+            void modalContainer.offsetWidth; // Trigger reflow
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
             
             modalTitle.textContent = title;
+
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
@@ -813,24 +855,25 @@
             if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
 
-            if(userProfileArea && mainScreen.classList.contains('active')) {
+
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
 
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
-                newDisplayNameInput.value = gameState.displayName;
-                changeNameErrorMessage.textContent = '';
-                newDisplayNameInput.classList.remove('invalid');
+                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
+                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
                 if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
                 avatarGenerationContainer.classList.remove('hidden');
-                avatarSuggestionsContainer.innerHTML = '';
-                avatarErrorMessage.textContent = '';
-                avatarAiLoading.classList.add('hidden');
+                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = '';
+                if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
                  if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
@@ -853,8 +896,11 @@
         }
 
         function hideModal() {
-            if (!modalContainer) return;
-            audioManager.play('panelClose');
+            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
+                return;
+            }
+            
+            audioManager.play('panelClose'); // Sound Effect
             modalContainer.classList.add('panel-hidden');
             modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
 
@@ -863,51 +909,65 @@
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
-            if(userProfileArea && mainScreen.classList.contains('active') &&
-               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden')) &&
-               (!leaderboardPanelContainer || leaderboardPanelContainer.classList.contains('panel-hidden'))) {
-                userProfileArea.classList.remove('profile-area-hidden');
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
+                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
+                if (!isAnyPanelVisible) {
+                    userProfileArea.classList.remove('profile-area-hidden');
+                }
             }
         }
 
         function handleModalConfirm() {
-            if (modalConfirmCallback) modalConfirmCallback(); else hideModal();
+            if (modalConfirmCallback) {
+                try {
+                    modalConfirmCallback();
+                } catch (e) {
+                    console.error("[handleModalConfirm] Error in modal confirm callback:", e);
+                    hideModal();
+                }
+            } else {
+                hideModal();
+            }
         }
 
         function handleModalCancel() {
-            if (modalCancelCallback) modalCancelCallback();
+            if (modalCancelCallback) {
+                try {
+                    modalCancelCallback();
+                } catch (e) {
+                    console.error("[handleModalCancel] Error in modal cancel callback:", e);
+                }
+            }
             hideModal();
         }
-        
-        function showPanel(panelContainer) {
-            if (!panelContainer) return;
+
+        function showPanel(panelElement) {
+            if (!panelElement) return;
             audioManager.play('panelOpen');
-            panelContainer.classList.remove('panel-hidden');
-            const panel = panelContainer.querySelector('.panel-clash');
-            panel.classList.remove('panel-visible');
-            void panel.offsetWidth;
-            panel.classList.add('panel-visible');
+            panelElement.classList.remove('panel-hidden');
+            panelElement.querySelector('.panel-clash').classList.remove('panel-visible');
+            void panelElement.offsetWidth;
+            panelElement.querySelector('.panel-clash').classList.add('panel-visible');
             if(userProfileArea && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
         }
 
-        function hidePanel(panelContainer) {
-            if (!panelContainer) return;
+        function hidePanel(panelElement) {
+            if (!panelElement) return;
             audioManager.play('panelClose');
-            panelContainer.classList.add('panel-hidden');
-            panelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            if(userProfileArea && mainScreen.classList.contains('active') &&
-               (!modalContainer || modalContainer.classList.contains('panel-hidden')) &&
-               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden')) &&
-               (!leaderboardPanelContainer || leaderboardPanelContainer.classList.contains('panel-hidden'))) {
-                userProfileArea.classList.remove('profile-area-hidden');
+            panelElement.classList.add('panel-hidden');
+            panelElement.querySelector('.panel-clash').classList.remove('panel-visible');
+            
+            if(userProfileArea && mainScreen.classList.contains('active')) {
+                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
+                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
+                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
+                if (!isAnyPanelVisible) {
+                    userProfileArea.classList.remove('profile-area-hidden');
+                }
             }
-        }
-        
-        async function showLeaderboardPanel() {
-            showPanel(leaderboardPanelContainer);
-            await fetchAndDisplayLeaderboard();
         }
 
         function updateUI() {
@@ -915,31 +975,73 @@
             if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
             if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
 
-            if(avatarImage) avatarImage.src = gameState.avatarUrl || `https://placehold.co/80x80/333333/777777?text=?`;
-
-            const loggedIn = isUserLoggedIn();
-            const showRegistration = !loggedIn;
-            let showUserInfoAndAvatar = false;
-            if (loggedIn && mainScreen && mainScreen.classList.contains('active')) {
-                showUserInfoAndAvatar = true;
+            if(avatarImage && gameState.avatarUrl) {
+                avatarImage.src = gameState.avatarUrl;
+            } else if (avatarImage) {
+                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
             }
 
-            if(registrationForm) registrationForm.classList.toggle('panel-hidden', !showRegistration);
-            if(registrationForm) registrationForm.classList.toggle('panel-visible', showRegistration);
-            if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.toggle('hidden', !loggedIn);
-            if(startGameBtn) startGameBtn.classList.toggle('breathing', loggedIn);
+            let showRegistration = true;
+            let showActionButtons = false;
+            let showUserInfoAndAvatar = false;
+
+            if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                showRegistration = false;
+                showActionButtons = true;
+                if(startGameBtn) startGameBtn.classList.add('breathing'); // Add breathing animation
+                if (mainScreen && mainScreen.classList.contains('active')) {
+                    showUserInfoAndAvatar = true;
+                }
+            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            } else {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            }
+
+            if(registrationForm){
+                if (showRegistration) {
+                    registrationForm.classList.remove('panel-hidden');
+                    registrationForm.classList.add('panel-visible');
+                } else {
+                    registrationForm.classList.add('panel-hidden');
+                    registrationForm.classList.remove('panel-visible');
+                }
+            }
+
+            if(mainScreenButtonsLayout){
+                if (showActionButtons) {
+                    mainScreenButtonsLayout.classList.remove('hidden');
+                } else {
+                    mainScreenButtonsLayout.classList.add('hidden');
+                }
+            }
 
             if(userProfileArea){
                 const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
                                         (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
                                         (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-                
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
-                    userProfileArea.classList.remove('profile-area-hidden', 'hidden');
-                    avatarContainer.classList.toggle('hidden', window.innerWidth < 768);
-                    userInfoBox.classList.remove('hidden');
+                    userProfileArea.classList.remove('profile-area-hidden');
+                    userProfileArea.classList.remove('hidden');
+                    if(avatarContainer){
+                        if(window.innerWidth >= 768) {
+                            avatarContainer.classList.remove('hidden');
+                        } else {
+                            avatarContainer.classList.add('hidden');
+                        }
+                    }
+                    if(userInfoBox) userInfoBox.classList.remove('hidden');
+
                 } else if (!showUserInfoAndAvatar) {
                     userProfileArea.classList.add('hidden');
+                    if(avatarContainer) avatarContainer.classList.add('hidden');
+                    if(userInfoBox) userInfoBox.classList.add('hidden');
                 } else if (isAnyPanelVisible) {
                     userProfileArea.classList.add('profile-area-hidden');
                 }
@@ -955,83 +1057,113 @@
 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
+                        console.log("User is signed in:", user.uid);
                         currentUserId = user.uid;
                         await loadUserData();
                     } else {
                         console.log("User is signed out. Attempting to sign in.");
-                        try {
-                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            try {
                                 await signInWithCustomToken(auth, __initial_auth_token);
-                            } else {
+                            } catch (error) {
+                                console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
                                 await signInAnonymously(auth);
                             }
-                        } catch (error) {
-                            console.error("Auth error, falling back to anonymous:", error);
+                        } else {
                             await signInAnonymously(auth);
                         }
+                        gameState.displayName = '';
+                        gameState.publicUserId = '';
+                        gameState.avatarUrl = '';
+                        gameState.seenQuestionHashes.clear();
                     }
                     isAuthReady = true;
                     updateUI();
 
                     if (loadingScreen && loadingScreen.classList.contains('active')) {
-                        loadingMessage.textContent = "خوش آمدید!";
-                        setTimeout(() => showScreen(mainScreen), 500);
+                        if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
+                        setTimeout(() => {
+                            if(mainScreen) showScreen(mainScreen);
+                        }, 500);
                     }
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
-                loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
+                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
                 if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
             }
         }
         
         async function loadUserData() {
-            if (!currentUserId || !db) return;
+            if (!currentUserId || !db) {
+                console.log("Cannot load user data: no currentUserId or db connection.");
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
+                return;
+            }
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
+                    console.log("User data found, loading profile.");
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
+                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
-                    Object.assign(gameState, { displayName: "", publicUserId: "", avatarUrl: '', seenQuestionHashes: new Set() });
+                    console.log("No user profile found, setting default values.");
+                    gameState.displayName = "";
+                    gameState.publicUserId = "";
+                    gameState.avatarUrl = '';
+                    gameState.seenQuestionHashes = new Set();
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه");
-                Object.assign(gameState, { displayName: "", publicUserId: "", avatarUrl: '', seenQuestionHashes: new Set() });
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
             }
         }
-        
+
         async function saveUserData() {
             if (!currentUserId || !db) return;
-            const privateDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-            const publicDocRef = doc(db, `artifacts/${appId}/publicUserProfiles/${currentUserId}`);
             
-            const commonData = {
+            const userPrivateDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            const userPublicDocRef = doc(db, `artifacts/${appId}/publicProfiles/${currentUserId}`);
+            
+            const privateData = {
+                displayName: gameState.displayName,
+                publicUserId: gameState.publicUserId,
+                currentStage: gameState.currentStage,
+                avatarUrl: gameState.avatarUrl,
+                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
+                lastUpdated: serverTimestamp()
+            };
+
+            const publicData = {
                 displayName: gameState.displayName,
                 publicUserId: gameState.publicUserId,
                 currentStage: gameState.currentStage,
                 avatarUrl: gameState.avatarUrl,
                 lastUpdated: serverTimestamp()
             };
-            
-            const privateData = {
-                ...commonData,
-                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
-            };
 
             try {
-                await setDoc(privateDocRef, privateData, { merge: true });
-                await setDoc(publicDocRef, commonData, { merge: true });
-                console.log("Private and Public user data saved successfully.");
+                // Save private data
+                await setDoc(userPrivateDocRef, privateData, { merge: true });
+                // Save public data for leaderboard
+                await setDoc(userPublicDocRef, publicData, { merge: true });
+                 console.log("User data saved successfully to private and public profiles.");
             } catch (error) {
                 console.error("Error saving user data:", error);
-                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
+                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
         
@@ -1039,40 +1171,81 @@
         const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
-        async function callGeminiAPI(prompt) {
+        async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
             if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+
+            if (isJsonOutput) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                };
+                if (schema) {
+                    payload.generationConfig.responseSchema = schema;
+                }
+            }
 
             try {
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}: ${await response.text()}`);
-                const result = await response.json();
-                
-                const content = result.candidates?.[0]?.content?.parts?.[0];
-                if (content?.text) {
-                    try { return JSON.parse(content.text); } catch (e) { return content.text; } // Return text if not JSON
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
                 }
-                throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates?.[0]?.finishReason || 'Unknown'})`);
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return isJsonOutput ? JSON.parse(text) : text;
+                } else {
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
+                         throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
+                    }
+                    throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
+                }
             } catch (error) {
                 console.error("Error calling Gemini API:", error);
-                showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً دوباره تلاش کنید.<br><small>جزئیات: ${error.message}</small>`, "باشه");
+                if (!prompt.includes("offensive, hateful, or contain profanity")) {
+                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
+                }
                 return null;
             } finally {
                 if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden');
             }
         }
 
-        async function callImagenAPI(prompt, sampleCount = 4) {
+        async function callImagenAPI(prompt, sampleCount = 1) {
             if(avatarAiLoading) avatarAiLoading.classList.remove('hidden');
             if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": sampleCount }
+            };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
+
             try {
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ instances: [{ prompt }], parameters: { sampleCount } }) });
-                if (!response.ok) throw new Error(`API request failed: ${response.status} ${await response.text()}`);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed: ${response.status} ${errorBody}`);
+                }
                 const result = await response.json();
-                if (result.predictions?.length > 0) return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
-                throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
+                if (result.predictions && result.predictions.length > 0) {
+                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
+                } else {
+                    throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
+                }
             } catch (error) {
                 console.error("Error calling Imagen API:", error);
                 if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
@@ -1082,88 +1255,85 @@
             }
         }
         
-        async function fetchAndDisplayLeaderboard() {
-            if (!db || !leaderboardList) return;
-            leaderboardList.innerHTML = `<div class="text-center py-4"><div class="loader mx-auto"></div><p class="mt-2 font-bold">در حال بارگذاری لیست کاربران برتر...</p></div>`;
-
-            try {
-                const q = query(collection(db, `artifacts/${appId}/publicUserProfiles`), orderBy("currentStage", "desc"), limit(50));
-                const querySnapshot = await getDocs(q);
-
-                leaderboardList.innerHTML = '';
-                if (querySnapshot.empty) {
-                    leaderboardList.innerHTML = '<p class="text-center py-4">هنوز هیچ کاربری در شهر ثبت نام نکرده است!</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc, index) => {
-                    const user = doc.data();
-                    const avatarSrc = user.avatarUrl || 'https://placehold.co/50x50/333333/777777?text=?';
-                    const userElement = document.createElement('div');
-                    userElement.className = 'leaderboard-item';
-                    userElement.innerHTML = `
-                        <div class="leaderboard-rank">${index + 1}</div>
-                        <img src="${avatarSrc}" alt="Avatar" class="leaderboard-avatar" onerror="this.src='https://placehold.co/50x50/333333/777777?text=?'">
-                        <div class="leaderboard-info">
-                            <div class="leaderboard-name">${user.displayName || 'بی‌نام'}</div>
-                            <div class="leaderboard-id">#${user.publicUserId || '-----'}</div>
-                        </div>
-                        <div class="leaderboard-level">
-                            <span>لول: </span>
-                            <span class="leaderboard-level-value">${user.currentStage || 1}</span>
-                        </div>
-                    `;
-                    leaderboardList.appendChild(userElement);
-                });
-            } catch (error) {
-                console.error("Error fetching leaderboard:", error);
-                leaderboardList.innerHTML = `<p class="text-center py-4 text-red-300">خطا در بارگذاری لیست کاربران. لطفا دوباره تلاش کنید.</p>`;
-            }
-        }
-
-        // ... Other functions (generateQuestion, displayQuestion, etc.) are mostly unchanged ...
-        // I will copy them here for completeness.
-
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
-            questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
-            optionsContainer.innerHTML = "";
-            questionExplanation.classList.add('hidden');
-            gameFeedback.textContent = "";
+            if (questionText) questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
+            if (optionsContainer) optionsContainer.innerHTML = "";
+            if (questionExplanation) questionExplanation.classList.add('hidden');
+            if (gameFeedback) gameFeedback.textContent = "";
             
-            let attempts = 0, maxAttempts = 3, questionData = null;
+            let attempts = 0;
+            const maxAttempts = 3;
+            let questionData = null;
 
             while (attempts < maxAttempts) {
-                let difficulty = gameState.currentStage > 20 ? "بسیار سخت" : gameState.currentStage > 10 ? "سخت" : gameState.currentStage > 5 ? "متوسط" : "آسان";
-                const prompt = `یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا با سطح دشواری "${difficulty}" برای مرحله ${gameState.currentStage} طراحی کن. خروجی باید فقط یک آبجکت JSON خام با کلیدهای "question", "options", "correctAnswerIndex", "explanation" باشد.`;
-                const data = await callGeminiAPI(prompt);
+                let difficulty = "آسان";
+                if (gameState.currentStage > 20) {
+                    difficulty = "بسیار سخت";
+                } else if (gameState.currentStage > 10) {
+                    difficulty = "سخت";
+                } else if (gameState.currentStage > 5) {
+                    difficulty = "متوسط";
+                }
+                
+                const prompt = `
+                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
+                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                موضوعات پیشنهادی (برای تنوع):
+                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
+                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
+                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
+                ساختار JSON باید دقیقا به این صورت باشد:
+                {
+                  "question": "متن سوال به فارسی",
+                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
+                  "correctAnswerIndex": 0,
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
+                }
+                `;
+
+                const data = await callGeminiAPI(prompt, true);
 
                 if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
                         break;
+                    } else {
+                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
+                        attempts++;
                     }
-                    console.warn(`Duplicate question, retrying...`);
+                } else {
+                    console.error("Invalid question data structure received from AI:", data);
+                    attempts++;
                 }
-                attempts++;
             }
 
             if (questionData) {
                 gameState.currentQuestionData = questionData;
                 displayQuestion();
             } else {
-                questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
-                showModal("خطا در تولید سوال", `نتوانستیم سوال جدید بسازیم. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                console.error("Failed to generate a unique question after multiple attempts.");
+                if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
+                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
                     () => { hideModal(); generateQuestion(); },
-                    () => { hideModal(); showScreen(mainScreen); }
+                    () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
                 );
             }
+            
             gameState.isLoadingNextQuestion = false;
+            gameState.isQuestionActive = true;
         }
 
         function displayQuestion() {
+            if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
             const { question, options } = gameState.currentQuestionData;
             questionText.textContent = question;
             optionsContainer.innerHTML = "";
@@ -1175,72 +1345,100 @@
                 button.addEventListener('click', handleAnswerSelection);
                 optionsContainer.appendChild(button);
             });
-            questionExplanation.classList.add('hidden');
-            gameFeedback.textContent = "";
+            if(questionExplanation) questionExplanation.classList.add('hidden');
+            if(questionExplanation) questionExplanation.textContent = "";
+            if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
         }
         
         async function handleAnswerSelection(event) {
-            if (!gameState.isQuestionActive) return;
+            if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
             gameState.isQuestionActive = false;
 
-            const selectedBtn = event.target.closest('.option-btn');
-            if (!selectedBtn) return;
+            const selectedOptionButton = event.target.closest('.option-btn');
+            if (!selectedOptionButton) return;
 
-            const selectedIndex = parseInt(selectedBtn.dataset.index);
+            const selectedIndex = parseInt(selectedOptionButton.dataset.index);
             const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
 
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
             if (selectedIndex === correctAnswerIndex) {
-                audioManager.play('correct');
-                selectedBtn.classList.add('correct');
+                audioManager.play('correct'); // Sound effect
+                selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
-                gameState.seenQuestionHashes.add(simpleHash(question));
+                
+                const questionHash = simpleHash(question);
+                gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
+                
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
-                audioManager.play('incorrect');
-                selectedBtn.classList.add('incorrect');
-                optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`)?.classList.add('correct');
-                const taunt = await callGeminiAPI(`یک طعنه کوتاه و بامزه مافیایی بگو چون بازیکن به سوال "${question}" پاسخ اشتباه "${options[selectedIndex]}" داده است. پاسخ صحیح "${options[correctAnswerIndex]}" بود.`);
-                gameFeedback.innerHTML = taunt || "پاسخ اشتباه!";
+                audioManager.play('incorrect'); // Sound effect
+                selectedOptionButton.classList.add('incorrect');
+                const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+                if (correctButton) correctButton.classList.add('correct');
+
+                const selectedOptionText = options[selectedIndex];
+                const correctAnswerText = options[correctAnswerIndex];
+                const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
+                سوال: "${question}"
+                پاسخ اشتباه بازیکن: "${selectedOptionText}"
+                پاسخ صحیح: "${correctAnswerText}"
+                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
+
+                const taunt = await callGeminiAPI(tauntPrompt);
+                if (taunt) {
+                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
+                } else {
+                    gameFeedback.textContent = "پاسخ اشتباه!";
+                }
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
+                
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
-            if (explanation) {
+            if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
         }
         
         async function generateAndDisplayAvatars() {
+            if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
+            avatarAiLoading.classList.remove('hidden');
             const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons, cartoonish, stylized, game art style";
-            const suggestions = await callImagenAPI(prompt);
+            const suggestions = await callImagenAPI(prompt, 4);
+
             avatarSuggestionsContainer.innerHTML = '';
             selectedAvatarForConfirmation = null;
-            if (suggestions?.length > 0) {
+
+            if (suggestions && suggestions.length > 0) {
                 suggestions.forEach(base64Url => {
                     const imgWrapper = document.createElement('div');
                     imgWrapper.className = 'avatar-suggestion-item';
                     const img = document.createElement('img');
                     img.src = base64Url;
+                    img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
-                    imgWrapper.onclick = () => {
-                        audioManager.play('click');
-                        avatarSuggestionsContainer.querySelector('.selected')?.classList.remove('selected');
+                    imgWrapper.addEventListener('click', () => {
+                        audioManager.play('click'); // Sound effect
+                        const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
+                        if (currentSelected) {
+                            currentSelected.classList.remove('selected');
+                        }
                         imgWrapper.classList.add('selected');
                         selectedAvatarForConfirmation = base64Url;
                         modalConfirmBtn.disabled = false;
-                    };
+                    });
                     avatarSuggestionsContainer.appendChild(imgWrapper);
                 });
                 modalConfirmBtn.textContent = "انتخاب";
                 modalConfirmBtn.disabled = true;
             } else {
-                avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم.";
+                if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
+                modalConfirmBtn.textContent = "تایید";
                 modalConfirmBtn.disabled = true;
             }
         }
@@ -1251,82 +1449,254 @@
                 await saveUserData();
                 updateUI();
                 hideModal();
-                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!");
+                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
             } else {
-                avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
+                if(avatarErrorMessage) avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
             }
         }
 
-        function validateAndSanitizeName(nameValue, errorEl, inputEl) {
-            const sanitized = nameValue.replace(/[^a-zA-Z0-9_.-]/g, '').trim();
-            if (inputEl.value !== sanitized) inputEl.value = sanitized;
-            if (sanitized.length < 3 || sanitized.length > 20) {
-                errorEl.textContent = "نام باید بین ۳ تا ۲۰ کاراکتر انگلیسی باشد.";
-                errorEl.classList.remove('hidden');
-                inputEl.classList.add('invalid');
+        function validateAndSanitizeName(nameValue, errorElement, inputElement) {
+            if (!inputElement || !errorElement) return null;
+            const regex = /[^a-zA-Z0-9_.-]/g;
+            let sanitizedValue = nameValue.replace(regex, '');
+
+            if (nameValue !== sanitizedValue) {
+                inputElement.value = sanitizedValue;
+            }
+
+            const trimmedName = sanitizedValue.trim();
+
+            if (trimmedName === '') {
+                errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
                 return null;
             }
-            errorEl.classList.add('hidden');
-            inputEl.classList.remove('invalid');
-            return sanitized;
+            if (trimmedName.length < 3) {
+                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            if (trimmedName.length > 20) {
+                errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            errorElement.textContent = '';
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('invalid');
+            return trimmedName;
         }
 
         async function handleChangeDisplayName() {
+            if(!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
+
             if (newName === gameState.displayName) {
-                changeNameErrorMessage.textContent = "نام جدید باید متفاوت باشد.";
-                changeNameErrorMessage.classList.remove('hidden');
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
+
             gameState.displayName = newName;
             await saveUserData();
             updateUI();
             hideModal();
-            showModal("موفقیت", "نام نمایشی شما تغییر کرد!", "عالی!");
+            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
 
         async function generateMafiaFact() {
-            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div>", "باشه");
-            const fact = await callGeminiAPI("یک حقیقت جالب و کوتاه در مورد دنیای مافیا به فارسی بگو.");
-            if (fact) showModal("دانستنی مافیا ✨", fact, "جالب بود!");
+            const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
+            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
+
+            const fact = await callGeminiAPI(prompt);
+            if (fact) {
+                showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
+            } else {
+                showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
+            }
         }
         
         function generateAlphanumericPublicUserId(length = 5) {
-            return Array.from({length}, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.floor(Math.random() * 36))).join('');
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        async function fetchAndDisplayLeaderboard() {
+            if (!db || !leaderboardList) return;
+            
+            leaderboardList.innerHTML = `<div class="text-center py-8">
+                <div class="loader mx-auto"></div><p class="mt-4 font-bold">در حال بارگذاری لیست کاربران...</p>
+            </div>`;
+
+            try {
+                const publicProfilesRef = collection(db, `artifacts/${appId}/publicProfiles`);
+                const q = query(publicProfilesRef, orderBy("currentStage", "desc"), limit(50));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    leaderboardList.innerHTML = `<p class="text-center text-gray-300 py-8">هنوز هیچ کاربری در شهر ثبت نشده است. شما اولین نفر باشید!</p>`;
+                    return;
+                }
+
+                let rank = 1;
+                let leaderboardHTML = '';
+                querySnapshot.forEach(doc => {
+                    const user = doc.data();
+                    const defaultAvatar = 'https://placehold.co/50x50/2a4166/9dc2ff?text=?';
+                    leaderboardHTML += `
+                        <div class="leaderboard-item">
+                            <span class="rank-number">${rank}</span>
+                            <img src="${user.avatarUrl || defaultAvatar}" alt="آواتار" class="leaderboard-avatar" onerror="this.src='${defaultAvatar}'">
+                            <div class="leaderboard-user-info">
+                                <div class="leaderboard-name">${user.displayName || 'بی‌نام'}</div>
+                                <div class="leaderboard-id">#${user.publicUserId || '-----'}</div>
+                            </div>
+                            <div class="leaderboard-level">
+                                <span class="label">لول</span>
+                                <span class="value">${user.currentStage || 1}</span>
+                            </div>
+                        </div>
+                    `;
+                    rank++;
+                });
+                leaderboardList.innerHTML = leaderboardHTML;
+
+            } catch (error) {
+                console.error("Error fetching leaderboard:", error);
+                leaderboardList.innerHTML = `<p class="text-center text-red-300 py-8">خطایی در بارگذاری لیست کاربران رخ داد. لطفا دوباره تلاش کنید.</p>`;
+            }
         }
         
-        // --- REFACTORED AND CORRECTED EVENT LISTENERS ---
         function setupEventListeners() {
+            // Add a global click sound listener for all clash buttons
             document.body.addEventListener('click', (event) => {
-                if (event.target.closest('.btn-clash:not(:disabled)')) audioManager.play('click');
+                if (event.target.closest('.btn-clash:not(:disabled)')) {
+                    audioManager.play('click');
+                }
             });
 
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
-            const showLoginRequiredModal = () => showModal("ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.", "باشه");
-            
-            if (devIntroBtnHeader) {
-                devIntroBtnHeader.addEventListener('click', () => {
-                    isUserLoggedIn() ? showPanel(developersPanelContainer) : showLoginRequiredModal();
+            if (displayNameInput) {
+                displayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+                });
+                displayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        if(registerBtn) registerBtn.click();
+                    }
                 });
             }
 
-            if (leaderboardBtnHeader) {
-                leaderboardBtnHeader.addEventListener('click', () => {
-                     isUserLoggedIn() ? showLeaderboardPanel() : showLoginRequiredModal();
+            if (generateUserIdBtn) {
+                generateUserIdBtn.addEventListener('click', () => {
+                    const newPublicId = generateAlphanumericPublicUserId();
+                    if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
+                    gameState.publicUserId = newPublicId;
+                    if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
                 });
             }
-            
+
+            if (newDisplayNameInput) {
+                newDisplayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+                });
+                newDisplayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                         if (modalConfirmCallback === handleChangeDisplayName) {
+                            if(modalConfirmBtn) modalConfirmBtn.click();
+                        }
+                    }
+                });
+            }
+
+            if (registerBtn) {
+                registerBtn.addEventListener('click', async () => {
+                    const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+
+                    let isPublicIdValid = false;
+                    if (!gameState.publicUserId) {
+                        if(userIdErrorMessage) {
+                            userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
+                            userIdErrorMessage.classList.remove('hidden');
+                        }
+                        isPublicIdValid = false;
+                    } else {
+                        if(userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+                        isPublicIdValid = true;
+                    }
+
+                    if (!validatedName || !isPublicIdValid) return;
+
+                    gameState.displayName = validatedName;
+
+                    await saveUserData();
+                    updateUI();
+                });
+            }
+
+            if (editNameBtn) {
+                editNameBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName) return;
+                    showModal( "تغییر نام", "تغییر نام در این بازی رایگان است.", "تغییر", "لغو",
+                        handleChangeDisplayName, hideModal, "changeName"
+                    );
+                });
+            }
+
+            if (avatarContainer) {
+                avatarContainer.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName) return;
+                    selectedAvatarForConfirmation = null;
+                    showModal( "تغییر آواتار", "", "انتخاب", "لغو",
+                        confirmAvatarSelection, hideModal, "avatar"
+                    );
+                    if(modalConfirmBtn) modalConfirmBtn.disabled = true;
+                });
+            }
+
+            if (generateAvatarBtn) {
+                generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
+            }
+
+            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader, leaderboardBtnHeader].filter(btn => btn !== null);
+            allActionButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
+                        event.stopPropagation();
+                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.",
+                            "باشه", null, () => hideModal()
+                        );
+                    }
+                }, true);
+            });
+
             if (startGameBtn) {
-                 startGameBtn.addEventListener('click', () => {
-                    if (!isUserLoggedIn()) return;
-                    audioManager.play('startGame');
-                    showModal("شروع بازی", "پیشنهاد می‌شود از یک اتصال اینترنت پایدار استفاده کنید.", "ادامه", null,
+                startGameBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    audioManager.play('startGame'); // Special Sound
+                    showModal(
+                        "شروع بازی",
+                        "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
+                        "ادامه", null,
                         () => {
                             hideModal();
-                            showScreen(gameScreen);
+                            if(gameScreen) showScreen(gameScreen);
                             generateQuestion();
                         }
                     );
@@ -1334,87 +1704,128 @@
             }
 
             if (mafiaFactBtn) {
-                 mafiaFactBtn.addEventListener('click', () => {
-                    if (!isUserLoggedIn()) return;
+                mafiaFactBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
                     generateMafiaFact();
+                });
+            }
+            
+            if (devIntroBtnHeader) {
+                devIntroBtnHeader.addEventListener('click', () => {
+                     if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                        showPanel(developersPanelContainer);
+                    }
+                });
+            }
+            
+            if (leaderboardBtnHeader) {
+                leaderboardBtnHeader.addEventListener('click', () => {
+                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                        showPanel(leaderboardPanelContainer);
+                        fetchAndDisplayLeaderboard();
+                    }
                 });
             }
 
             if (closeDevelopersPanelBtn) closeDevelopersPanelBtn.addEventListener('click', () => hidePanel(developersPanelContainer));
             if (closeLeaderboardPanelBtn) closeLeaderboardPanelBtn.addEventListener('click', () => hidePanel(leaderboardPanelContainer));
-            
-            if (registerBtn) {
-                registerBtn.addEventListener('click', async () => {
-                    const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                    if (!gameState.publicUserId) {
-                        userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
-                        userIdErrorMessage.classList.remove('hidden');
-                        return;
-                    }
-                    if (!validatedName) return;
 
-                    gameState.displayName = validatedName;
-                    await saveUserData();
-                    updateUI();
-                });
-            }
-            
-            if (generateUserIdBtn) {
-                generateUserIdBtn.addEventListener('click', () => {
-                    userIdDisplayInput.value = generateAlphanumericPublicUserId();
-                    gameState.publicUserId = userIdDisplayInput.value;
-                    userIdErrorMessage.classList.add('hidden');
-                });
-            }
-
-            if (editNameBtn) {
-                editNameBtn.addEventListener('click', () => {
-                    if (!isUserLoggedIn()) return;
-                    showModal("تغییر نام", "تغییر نام در این بازی رایگان است.", "تغییر", "لغو", handleChangeDisplayName, hideModal, "changeName");
-                });
-            }
-            
-            if (avatarContainer) {
-                avatarContainer.addEventListener('click', () => {
-                    if (!isUserLoggedIn()) return;
-                    selectedAvatarForConfirmation = null;
-                    showModal("تغییر آواتار", "", "انتخاب", "لغو", confirmAvatarSelection, hideModal, "avatar");
-                    if(modalConfirmBtn) modalConfirmBtn.disabled = true;
-                });
-            }
-            
-            if (generateAvatarBtn) generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
 
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
                     await saveUserData();
                     gameState.currentQuestionData = null;
-                    showScreen(mainScreen);
+                    if(mainScreen) showScreen(mainScreen);
                 });
             }
-            
-            [displayNameInput, newDisplayNameInput].forEach(input => {
-                if(input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.closest('.panel-clash, .screen').querySelector('.btn-clash-primary')?.click(); });
+
+            window.addEventListener('resize', () => {
+                updateUI();
             });
-            
-            window.addEventListener('resize', updateUI);
         }
         
-        function initializeGame() {
-            const ids = [ "loading-screen", "loading-message", "main-screen", "game-screen", "registration-form", "display-name-input", "register-btn", "input-error-message", "user-id-display", "generate-user-id-btn", "user-id-error-message", "user-profile-area", "avatar-container", "avatar-image", "user-info-box", "display-name-output", "public-user-id-output", "edit-name-btn", "main-screen-buttons-layout", "start-game-btn", "mafia-fact-btn", "dev-intro-icon-btn-header", "leaderboard-icon-btn-header", "stage-display", "question-text", "options-container", "question-explanation", "back-to-main-btn", "game-feedback", "ai-thinking-indicator", "modal-container", "modal-title", "modal-content-dynamic", "modal-message", "change-name-input-container", "new-display-name-input", "change-name-error-message", "avatar-generation-container", "generate-avatar-btn", "avatar-ai-loading", "avatar-suggestions-container", "avatar-error-message", "modal-confirm-btn", "modal-cancel-btn", "developers-panel-container", "close-developers-panel-btn", "leaderboard-panel-container", "close-leaderboard-panel-btn", "leaderboard-list" ];
-            const camelCase = s => s.replace(/-./g, x => x[1].toUpperCase());
-            ids.forEach(id => window[camelCase(id)] = document.getElementById(id));
+        async function initializeGame() {
+            loadingScreen = document.getElementById('loading-screen');
+            loadingMessage = document.getElementById('loading-message');
+            mainScreen = document.getElementById('main-screen');
+            gameScreen = document.getElementById('game-screen');
+            registrationForm = document.getElementById('registration-form');
+            displayNameInput = document.getElementById('display-name-input');
+            registerBtn = document.getElementById('register-btn');
+            inputErrorMessage = document.getElementById('input-error-message');
+            userIdDisplayInput = document.getElementById('user-id-display');
+            generateUserIdBtn = document.getElementById('generate-user-id-btn');
+            userIdErrorMessage = document.getElementById('user-id-error-message');
 
-            audioManager.init();
+            userProfileArea = document.getElementById('user-profile-area');
+            avatarContainer = document.getElementById('avatar-container');
+            avatarImage = document.getElementById('avatar-image');
+            userInfoBox = document.getElementById('user-info-box');
+            displayNameOutput = document.getElementById('display-name-output');
+            publicUserIdOutput = document.getElementById('public-user-id-output');
+            editNameBtn = document.getElementById('edit-name-btn');
+            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
+            startGameBtn = document.getElementById('start-game-btn');
+            mafiaFactBtn = document.getElementById('mafia-fact-btn');
+            devIntroBtnHeader = document.getElementById('dev-intro-btn-header');
+            stageDisplay = document.getElementById('stage-display');
+            questionText = document.getElementById('question-text');
+            optionsContainer = document.getElementById('options-container');
+            questionExplanation = document.getElementById('question-explanation');
+            backToMainBtn = document.getElementById('back-to-main-btn');
+            gameFeedback = document.getElementById('game-feedback');
+            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
+            modalContainer = document.getElementById('modal-container');
+            modalTitle = document.getElementById('modal-title');
+            modalContentDynamic = document.getElementById('modal-content-dynamic');
+            modalMessage = document.getElementById('modal-message');
+            changeNameInputContainer = document.getElementById('change-name-input-container');
+            newDisplayNameInput = document.getElementById('new-display-name-input');
+            changeNameErrorMessage = document.getElementById('change-name-error-message');
+            avatarGenerationContainer = document.getElementById('avatar-generation-container');
+            generateAvatarBtn = document.getElementById('generate-avatar-btn');
+            avatarAiLoading = document.getElementById('avatar-ai-loading');
+            avatarSuggestionsContainer = document.getElementById('avatar-suggestions-container');
+            avatarErrorMessage = document.getElementById('avatar-error-message');
+            modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            modalCancelBtn = document.getElementById('modal-cancel-btn');
+            developersPanelContainer = document.getElementById('developers-panel-container');
+            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+
+            // New elements for leaderboard
+            leaderboardBtnHeader = document.getElementById('leaderboard-btn-header');
+            leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
+            closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
+            leaderboardList = document.getElementById('leaderboard-list');
+
+            audioManager.init(); // Initialize the audio manager
+
+            if(userProfileArea) userProfileArea.classList.add('hidden');
+
+            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
             if (!navigator.onLine) {
-                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کنید.", "تلاش مجدد", null, () => window.location.reload());
+                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
+                    hideModal();
+                    if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
+                });
                 return;
             }
-            setupEventListeners();
-            initFirebase().catch(e => console.error("Critical initialization error:", e));
+            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
+
+            try {
+                setupEventListeners();
+                await initFirebase();
+            } catch (error) {
+                console.error("Error during initializeGame:", error);
+                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', initializeGame);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        } else {
+            initializeGame();
+        }
 
     </script>
 </body>
