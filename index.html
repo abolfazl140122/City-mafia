@@ -105,7 +105,7 @@
         .panel-clash::before { top: 10px; left: 10px; }
         .panel-clash::after { top: 10px; right: 10px; }
         
-        #developers-panel::before, #developers-panel::after, #leaderboard-panel::before, #leaderboard-panel::after { top: 15px; } /* NEW: Added leaderboard-panel */
+        #developers-panel::before, #developers-panel::after, #leaderboard-panel::before, #leaderboard-panel::after { top: 15px; }
 
 
         .panel-hidden {
@@ -304,7 +304,7 @@
 
         /* User Profile Area Styling */
         #user-profile-area {
-            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px; /* IMPROVEMENT: Changed flex-start to center for better alignment */
+            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px;
             transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
         @media (max-width: 767px) { /* Mobile: Centered at top */
@@ -390,7 +390,7 @@
         @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
         @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
 
-        /* NEW: Shared style for header icon buttons */
+        /* Shared style for header icon buttons */
         .header-icon-btn {
             background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
             padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
@@ -398,7 +398,7 @@
             align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
         }
         .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
-        .header-icon-btn svg { width: 22px; height: 22px; }
+        .header-icon-btn svg { width: 24px; height: 24px; } /* Slightly larger icon */
         
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
@@ -411,14 +411,14 @@
         .hidden { display: none !important; }
 
         /* Styles for Pop-up Panels */
-        #developers-panel-container, #leaderboard-panel-container /* NEW */ { background-color: rgba(10, 10, 10, 0.85); }
-        #developers-panel, #leaderboard-panel /* NEW */ {
+        #developers-panel-container, #leaderboard-panel-container { background-color: rgba(10, 10, 10, 0.85); }
+        #developers-panel, #leaderboard-panel {
             background-color: var(--clash-panel-bg);
             border: 4px solid var(--clash-panel-border-dark);
             border-top-color: var(--clash-panel-border);
             border-left-color: var(--clash-panel-border);
         }
-        #close-developers-panel-btn, #close-leaderboard-panel-btn /* NEW */ {
+        #close-developers-panel-btn, #close-leaderboard-panel-btn {
             position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
             border: 2px solid #7c2425;
@@ -426,8 +426,8 @@
             color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
             font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
         }
-        #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover /* NEW */ { transform: scale(1.1) rotate(90deg); }
-        #close-developers-panel-btn:active, #close-leaderboard-panel-btn:active /* NEW */ { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
+        #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        #close-developers-panel-btn:active, #close-leaderboard-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
 
         .developer-item {
             background-color: rgba(42, 65, 102, 0.9);
@@ -440,7 +440,7 @@
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
 
-        /* NEW: Styles for Leaderboard Panel */
+        /* Styles for Leaderboard Panel */
         #leaderboard-list {
             space-y-2; /* Using Tailwind class equivalent */
             max-h-[calc(85vh-150px)]; overflow-y-auto; pr-3 pl-1;
@@ -538,14 +538,14 @@
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
-                    <!-- NEW: Leaderboard Button -->
+                    <!-- Leaderboard Button with new Icon -->
                     <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 13v- симптомы, вызвавшие снижение эффективности труда, 2h-4v2h4zm-5-3h6v-2h-6v2zm-2-3h10V5H7v2zm12 9.22c0 2.21-2.22 3.78-5 3.78s-5-1.57-5-3.78V5h10v11.22zM19 2H5c-1.1 0-2 .9-2 2v13.22c0 3.33 3.12 5.78 7 5.78s7-2.45 7-5.78V4c0-1.1-.9-2-2-2z"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                           <path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/>
                         </svg>
                     </button>
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    <!-- UPDATED: Added shared class 'header-icon-btn' -->
+                    <!-- Developers Button -->
                     <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -637,12 +637,60 @@
             <button id="close-developers-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
             <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Developer items will be populated here -->
+                <!-- Developer items are now populated -->
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💻</span>
+                        <h4 class="dev-role">برنامه نویس ارشد</h4>
+                    </div>
+                    <p class="dev-username clash-font">abolfazl1401</p>
+                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
+                </div>
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🎨</span>
+                        <h4 class="dev-role">طراح گرافیک</h4>
+                    </div>
+                    <p class="dev-username clash-font">Vahid</p>
+                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
+                </div>
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💡</span>
+                        <h4 class="dev-role">ایده پرداز</h4>
+                    </div>
+                    <p class="dev-username clash-font">Ali.k</p>
+                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
+                </div>
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">☁️</span>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
+                    </div>
+                    <p class="dev-username clash-font">Neda_Tech</p>
+                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
+                </div>
+                <div class="developer-item">
+                     <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">⚙️</span>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
+                    </div>
+                    <p class="dev-username clash-font">SinaCloud</p>
+                    <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
+                </div>
+                <div class="developer-item">
+                     <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🚀</span>
+                        <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
+                    </div>
+                    <p class="dev-username clash-font">ParsaDevOps</p>
+                    <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- NEW: Leaderboard Panel -->
+    <!-- Leaderboard Panel -->
     <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
         <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
             <button id="close-leaderboard-panel-btn">×</button>
@@ -673,7 +721,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- NEW: AUDIO MANAGER ---
+        // --- AUDIO MANAGER ---
         const audioManager = {
             sounds: {},
             init() {
@@ -744,7 +792,6 @@
             avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
             avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn,
-            // NEW: Leaderboard elements
             leaderboardIconBtnHeader, leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
 
 
@@ -782,12 +829,12 @@
                 return;
             }
 
-            audioManager.play('panelOpen'); // Sound Effect
+            audioManager.play('panelOpen');
 
             modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
-            void modalContainer.offsetWidth; // Trigger reflow
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); 
+            void modalContainer.offsetWidth; 
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); 
             
             modalTitle.textContent = title;
 
@@ -844,7 +891,7 @@
                 return;
             }
             
-            audioManager.play('panelClose'); // Sound Effect
+            audioManager.play('panelClose');
             modalContainer.classList.add('panel-hidden');
             modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
 
@@ -887,11 +934,11 @@
 
         function showDevelopersPanel() {
             if (!developersPanelContainer) return;
-            audioManager.play('panelOpen'); // Sound Effect
+            audioManager.play('panelOpen');
 
             developersPanelContainer.classList.remove('panel-hidden');
             developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void developersPanelContainer.offsetWidth; // Trigger reflow
+            void developersPanelContainer.offsetWidth;
             developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
 
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
@@ -901,7 +948,7 @@
 
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
-            audioManager.play('panelClose'); // Sound Effect
+            audioManager.play('panelClose');
 
             developersPanelContainer.classList.add('panel-hidden');
             developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
@@ -913,14 +960,13 @@
             }
         }
 
-        // NEW: Functions to manage leaderboard panel
         function showLeaderboardPanel() {
             if (!leaderboardPanelContainer) return;
             audioManager.play('panelOpen');
 
             leaderboardPanelContainer.classList.remove('panel-hidden');
             leaderboardPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void leaderboardPanelContainer.offsetWidth; // Trigger reflow
+            void leaderboardPanelContainer.offsetWidth;
             leaderboardPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
 
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
@@ -998,7 +1044,7 @@
             if(userProfileArea){
                 const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
                                         (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')); // NEW
+                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                     userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
@@ -1104,7 +1150,6 @@
         async function saveUserData() {
             if (!currentUserId || !db) return;
             
-            // --- Save private user data ---
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             const privateData = {
                 displayName: gameState.displayName,
@@ -1115,7 +1160,6 @@
                 lastUpdated: serverTimestamp()
             };
 
-            // --- NEW: Save public leaderboard data ---
             const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${currentUserId}`);
             const publicData = {
                 displayName: gameState.displayName,
@@ -1125,7 +1169,6 @@
             };
 
             try {
-                // Use a "Promise.all" to save both documents concurrently
                 await Promise.all([
                     setDoc(userDocRef, privateData, { merge: true }),
                     setDoc(leaderboardDocRef, publicData, { merge: true })
@@ -1137,9 +1180,6 @@
             }
         }
         
-        // ... (The rest of the JS functions: callGeminiAPI, callImagenAPI, generateQuestion, etc. remain the same)
-        // ... I will paste them here for completeness, without modifications.
-
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
         const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
@@ -1337,7 +1377,7 @@
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
             if (selectedIndex === correctAnswerIndex) {
-                audioManager.play('correct'); // Sound effect
+                audioManager.play('correct');
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
@@ -1349,7 +1389,7 @@
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
-                audioManager.play('incorrect'); // Sound effect
+                audioManager.play('incorrect');
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
@@ -1396,7 +1436,7 @@
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
                     imgWrapper.addEventListener('click', () => {
-                        audioManager.play('click'); // Sound effect
+                        audioManager.play('click');
                         const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
                         if (currentSelected) {
                             currentSelected.classList.remove('selected');
@@ -1506,7 +1546,6 @@
             return result;
         }
 
-        // NEW: Function to fetch and display leaderboard data
         async function fetchAndDisplayLeaderboard() {
             if (!db || !leaderboardList) return;
 
@@ -1517,7 +1556,6 @@
             
             try {
                 const leaderboardCol = collection(db, `artifacts/${appId}/publicLeaderboard`);
-                // Query to get top 50 users, ordered by their stage (descending)
                 const q = query(leaderboardCol, orderBy("currentStage", "desc"), limit(50));
                 
                 const querySnapshot = await getDocs(q);
@@ -1540,10 +1578,9 @@
             }
         }
 
-        // NEW: Function to render the leaderboard list in HTML
         function renderLeaderboardList(users) {
             if (!leaderboardList) return;
-            leaderboardList.innerHTML = ''; // Clear loading/previous state
+            leaderboardList.innerHTML = ''; 
 
             const listHtml = users.map((user, index) => {
                 const rank = index + 1;
@@ -1567,7 +1604,6 @@
         }
 
         function setupEventListeners() {
-            // Add a global click sound listener for all clash buttons
             document.body.addEventListener('click', (event) => {
                 if (event.target.closest('.btn-clash:not(:disabled)')) {
                     audioManager.play('click');
@@ -1676,7 +1712,7 @@
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    audioManager.play('startGame'); // Special Sound
+                    audioManager.play('startGame');
                     showModal(
                         "شروع بازی",
                         "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
@@ -1705,7 +1741,6 @@
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
-            // NEW: Event listeners for leaderboard
             if (leaderboardIconBtnHeader) {
                 leaderboardIconBtnHeader.addEventListener('click', showLeaderboardPanel);
             }
@@ -1774,14 +1809,13 @@
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
-            // NEW: Get leaderboard elements
             leaderboardIconBtnHeader = document.getElementById('leaderboard-icon-btn-header');
             leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
             leaderboardList = document.getElementById('leaderboard-list');
             closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
 
 
-            audioManager.init(); // Initialize the audio manager
+            audioManager.init();
 
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
