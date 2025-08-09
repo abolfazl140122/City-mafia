@@ -2,14 +2,15 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>شهر مافیا - نسخه کلش</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی مافیا - نسخه کلش</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* --- CLASH OF CLANS / CLASH ROYALE THEME --- */
+
         :root {
             --clash-blue-dark: #3a5b8a;
             --clash-blue-light: #5c88c8;
@@ -33,34 +34,34 @@
             70% { opacity: 1; transform: scale(1.05) translateY(0); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
+
         @keyframes breathe {
             0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #a07200; }
             50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.3), 0 8px 0 #a07200; }
         }
+
         @keyframes subtle-pan {
             0% { background-position: 0% 0%; }
             100% { background-position: 200% 200%; }
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* --- GENERAL BODY & FONT STYLES --- */
+
         body {
             font-family: 'Vazirmatn', sans-serif;
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
+            overflow: hidden; /* Changed to hidden for better control with screens */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
-            height: 100vh;
-            overflow: hidden; /* Prevent scrolling on the body */
-        }
-        body.modal-open {
-            overflow: hidden;
         }
 
+        /* Animated Background Layer */
         body::before {
             content: '';
             position: fixed;
@@ -79,52 +80,6 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* --- SCREEN & LAYOUT --- */
-        .screen {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            padding: 1rem;
-            box-sizing: border-box;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            z-index: 10;
-        }
-        @media (min-width: 640px) { .screen { padding: 1.5rem; } }
-        
-        .screen.active { opacity: 1; visibility: visible; }
-        #loading-screen { justify-content: center; }
-
-        .screen-content-wrapper {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            min-height: 0; /* Fix for flexbox in some browsers */
-        }
-        
-        /* MOBILE-FIRST MAIN SCREEN LAYOUT */
-        #main-screen .screen-content-wrapper {
-            justify-content: flex-start;
-        }
-        #main-screen-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        #main-screen-buttons-layout {
-            padding-top: 1rem;
-            margin-top: auto; /* Pushes buttons to the bottom */
-        }
-
-        /* --- PANELS & CARDS --- */
         .panel-clash {
             background-color: var(--clash-panel-bg);
             border: 4px solid var(--clash-panel-border-dark);
@@ -132,294 +87,477 @@
             border-left-color: var(--clash-panel-border);
             border-radius: 16px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
             position: relative;
         }
+        
+        /* Panel Corner Rivets */
         .panel-clash::before, .panel-clash::after {
-            content: ''; position: absolute; width: 12px; height: 12px;
-            background: var(--clash-gold); border-radius: 50%;
-            border: 2px solid var(--clash-brown-dark); box-shadow: 0 0 3px #000;
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--clash-gold);
+            border-radius: 50%;
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 0 3px #000;
         }
         .panel-clash::before { top: 10px; left: 10px; }
         .panel-clash::after { top: 10px; right: 10px; }
+        
+        #developers-panel::before, #developers-panel::after { top: 15px; }
 
-        /* --- BUTTONS & INPUTS --- */
+
+        .panel-hidden {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .panel-visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            visibility: visible;
+            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
         .btn-clash {
-            border-radius: 12px; font-weight: bold; text-transform: uppercase;
-            transition: all 0.1s ease-out; cursor: pointer; position: relative;
-            white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
-            color: var(--clash-text-dark); text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.1s ease-out; /* Faster transition */
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--clash-text-dark);
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
         }
         .btn-clash:disabled {
-            filter: grayscale(80%); cursor: not-allowed;
-            box-shadow: 0 4px 0 #555 !important; transform: translateY(0) !important;
+            filter: grayscale(80%);
+            cursor: not-allowed;
+            box-shadow: 0 4px 0 #555 !important;
+            transform: translateY(0) !important;
         }
+
+        /* --- Primary Button (Gold) --- */
         .btn-clash-primary {
             background: linear-gradient(to bottom, #ffe47a, var(--clash-gold));
-            border: 2px solid var(--clash-brown-dark); box-shadow: 0 6px 0 #a07200;
-            padding: 12px 24px; font-size: 1.2rem;
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 6px 0 #a07200;
+            padding: 10px 24px;
+            font-size: 1.1rem;
         }
-        .btn-clash-primary:hover:not(:disabled) {
+        @media (min-width: 640px) { .btn-clash-primary { padding: 12px 30px; font-size: 1.25rem; } }
+
+        .btn-clash-primary:hover {
             background: linear-gradient(to bottom, #fff0a0, #ffda5a);
-            transform: translateY(-2px); box-shadow: 0 8px 0 #a07200;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #a07200;
         }
-        .btn-clash-primary:active:not(:disabled) {
-            transform: translateY(4px) !important; box-shadow: 0 2px 0 #a07200 !important;
+        .btn-clash-primary:active {
+            transform: translateY(4px) !important;
+            box-shadow: 0 2px 0 #a07200 !important;
             transition-duration: 0.05s;
         }
-        #start-game-btn.breathing { animation: breathe 2.5s ease-in-out infinite; }
-
+        
+        /* Breathing animation for start button */
+        #start-game-btn.breathing {
+            animation: breathe 2.5s ease-in-out infinite;
+        }
+        
+        /* --- Secondary Button (Blue) --- */
         .btn-clash-secondary {
             background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light));
-            border: 2px solid var(--clash-panel-border-dark); box-shadow: 0 5px 0 #2e5185;
-            padding: 10px 18px; font-size: 1rem; color: var(--clash-text-light);
+            border: 2px solid var(--clash-panel-border-dark);
+            box-shadow: 0 5px 0 #2e5185;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            color: var(--clash-text-light);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
-        .btn-clash-secondary:hover:not(:disabled) {
+        @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
+
+        .btn-clash-secondary:hover {
             background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
-            transform: translateY(-2px); box-shadow: 0 7px 0 #2e5185;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #2e5185;
         }
-        .btn-clash-secondary:active:not(:disabled) {
-            transform: translateY(3px) !important; box-shadow: 0 2px 0 #2e5185 !important;
+        .btn-clash-secondary:active {
+            transform: translateY(3px) !important;
+            box-shadow: 0 2px 0 #2e5185 !important;
             transition-duration: 0.05s;
         }
 
         .input-clash {
-            background-color: var(--clash-panel-border-dark); border: 2px solid #2a4166;
-            color: #fff; border-radius: 10px; padding: 12px; font-size: 1rem;
+            background-color: var(--clash-panel-border-dark);
+            border: 2px solid #2a4166;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 1rem;
             box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
         }
         .input-clash:focus {
-            outline: none; border-color: var(--clash-gold);
+            outline: none;
+            border-color: var(--clash-gold);
             box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 10px var(--clash-gold);
         }
-        .input-clash.invalid { border-color: var(--clash-red); }
-        .input-clash:read-only { background-color: #314a70; cursor: default; }
-
+        .input-clash.invalid {
+            border-color: var(--clash-red);
+        }
+        .input-clash:read-only {
+            background-color: #314a70;
+            cursor: default;
+        }
+        
+        /* --- Option Buttons (Game Screen) --- */
         .option-btn {
             background: linear-gradient(to bottom, #7da8e8, #5c88c8);
-            border: 2px solid #2a4166; box-shadow: 0 4px 0 #2e5185; color: white;
-            transition: all 0.15s ease; font-size: 1rem; padding: 12px;
-            border-radius: 12px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            border: 2px solid #2a4166;
+            box-shadow: 0 4px 0 #2e5185;
+            color: white;
+            transition: all 0.15s ease;
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         .option-btn:hover:not(:disabled) {
             background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
-            transform: translateY(-2px); box-shadow: 0 6px 0 #2e5185;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2e5185;
         }
         .option-btn.correct {
             background: linear-gradient(to bottom, #8fdd7d, var(--clash-green)) !important;
-            border-color: #2e6221 !important; box-shadow: 0 4px 0 var(--clash-green-dark) !important;
+            border-color: #2e6221 !important;
+            box-shadow: 0 4px 0 var(--clash-green-dark) !important;
             transform: translateY(0) !important;
         }
         .option-btn.incorrect {
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red)) !important;
-            border-color: #7c2425 !important; box-shadow: 0 4px 0 var(--clash-red-dark) !important;
+            border-color: #7c2425 !important;
+            box-shadow: 0 4px 0 var(--clash-red-dark) !important;
             transform: translateY(0) !important;
         }
         .option-btn:disabled { opacity: 0.8; cursor: not-allowed; }
 
-        /* --- COMPONENTS --- */
         .loader {
-            border: 8px solid #3a5b8a; border-top: 8px solid var(--clash-gold);
-            border-radius: 50%; width: 60px; height: 60px;
+            border: 8px solid #3a5b8a;
+            border-top: 8px solid var(--clash-gold);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
             animation: spin 1s linear infinite;
         }
-        
-        .hidden { display: none !important; }
-        
-        #error-message-box {
-            color: #ffdddd; font-size: 0.9rem; text-align: center;
-            min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold;
-            background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px;
-            border-radius: 6px; border: 1px solid var(--clash-red);
-        }
-        
-        /* User Profile Area (Mobile-First) */
-        #user-profile-header {
-            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
-            border: 4px solid #4a2f20; border-top-color: #c89673; border-left-color: #c89673;
-            border-radius: 12px; padding: 0.75rem;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-            display: flex; align-items: center; gap: 1rem;
-            width: 100%; margin-bottom: 1.5rem;
-        }
-        #avatar-container {
-            width: 70px; height: 70px; border-radius: 50%; flex-shrink: 0;
-            border: 5px solid; border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
-            background-color: #333; cursor: pointer; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        }
-        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
-        #user-info-box { flex-grow: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .user-info-item .label { font-size: 0.9em; color: #f0d5bf; }
-        #display-name-output-container { color: var(--clash-gold); font-size: 1.3em; }
-        #public-user-id-output { color: #eee; font-family: monospace; font-size: 1em; }
-        #edit-name-btn { cursor: pointer; font-size: 1em; margin-left: 0.5rem; transition: transform 0.2s; }
-        #edit-name-btn:hover { transform: scale(1.2); }
-        
-        #main-title {
-            text-align: center;
-            font-size: clamp(2.5rem, 10vw, 4rem); /* Responsive font size */
-            color: var(--clash-gold);
-            text-shadow: -2px -2px 0 var(--clash-brown-dark), 2px -2px 0 var(--clash-brown-dark), -2px 2px 0 var(--clash-brown-dark), 2px 2px 0 var(--clash-brown-dark), 4px 4px 6px rgba(0,0,0,0.7);
-            margin-bottom: 1rem;
-        }
-        @media (min-width: 768px) { #main-title { font-size: 5rem; } }
-
-        /* Developers Panel & Modals */
-        .modal-overlay {
-            position: fixed; inset: 0; background-color: rgba(10, 10, 10, 0.85);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; z-index: 50;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
-        }
-        .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-overlay .panel-clash {
-            max-width: 90vw; width: 500px;
-            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-overlay.visible .panel-clash { transform: scale(1); }
-        #close-developers-panel-btn {
-            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
-            background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
-            border: 2px solid #7c2425; box-shadow: 0 4px 0 #8f2a2b; color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: bold; line-height: 1; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        #close-developers-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        #close-developers-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
-
-        .developer-item {
-            background-color: rgba(42, 65, 102, 0.9); padding: 1rem 1.2rem;
-            border-radius: 12px; border: 2px solid rgba(157, 194, 255, 0.4);
-        }
-        /* Avatar Suggestions */
-        #avatar-suggestions-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; max-height: 200px; overflow-y: auto; padding: 5px; }
-        .avatar-suggestion-item { width: 100%; aspect-ratio: 1/1; border-radius: 8px; border: 4px solid transparent; cursor: pointer; overflow: hidden; transition: border-color 0.3s, transform 0.2s; }
-        .avatar-suggestion-item:hover { transform: scale(1.05); }
-        .avatar-suggestion-item.selected { border-color: var(--clash-green); box-shadow: 0 0 10px var(--clash-green); }
-        .avatar-suggestion-item img { width: 100%; height: 100%; object-fit: cover; }
         
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
         ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 5px; border: 2px solid var(--clash-blue-dark); }
         ::-webkit-scrollbar-thumb:hover { background: var(--clash-gold-dark); }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            padding: 10px; /* Base padding */
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            z-index: 1; /* Ensure screens are on top of the background */
+        }
+        @media (min-width: 640px) { .screen { padding: 20px; } }
+        #main-screen { justify-content: flex-start; }
+        #loading-screen { justify-content: center; }
+        .screen.active { opacity: 1; visibility: visible; position: relative; }
+        
+        .screen-content-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
+        #main-screen .screen-content-wrapper {
+            justify-content: space-between;
+            min-height: calc(100vh - 20px);
+            padding-top: 60px;
+        }
+        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
+        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
+
+        /* User Profile Area Styling */
+        #user-profile-area {
+            position: fixed; z-index: 100; display: flex; align-items: flex-start; gap: 10px;
+            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @media (max-width: 767px) { /* Mobile: Centered at top */
+            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
+        }
+        @media (min-width: 768px) { /* Desktop: Top right */
+            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); align-items: center; }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
+        }
+
+        #user-info-box {
+            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
+            border: 4px solid #4a2f20;
+            border-top-color: #c89673;
+            border-left-color: #c89673;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            display: flex; flex-direction: row; align-items: center; gap: 8px;
+            width: max-content; min-width: 0;
+        }
+        @media (min-width: 768px) {
+            #user-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
+        }
+        #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        
+        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
+        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
+        .user-info-item .value { font-size: 0.9em; font-weight: bold; }
+        @media (min-width: 768px) {
+            .user-info-item { display: block; }
+            .user-info-item .label { font-size: 0.9em; }
+            .user-info-item .value { font-size: 1.1em; }
+        }
+        #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
+        #public-user-id-output-box .value { color: #eee; font-family: monospace; }
+        #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
+        #edit-name-btn:hover { color: #fff8a8; }
+
+        #avatar-container {
+            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
+            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
+            background-color: #333; cursor: pointer; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
+        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
+        
+        #avatar-suggestions-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
+        .avatar-suggestion-item { width: 100px; height: 100px; border-radius: 8px; border: 4px solid transparent; cursor: pointer; overflow: hidden; transition: border-color 0.3s ease, transform 0.2s ease; }
+        .avatar-suggestion-item:hover { transform: scale(1.05); }
+        .avatar-suggestion-item.selected { border-color: var(--clash-green); box-shadow: 0 0 10px var(--clash-green); }
+
+        #main-screen-header { 
+            display: flex; justify-content: space-between; align-items: center; width: 100%; 
+            padding: 0.5rem; margin-bottom: 1rem; 
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            background-color: #6e4a31;
+            border-radius: 12px;
+            border: 4px solid #4a2f20;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+        }
+        
+        #main-title {
+            text-align: center;
+            flex-grow: 1;
+            font-size: 3rem;
+            color: var(--clash-gold);
+            text-shadow: 
+                -3px -3px 0 var(--clash-brown-dark),  
+                 3px -3px 0 var(--clash-brown-dark),
+                -3px  3px 0 var(--clash-brown-dark),
+                 3px  3px 0 var(--clash-brown-dark),
+                 -3px 0 0 var(--clash-brown-dark),
+                 3px 0 0 var(--clash-brown-dark),
+                 0 -3px 0 var(--clash-brown-dark),
+                 0 3px 0 var(--clash-brown-dark),
+                 6px 6px 8px rgba(0,0,0,0.7);
+        }
+        @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
+        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
+
+        #dev-intro-icon-btn-header {
+            background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
+            padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
+            align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
+        }
+        #dev-intro-icon-btn-header:hover { background-color: #6c98d8; transform: scale(1.1); }
+        #dev-intro-icon-btn-header svg { width: 22px; height: 22px; }
+        
+        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
+        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
+        #start-game-btn { order: 0; }
+        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
+        
+        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
+            color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
+        }
+        .hidden { display: none !important; }
+
+        /* Styles for Developers Panel */
+        #developers-panel-container { background-color: rgba(10, 10, 10, 0.85); }
+        #developers-panel {
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+        }
+        #close-developers-panel-btn {
+            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
+            background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
+            border: 2px solid #7c2425;
+            box-shadow: 0 4px 0 #8f2a2b;
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
+        }
+        #close-developers-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        #close-developers-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
+
+        .developer-item {
+            background-color: rgba(42, 65, 102, 0.9);
+            padding: 1rem 1.2rem; border-radius: 12px;
+            border: 2px solid rgba(157, 194, 255, 0.4);
+        }
+        .dev-header { border-bottom: 2px solid rgba(157, 194, 255, 0.3); }
+        .dev-role-icon { font-size: 1.7em; color: var(--clash-gold); margin-left: 10px; }
+        .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
+        .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
+        .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
     </style>
 </head>
 <body>
+    <!-- The old background is gone, body style handles the new one -->
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="screen active">
-        <div class="screen-content-wrapper justify-center items-center text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
-            <div class="loader mb-4"></div>
-            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال برقراری ارتباط با شهر...</p>
+    <div id="user-profile-area" class="hidden">
+        <div id="avatar-container" class="hidden" title="تغییر آواتار">
+            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
+        </div>
+        <div id="user-info-box" class="hidden">
+            <div id="display-name-output-box" class="user-info-item">
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
+                    <span>بازیکن:</span>
+                </div>
+                <div id="display-name-output-container" class="flex items-center gap-2">
+                    <span id="edit-name-btn" title="تغییر نام">✏️</span>
+                    <div id="display-name-output" class="value clash-font"></div>
+                </div>
+            </div>
+            <div id="public-user-id-output-box" class="user-info-item">
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
+                    <span>شناسه:</span>
+                </div>
+                <div id="public-user-id-output" class="value"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Main Screen -->
+    <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
+        <div class="screen-content-wrapper justify-center">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
+            <div class="loader mb-4"></div>
+            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
+        </div>
+    </div>
+
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
-            <!-- Logged-in User Profile Header -->
-            <div id="user-profile-header" class="hidden">
-                <div id="avatar-container" title="تغییر آواتار">
-                    <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر">
+            <div>
+                <div id="main-screen-header">
+                    <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </button>
+                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                    <div style="width: 44px; flex-shrink: 0;"></div> <!-- Spacer -->
                 </div>
-                <div id="user-info-box">
-                    <div class="user-info-item">
-                        <div id="display-name-output-container" class="flex items-center gap-2 clash-font">
-                            <span id="display-name-output"></span>
-                            <span id="edit-name-btn" title="تغییر نام">✏️</span>
-                        </div>
-                    </div>
-                    <div class="user-info-item">
-                        <div class="label flex items-center gap-1 text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
-                            <span>شناسه:</span>
-                            <span id="public-user-id-output" class="mr-1"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Main Content Area (Title or Registration) -->
-            <div id="main-screen-content">
-                <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
+                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
+                    <p id="input-error-message" class="hidden"></p>
 
-                <!-- Registration Form -->
-                <div id="registration-form" class="panel-clash p-4 sm:p-6 max-w-md mx-auto w-full">
-                    <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
-                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <div class="mt-3 mb-2">
                         <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
                         <div class="flex items-center gap-2">
-                            <input type="text" id="user-id-display" class="input-clash w-full p-3 text-lg text-center" readonly placeholder="بساز!">
-                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary clash-font px-4 py-3 text-sm">ساخت</button>
+                            <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
+                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
                         </div>
+                        <p id="user-id-error-message" class="hidden"></p>
                     </div>
-                    <p id="error-message-box" class="hidden"></p>
-                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-3 text-lg mt-4 clash-font">ورود به شهر</button>
+
+                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
                 </div>
             </div>
-            
-            <!-- Action Buttons Area -->
-            <div id="main-screen-buttons-layout" class="hidden">
-                 <div class="flex flex-col items-center w-full gap-3">
-                    <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font w-full max-w-xs">شروع بازی</button>
-                    <div class="flex gap-3 justify-center w-full max-w-xs">
-                        <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font flex-1">دانستنی‌ها ✨</button>
-                        <button id="dev-intro-btn" class="btn-clash btn-clash-secondary clash-font flex-1">سازندگان</button>
-                    </div>
+
+            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
+                <div id="top-action-buttons">
+                    <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
+                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 1;">دانستنی‌ها ✨</button>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Game Screen -->
+
     <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper">
+        <div class="screen-content-wrapper justify-start">
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
                 <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
                 <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
             </div>
 
-            <div id="question-container" class="panel-clash p-4 sm:p-6 rounded-lg mb-4 flex-grow flex flex-col justify-center">
+            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
                 <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
                 <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
             </div>
 
-            <div id="game-feedback" class="text-center text-lg font-semibold my-2 h-16 clash-font flex items-center justify-center"></div>
+            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
             
-            <div id="ai-thinking-indicator" class="text-center mt-2 hidden">
-                <div class="loader inline-block w-8 h-8 border-4"></div>
-                <p class="text-sm font-bold mt-1">دستیار AI در حال فکر کردن است...</p>
+            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
+                <div class="loader inline-block"></div>
+                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
             </div>
         </div>
     </div>
 
-    <!-- Generic Modal -->
-    <div id="modal-container" class="modal-overlay">
-        <div class="panel-clash p-6 sm:p-8 text-center">
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
+        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
             <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
             <div id="modal-content-dynamic">
                 <p id="modal-message" class="mb-3 text-base"></p>
-                <!-- Change Name Form -->
                 <div id="change-name-input-container" class="hidden mb-2">
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
+                    <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- Avatar Generation Form -->
                 <div id="avatar-generation-container" class="hidden">
                     <button id="generate-avatar-btn" class="btn-clash btn-clash-primary my-4 clash-font">ساخت آواتار جدید با AI</button>
                     <div id="avatar-ai-loading" class="my-4 hidden">
-                        <div class="loader mx-auto !w-12 !h-12 !border-4"></div>
+                        <div class="loader mx-auto"></div>
                         <p class="mt-2 text-sm text-gray-300">در حال ساخت آواتارهای پیشنهادی...</p>
                     </div>
                     <div id="avatar-suggestions-container"></div>
+                    <p id="avatar-error-message" class="text-red-300 text-sm mt-2"></p>
                 </div>
-                 <p id="modal-error-message" class="hidden"></p>
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -429,39 +567,58 @@
     </div>
     
     <!-- Developers Panel -->
-    <div id="developers-panel-container" class="modal-overlay">
-        <div id="developers-panel" class="panel-clash p-5 sm:p-7 relative">
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
+        <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
             <button id="close-developers-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-6 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(80vh-120px)] overflow-y-auto pr-3 pl-1">
-                <!-- Developer items will be injected here if needed, or kept static -->
+            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
+            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
                 <div class="developer-item">
-                    <div class="flex items-center mb-2 pb-2 border-b-2 border-[rgba(157,194,255,0.3)]">
-                        <span class="text-2xl ml-2">💻</span> <h4 class="font-bold text-lg">برنامه نویس ارشد</h4>
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💻</span>
+                        <h4 class="dev-role">برنامه نویس ارشد</h4>
                     </div>
-                    <p class="clash-font text-xl text-[#fff8a8]">abolfazl1401</p>
-                    <p class="text-sm mt-1 text-[#d0e0ff]">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی.</p>
+                    <p class="dev-username clash-font">abolfazl1401</p>
+                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
                 </div>
                  <div class="developer-item">
-                    <div class="flex items-center mb-2 pb-2 border-b-2 border-[rgba(157,194,255,0.3)]">
-                        <span class="text-2xl ml-2">🎨</span> <h4 class="font-bold text-lg">طراح گرافیک</h4>
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🎨</span>
+                        <h4 class="dev-role">طراح گرافیک</h4>
                     </div>
-                    <p class="clash-font text-xl text-[#fff8a8]">Vahid</p>
-                    <p class="text-sm mt-1 text-[#d0e0ff]">خالق هویت بصری جذاب و تم مافیایی بازی.</p>
+                    <p class="dev-username clash-font">Vahid</p>
+                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
                 </div>
                 <div class="developer-item">
-                    <div class="flex items-center mb-2 pb-2 border-b-2 border-[rgba(157,194,255,0.3)]">
-                        <span class="text-2xl ml-2">💡</span> <h4 class="font-bold text-lg">ایده پرداز</h4>
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💡</span>
+                        <h4 class="dev-role">ایده پرداز</h4>
                     </div>
-                    <p class="clash-font text-xl text-[#fff8a8]">Ali.k</p>
-                    <p class="text-sm mt-1 text-[#d0e0ff]">خالق ایده‌های نوآورانه برای مراحل و چالش‌ها.</p>
+                    <p class="dev-username clash-font">Ali.k</p>
+                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
                 </div>
                  <div class="developer-item">
-                    <div class="flex items-center mb-2 pb-2 border-b-2 border-[rgba(157,194,255,0.3)]">
-                        <span class="text-2xl ml-2">☁️</span> <h4 class="font-bold text-lg">توسعه دهنده سرور</h4>
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">☁️</span>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
-                    <p class="clash-font text-xl text-[#fff8a8]">Neda_Tech</p>
-                    <p class="text-sm mt-1 text-[#d0e0ff]">متخصص پیاده‌سازی و نگهداری زیرساخت‌های سرور.</p>
+                    <p class="dev-username clash-font">Neda_Tech</p>
+                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
+                </div>
+                <div class="developer-item">
+                     <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">⚙️</span>
+                        <h4 class="dev-role">توسعه دهنده سرور</h4>
+                    </div>
+                    <p class="dev-username clash-font">SinaCloud</p>
+                    <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
+                </div>
+                <div class="developer-item">
+                     <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🚀</span>
+                        <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
+                    </div>
+                    <p class="dev-username clash-font">ParsaDevOps</p>
+                    <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
                 </div>
             </div>
         </div>
@@ -478,654 +635,1017 @@
     </div>
 
     <script type="module">
+        // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        /**
-         * Main application object to encapsulate all game logic, state, and DOM elements.
-         * This prevents global scope pollution and makes the code more organized and maintainable.
-         */
-        const App = {
-            // --- CONFIGURATION ---
-            config: {
-                firebase: typeof __firebase_config !== 'undefined'
-                    ? JSON.parse(__firebase_config)
-                    : {
-                        apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-                        authDomain: "city-mafia.firebaseapp.com",
-                        projectId: "city-mafia",
-                        storageBucket: "city-mafia.appspot.com", 
-                        messagingSenderId: "66458127103",
-                        appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-                        measurementId: "G-8M0M6BJ0GG"
-                      },
-                appId: typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default',
-                geminiApiKey: "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw",
-                geminiTextModel: "gemini-1.5-flash",
-                imagenModel: "imagen-3.0-generate-002",
-                constants: {
-                    HIDDEN_CLASS: 'hidden',
-                    VISIBLE_CLASS: 'visible',
-                    ACTIVE_CLASS: 'active',
-                    INVALID_CLASS: 'invalid',
-                }
+        // --- NEW: AUDIO MANAGER ---
+        const audioManager = {
+            sounds: {},
+            init() {
+                this.sounds.click = document.getElementById('sfx-click');
+                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
+                this.sounds.panelClose = document.getElementById('sfx-panel-close');
+                this.sounds.correct = document.getElementById('sfx-correct');
+                this.sounds.incorrect = document.getElementById('sfx-incorrect');
+                this.sounds.startGame = document.getElementById('sfx-start-game');
+
+                Object.values(this.sounds).forEach(sound => {
+                    if (sound) sound.volume = 0.4; // Adjust volume globally
+                });
             },
-
-            // --- SERVICES (Firebase, etc.) ---
-            services: {
-                firebaseApp: null,
-                auth: null,
-                db: null,
-            },
-
-            // --- GAME STATE ---
-            state: {
-                isAuthReady: false,
-                isBusy: false, // Global flag to prevent multiple async operations
-                currentUserId: null,
-                displayName: '',
-                publicUserId: '',
-                avatarUrl: '',
-                currentStage: 1,
-                seenQuestionHashes: new Set(),
-                currentQuestionData: null,
-                isQuestionActive: false,
-                modalConfirmCallback: null,
-                modalCancelCallback: null,
-                selectedAvatarForConfirmation: null,
-            },
-
-            // --- DOM ELEMENTS CACHE ---
-            dom: {},
-
-            // --- AUDIO MANAGER ---
-            sfx: {
-                sounds: {},
-                init() {
-                    this.sounds.click = document.getElementById('sfx-click');
-                    this.sounds.panelOpen = document.getElementById('sfx-panel-open');
-                    this.sounds.panelClose = document.getElementById('sfx-panel-close');
-                    this.sounds.correct = document.getElementById('sfx-correct');
-                    this.sounds.incorrect = document.getElementById('sfx-incorrect');
-                    this.sounds.startGame = document.getElementById('sfx-start-game');
-                    Object.values(this.sounds).forEach(s => s && (s.volume = 0.4));
-                },
-                play(soundName) {
-                    const sound = this.sounds[soundName];
-                    if (sound) {
-                        sound.currentTime = 0;
-                        sound.play().catch(e => console.warn("Audio play failed:", e));
-                    }
-                }
-            },
-
-            // --- METHODS ---
-            methods: {
-                // --- INITIALIZATION ---
-                /**
-                 * Main entry point to initialize the game.
-                 */
-                async init() {
-                    this._queryDOMElements();
-                    this.sfx.init();
-                    this._setupEventListeners();
-                    
-                    this.dom.loadingMessage.textContent = "بررسی اتصال...";
-                    if (!navigator.onLine) {
-                        this.methods.showModal("عدم اتصال", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "باشه");
-                        return;
-                    }
-
-                    this.dom.loadingMessage.textContent = "آماده سازی برای ورود...";
-                    await this._initFirebase();
-                },
-
-                /**
-                 * Queries all necessary DOM elements and caches them in App.dom.
-                 * @private
-                 */
-                _queryDOMElements() {
-                    const ids = [
-                        'loading-screen', 'loading-message', 'main-screen', 'game-screen',
-                        'registration-form', 'display-name-input', 'user-id-display',
-                        'generate-user-id-btn', 'register-btn', 'error-message-box',
-                        'user-profile-header', 'avatar-container', 'avatar-image',
-                        'user-info-box', 'display-name-output', 'edit-name-btn', 'public-user-id-output',
-                        'main-screen-content', 'main-title', 'main-screen-buttons-layout',
-                        'start-game-btn', 'mafia-fact-btn', 'dev-intro-btn',
-                        'back-to-main-btn', 'stage-display', 'question-container', 'question-text',
-                        'options-container', 'question-explanation', 'game-feedback', 'ai-thinking-indicator',
-                        'modal-container', 'modal-title', 'modal-content-dynamic', 'modal-message',
-                        'change-name-input-container', 'new-display-name-input', 'avatar-generation-container',
-                        'generate-avatar-btn', 'avatar-ai-loading', 'avatar-suggestions-container',
-                        'modal-error-message', 'modal-actions', 'modal-confirm-btn', 'modal-cancel-btn',
-                        'developers-panel-container', 'close-developers-panel-btn'
-                    ];
-                    ids.forEach(id => {
-                        const camelCaseId = id.replace(/-(\w)/g, (_, c) => c.toUpperCase());
-                        this.dom[camelCaseId] = document.getElementById(id);
-                    });
-                },
-                
-                /**
-                 * Sets up all event listeners for the application.
-                 * @private
-                 */
-                _setupEventListeners() {
-                    // Global click sound
-                    document.body.addEventListener('click', (e) => {
-                        if (e.target.closest('.btn-clash:not(:disabled)')) this.sfx.play('click');
-                    });
-
-                    // Registration
-                    this.dom.generateUserIdBtn.addEventListener('click', () => this.methods.generatePublicUserId());
-                    this.dom.registerBtn.addEventListener('click', () => this.methods.handleRegistration());
-                    this.dom.displayNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.methods.handleRegistration() });
-                    
-                    // Main Screen Actions
-                    this.dom.startGameBtn.addEventListener('click', () => this.methods.handleStartGame());
-                    this.dom.mafiaFactBtn.addEventListener('click', () => this.methods.generateMafiaFact());
-                    this.dom.devIntroBtn.addEventListener('click', () => this.methods.showDevelopersPanel());
-                    
-                    // User Profile Actions
-                    this.dom.editNameBtn.addEventListener('click', () => this.methods.promptChangeDisplayName());
-                    this.dom.avatarContainer.addEventListener('click', () => this.methods.promptChangeAvatar());
-
-                    // Game Screen
-                    this.dom.backToMainBtn.addEventListener('click', () => this.methods.returnToMainScreen());
-
-                    // Modals & Panels
-                    this.dom.modalConfirmBtn.addEventListener('click', () => this.methods.handleModalConfirm());
-                    this.dom.modalCancelBtn.addEventListener('click', () => this.methods.hideModal());
-                    this.dom.closeDevelopersPanelBtn.addEventListener('click', () => this.methods.hideDevelopersPanel());
-                    this.dom.generateAvatarBtn.addEventListener('click', () => this.methods.generateAndDisplayAvatars());
-                },
-                
-                /**
-                 * Initializes Firebase services (Auth, Firestore).
-                 * @private
-                 */
-                async _initFirebase() {
-                    try {
-                        this.services.firebaseApp = initializeApp(this.config.firebase);
-                        this.services.auth = getAuth(this.services.firebaseApp);
-                        this.services.db = getFirestore(this.services.firebaseApp);
-                        
-                        onAuthStateChanged(this.services.auth, async (user) => {
-                            if (user) {
-                                this.state.currentUserId = user.uid;
-                                await this.methods._loadUserData();
-                            } else {
-                                await signInAnonymously(this.services.auth);
-                            }
-                            this.state.isAuthReady = true;
-                            this.methods.updateUI();
-
-                            if (this.dom.loadingScreen.classList.contains(this.config.constants.ACTIVE_CLASS)) {
-                                this.dom.loadingMessage.textContent = "خوش آمدید!";
-                                setTimeout(() => this.methods.showScreen('main-screen'), 500);
-                            }
-                        });
-                    } catch (error) {
-                        console.error("Firebase init error:", error);
-                        this.dom.loadingMessage.textContent = "خطا در اتصال به سرور!";
-                    }
-                },
-                
-                // --- DATA HANDLING ---
-                /**
-                 * Loads user data from Firestore.
-                 * @private
-                 */
-                async _loadUserData() {
-                    if (!this.state.currentUserId) return;
-                    const docRef = doc(this.services.db, `artifacts/${this.config.appId}/users/${this.state.currentUserId}/mafiaGameData/profile`);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        this.state.displayName = data.displayName || "";
-                        this.state.publicUserId = data.publicUserId || "";
-                        this.state.avatarUrl = data.avatarUrl || "";
-                        this.state.currentStage = data.currentStage || 1;
-                        this.state.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
-                    }
-                },
-
-                /**
-                 * Saves user data to Firestore.
-                 * @private
-                 */
-                async _saveUserData() {
-                    if (!this.state.currentUserId) return;
-                    const docRef = doc(this.services.db, `artifacts/${this.config.appId}/users/${this.state.currentUserId}/mafiaGameData/profile`);
-                    const dataToSave = {
-                        displayName: this.state.displayName,
-                        publicUserId: this.state.publicUserId,
-                        avatarUrl: this.state.avatarUrl,
-                        currentStage: this.state.currentStage,
-                        seenQuestionHashes: Array.from(this.state.seenQuestionHashes),
-                        lastUpdated: serverTimestamp()
-                    };
-                    await setDoc(docRef, dataToSave, { merge: true });
-                },
-
-                // --- UI & UX ---
-                /**
-                 * Updates the entire UI based on the current App.state.
-                 */
-                updateUI() {
-                    const C = this.config.constants;
-                    const isRegistered = this.state.isAuthReady && this.state.displayName && this.state.publicUserId;
-
-                    // Registration Form vs. Main Content
-                    this.dom.registrationForm.classList.toggle(C.HIDDEN_CLASS, isRegistered);
-                    this.dom.mainTitle.classList.toggle(C.HIDDEN_CLASS, isRegistered);
-                    this.dom.userProfileHeader.classList.toggle(C.HIDDEN_CLASS, !isRegistered);
-                    this.dom.mainScreenButtonsLayout.classList.toggle(C.HIDDEN_CLASS, !isRegistered);
-
-                    if (isRegistered) {
-                        // Update Profile Header
-                        this.dom.displayNameOutput.textContent = this.state.displayName;
-                        this.dom.publicUserIdOutput.textContent = this.state.publicUserId;
-                        this.dom.avatarImage.src = this.state.avatarUrl || `https://placehold.co/80x80/333333/777777?text=?`;
-                        this.dom.startGameBtn.classList.add('breathing');
-                    } else {
-                        this.dom.startGameBtn.classList.remove('breathing');
-                    }
-                    
-                    // Game screen stage
-                    this.dom.stageDisplay.textContent = this.state.currentStage;
-                },
-
-                /**
-                 * Displays a specific screen and hides others.
-                 * @param {string} screenId - The ID of the screen to show.
-                 */
-                showScreen(screenId) {
-                    document.querySelectorAll('.screen').forEach(s => s.classList.remove(this.config.constants.ACTIVE_CLASS));
-                    const screenElement = this.dom[screenId.replace(/-/g, '')];
-                    if (screenElement) {
-                        screenElement.classList.add(this.config.constants.ACTIVE_CLASS);
-                        screenElement.scrollTop = 0;
-                    }
-                    this.methods.updateUI();
-                },
-
-                /**
-                 * Displays a modal dialog.
-                 * @param {string} title - The modal title.
-                 * @param {string} message - The modal message (HTML allowed).
-                 * @param {string} [confirmText="تایید"] - The text for the confirm button.
-                 * @param {string|null} [cancelText="لغو"] - The text for the cancel button. If null, hides it.
-                 * @param {Function|null} [onConfirm=null] - Callback for confirm button.
-                 * @param {'generic'|'changeName'|'avatar'} [modalType='generic'] - The type of modal to configure inputs.
-                 */
-                showModal(title, message, confirmText = "تایید", cancelText = "لغو", onConfirm = null, modalType = 'generic') {
-                    this.sfx.play('panelOpen');
-                    const C = this.config.constants;
-                    
-                    this.dom.modalTitle.textContent = title;
-                    this.dom.modalMessage.innerHTML = message;
-
-                    // Reset all inputs/containers
-                    [this.dom.changeNameInputContainer, this.dom.avatarGenerationContainer, this.dom.modalErrorMessage].forEach(el => el.classList.add(C.HIDDEN_CLASS));
-                    this.dom.modalErrorMessage.textContent = '';
-
-                    // Configure based on type
-                    if (modalType === 'changeName') {
-                        this.dom.changeNameInputContainer.classList.remove(C.HIDDEN_CLASS);
-                        this.dom.newDisplayNameInput.value = this.state.displayName;
-                    } else if (modalType === 'avatar') {
-                        this.dom.avatarGenerationContainer.classList.remove(C.HIDDEN_CLASS);
-                        this.dom.avatarSuggestionsContainer.innerHTML = '';
-                        this.dom.avatarAiLoading.classList.add(C.HIDDEN_CLASS);
-                    }
-
-                    this.dom.modalConfirmBtn.textContent = confirmText;
-                    this.state.modalConfirmCallback = onConfirm || (() => this.methods.hideModal());
-
-                    if (cancelText) {
-                        this.dom.modalCancelBtn.textContent = cancelText;
-                        this.dom.modalCancelBtn.classList.remove(C.HIDDEN_CLASS);
-                    } else {
-                        this.dom.modalCancelBtn.classList.add(C.HIDDEN_CLASS);
-                    }
-
-                    this.dom.modalContainer.classList.add(C.VISIBLE_CLASS);
-                    document.body.classList.add('modal-open');
-                },
-
-                hideModal() {
-                    this.sfx.play('panelClose');
-                    this.dom.modalContainer.classList.remove(this.config.constants.VISIBLE_CLASS);
-                    document.body.classList.remove('modal-open');
-                    this.state.modalConfirmCallback = null;
-                },
-
-                showDevelopersPanel() {
-                    this.sfx.play('panelOpen');
-                    this.dom.developersPanelContainer.classList.add(this.config.constants.VISIBLE_CLASS);
-                    document.body.classList.add('modal-open');
-                },
-
-                hideDevelopersPanel() {
-                    this.sfx.play('panelClose');
-                    this.dom.developersPanelContainer.classList.remove(this.config.constants.VISIBLE_CLASS);
-                    document.body.classList.remove('modal-open');
-                },
-                
-                /**
-                 * Sets the loading/disabled state of a button.
-                 * @param {HTMLButtonElement} button - The button element.
-                 * @param {boolean} isLoading - True to disable, false to enable.
-                 * @param {string} [loadingText] - Optional text to show while loading.
-                 */
-                setButtonState(button, isLoading, loadingText) {
-                    if (!button) return;
-                    if (isLoading) {
-                        button.disabled = true;
-                        button.dataset.originalText = button.innerHTML;
-                        if (loadingText) button.innerHTML = `<div class="loader !w-6 !h-6 !border-4 mx-auto"></div>`;
-                    } else {
-                        button.disabled = false;
-                        if (button.dataset.originalText) button.innerHTML = button.dataset.originalText;
-                    }
-                },
-                
-                showError(message, element = this.dom.errorMessagebox) {
-                    if(!element) return;
-                    element.textContent = message;
-                    element.classList.remove(this.config.constants.HIDDEN_CLASS);
-                },
-
-                hideError(element = this.dom.errorMessagebox) {
-                    if(!element) return;
-                    element.classList.add(this.config.constants.HIDDEN_CLASS);
-                },
-
-                // --- EVENT HANDLERS & ACTIONS ---
-                generatePublicUserId() {
-                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                    let result = '';
-                    for (let i = 0; i < 5; i++) {
-                        result += chars.charAt(Math.floor(Math.random() * chars.length));
-                    }
-                    this.dom.userIdDisplay.value = result;
-                    this.state.publicUserId = result;
-                },
-
-                validateName(name) {
-                    const trimmed = name.trim();
-                    if (trimmed.length < 3) return "نام باید حداقل ۳ کاراکتر باشد.";
-                    if (trimmed.length > 20) return "نام نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
-                    if (!/^[a-zA-Z0-9_.-]+$/.test(trimmed)) return "نام فقط می‌تواند شامل حروف انگلیسی، اعداد و ._- باشد.";
-                    return null; // valid
-                },
-
-                async handleRegistration() {
-                    if (this.state.isBusy) return;
-                    this.state.isBusy = true;
-                    this.methods.setButtonState(this.dom.registerBtn, true, '...');
-                    this.methods.hideError();
-                    
-                    const name = this.dom.displayNameInput.value;
-                    const nameError = this.methods.validateName(name);
-
-                    if (nameError) {
-                        this.methods.showError(nameError);
-                    } else if (!this.state.publicUserId) {
-                        this.methods.showError("لطفاً یک شناسه کاربری بسازید.");
-                    } else {
-                        this.state.displayName = name.trim();
-                        await this.methods._saveUserData();
-                        this.methods.updateUI();
-                    }
-                    
-                    this.methods.setButtonState(this.dom.registerBtn, false);
-                    this.state.isBusy = false;
-                },
-                
-                handleStartGame() {
-                    this.sfx.play('startGame');
-                    this.methods.showModal("شروع بازی", "پیشنهاد می‌شود برای بهترین تجربه از اینترنت پایدار استفاده کنید.", "ادامه", "بازگشت", () => {
-                        this.methods.hideModal();
-                        this.methods.showScreen('game-screen');
-                        this.methods.generateQuestion();
-                    });
-                },
-
-                async returnToMainScreen() {
-                    await this.methods._saveUserData();
-                    this.state.currentQuestionData = null;
-                    this.methods.showScreen('main-screen');
-                },
-
-                handleModalConfirm() {
-                    if (this.state.modalConfirmCallback) {
-                        this.state.modalConfirmCallback();
-                    }
-                },
-                
-                // --- AI & GAME LOGIC ---
-                /**
-                 * Calls the Gemini API to generate text or JSON content.
-                 * @param {string} prompt - The prompt to send to the API.
-                 * @param {boolean} [isJsonOutput=false] - Whether to request JSON output.
-                 * @returns {Promise<any|null>} - The parsed response or null on error.
-                 */
-                async callGeminiAPI(prompt, isJsonOutput = false) {
-                    this.dom.aiThinkingIndicator.classList.remove(this.config.constants.HIDDEN_CLASS);
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${this.config.geminiTextModel}:generateContent?key=${this.config.geminiApiKey}`;
-                    const payload = {
-                        contents: [{ role: "user", parts: [{ text: prompt }] }],
-                        generationConfig: isJsonOutput ? { responseMimeType: "application/json" } : {}
-                    };
-
-                    try {
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        if (!response.ok) throw new Error(`API Error ${response.status}`);
-                        const result = await response.json();
-                        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (!text) throw new Error("پاسخ نامعتبر از هوش مصنوعی");
-                        return isJsonOutput ? JSON.parse(text) : text;
-                    } catch (error) {
-                        console.error("Gemini API Error:", error);
-                        this.methods.showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار AI پیش آمد. لطفاً از خاموش بودن فیلترشکن مطمئن شوید و دوباره تلاش کنید.`);
-                        return null;
-                    } finally {
-                        this.dom.aiThinkingIndicator.classList.add(this.config.constants.HIDDEN_CLASS);
-                    }
-                },
-                
-                async generateQuestion() {
-                    if (this.state.isBusy) return;
-                    this.state.isBusy = true;
-                    this.dom.questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
-                    this.dom.optionsContainer.innerHTML = "";
-                    this.dom.questionExplanation.classList.add(this.config.constants.HIDDEN_CLASS);
-                    this.dom.gameFeedback.textContent = "";
-
-                    let questionData = null;
-                    for (let i = 0; i < 3; i++) { // Max 3 retries for unique question
-                        let difficulty = "آسان";
-                        if (this.state.currentStage > 10) difficulty = "سخت";
-                        else if (this.state.currentStage > 5) difficulty = "متوسط";
-                        
-                        const prompt = `یک سوال 4 گزینه‌ای جدید و غیرتکراری به زبان فارسی با موضوع مافیا (تاریخچه، فیلم‌ها، اصطلاحات بازی) با سطح دشواری "${difficulty}" برای بازیکن در مرحله ${this.state.currentStage} طراحی کن. خروجی باید فقط یک آبجکت JSON خام با این ساختار باشد: {"question": "...", "options": ["...", "...", "...", "..."], "correctAnswerIndex": 0, "explanation": "..."}`;
-                        
-                        const data = await this.methods.callGeminiAPI(prompt, true);
-                        if (data?.question) {
-                            const hash = this.methods.simpleHash(data.question);
-                            if (!this.state.seenQuestionHashes.has(hash)) {
-                                questionData = data;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (questionData) {
-                        this.state.currentQuestionData = questionData;
-                        this.methods.displayQuestion();
-                    } else {
-                        this.dom.questionText.textContent = "خطا در بارگذاری سوال.";
-                        this.methods.showModal("خطا", "نتوانستیم سوال جدیدی بسازیم. آیا مایل به تلاش مجدد هستید؟", "تلاش مجدد", "بازگشت", () => {
-                            this.methods.hideModal();
-                            this.methods.generateQuestion();
-                        });
-                    }
-                    this.state.isBusy = false;
-                },
-
-                displayQuestion() {
-                    const { question, options } = this.state.currentQuestionData;
-                    this.dom.questionText.textContent = question;
-                    this.dom.optionsContainer.innerHTML = "";
-                    options.forEach((option, index) => {
-                        const button = document.createElement('button');
-                        button.className = 'option-btn w-full text-right';
-                        button.textContent = `${index + 1}. ${option}`;
-                        button.dataset.index = index;
-                        button.onclick = (e) => this.methods.handleAnswerSelection(e);
-                        this.dom.optionsContainer.appendChild(button);
-                    });
-                    this.state.isQuestionActive = true;
-                },
-                
-                async handleAnswerSelection(event) {
-                    if (!this.state.isQuestionActive || this.state.isBusy) return;
-                    this.state.isQuestionActive = false;
-                    this.state.isBusy = true;
-
-                    const selectedBtn = event.target.closest('.option-btn');
-                    const selectedIndex = parseInt(selectedBtn.dataset.index);
-                    const { question, correctAnswerIndex, explanation } = this.state.currentQuestionData;
-
-                    document.querySelectorAll('#options-container .option-btn').forEach(btn => btn.disabled = true);
-                    
-                    if (selectedIndex === correctAnswerIndex) {
-                        this.sfx.play('correct');
-                        selectedBtn.classList.add('correct');
-                        this.dom.gameFeedback.textContent = "پاسخ صحیح!";
-                        this.dom.gameFeedback.style.color = '#aaffaa';
-                        this.state.currentStage++;
-                        this.state.seenQuestionHashes.add(this.methods.simpleHash(question));
-                        await this.methods._saveUserData();
-                        setTimeout(() => { this.methods.generateQuestion(); this.methods.updateUI(); }, 2000);
-                    } else {
-                        this.sfx.play('incorrect');
-                        selectedBtn.classList.add('incorrect');
-                        this.dom.optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`).classList.add('correct');
-                        this.dom.gameFeedback.textContent = "پاسخ اشتباه!";
-                        this.dom.gameFeedback.style.color = '#ffaaaa';
-                        setTimeout(() => this.methods.generateQuestion(), 4000);
-                    }
-                    
-                    if (explanation) {
-                        this.dom.questionExplanation.textContent = `توضیح: ${explanation}`;
-                        this.dom.questionExplanation.classList.remove(this.config.constants.HIDDEN_CLASS);
-                    }
-                    this.state.isBusy = false;
-                },
-
-                async generateMafiaFact() {
-                    this.methods.showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو...</p>", "باشه", null);
-                    const prompt = "یک حقیقت جالب و کوتاه (۲-۴ جمله) در مورد دنیای مافیا به زبان فارسی بگو.";
-                    const fact = await this.methods.callGeminiAPI(prompt);
-                    if (fact) {
-                        this.methods.showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!");
-                    }
-                },
-                
-                promptChangeDisplayName() {
-                    const C = this.config.constants;
-                    this.methods.showModal("تغییر نام", "نام جدید خود را وارد کنید.", "تغییر", "لغو", async () => {
-                        const newName = this.dom.newDisplayNameInput.value;
-                        const error = this.methods.validateName(newName);
-                        if (error) {
-                            this.methods.showError(error, this.dom.modalErrorMessage);
-                            return;
-                        }
-                        if (newName.trim() === this.state.displayName) {
-                             this.methods.showError("نام جدید باید متفاوت باشد.", this.dom.modalErrorMessage);
-                             return;
-                        }
-                        this.state.displayName = newName.trim();
-                        await this.methods._saveUserData();
-                        this.methods.updateUI();
-                        this.methods.hideModal();
-                        this.methods.showModal("موفقیت", "نام شما با موفقیت تغییر کرد.", "عالی!");
-                    }, 'changeName');
-                },
-
-                promptChangeAvatar() {
-                    this.state.selectedAvatarForConfirmation = null;
-                    this.methods.showModal("تغییر آواتار", "می‌توانید یک آواتار جدید با هوش مصنوعی بسازید.", "انتخاب", "لغو", async () => {
-                        if (!this.state.selectedAvatarForConfirmation) {
-                            this.methods.showError("لطفا یک آواتار انتخاب کنید.", this.dom.modalErrorMessage);
-                            return;
-                        }
-                        this.state.avatarUrl = this.state.selectedAvatarForConfirmation;
-                        await this.methods._saveUserData();
-                        this.methods.updateUI();
-                        this.methods.hideModal();
-                    }, 'avatar');
-                    this.dom.modalConfirmBtn.disabled = true;
-                },
-
-                async generateAndDisplayAvatars() {
-                    if (this.state.isBusy) return;
-                    this.state.isBusy = true;
-                    this.dom.avatarAiLoading.classList.remove(this.config.constants.HIDDEN_CLASS);
-                    this.methods.setButtonState(this.dom.generateAvatarBtn, true, '...');
-                    this.dom.modalConfirmBtn.disabled = true;
-                    this.dom.avatarSuggestionsContainer.innerHTML = '';
-                    this.methods.hideError(this.dom.modalErrorMessage);
-
-                    // For now, using placeholders as Imagen API can be slow/costly
-                    // In a real scenario, you'd call the Imagen API here.
-                    const placeholders = Array.from({length: 4}, (_, i) => `https://picsum.photos/seed/${Math.random()}/100`);
-                    
-                    placeholders.forEach(url => {
-                        const imgWrapper = document.createElement('div');
-                        imgWrapper.className = 'avatar-suggestion-item';
-                        const img = document.createElement('img');
-                        img.src = url; // In real use: `data:image/png;base64,...`
-                        imgWrapper.append(img);
-                        imgWrapper.onclick = () => {
-                            this.sfx.play('click');
-                            const current = this.dom.avatarSuggestionsContainer.querySelector('.selected');
-                            if (current) current.classList.remove('selected');
-                            imgWrapper.classList.add('selected');
-                            this.state.selectedAvatarForConfirmation = url; // or the base64 string
-                            this.dom.modalConfirmBtn.disabled = false;
-                        };
-                        this.dom.avatarSuggestionsContainer.append(imgWrapper);
-                    });
-
-                    this.dom.avatarAiLoading.classList.add(this.config.constants.HIDDEN_CLASS);
-                    this.methods.setButtonState(this.dom.generateAvatarBtn, false);
-                    this.state.isBusy = false;
-                },
-
-                // --- UTILITIES ---
-                simpleHash(str) {
-                    let hash = 0;
-                    for (let i = 0; i < str.length; i++) {
-                        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                        hash |= 0;
-                    }
-                    return `h${Math.abs(hash)}`;
+            play(soundName) {
+                const sound = this.sounds[soundName];
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.warn("Audio play failed:", e));
                 }
             }
         };
 
-        // --- GAME START ---
-        document.addEventListener('DOMContentLoaded', () => App.methods.init());
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : {
+                apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
+                authDomain: "city-mafia.firebaseapp.com",
+                projectId: "city-mafia",
+                storageBucket: "city-mafia.appspot.com", 
+                messagingSenderId: "66458127103",
+                appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
+                measurementId: "G-8M0M6BJ0GG"
+              };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
+
+        let app;
+        let auth;
+        let db;
+        let currentUserId = null;
+        let isAuthReady = false;
+
+        const gameState = {
+            displayName: '',
+            publicUserId: '',
+            currentStage: 1,
+            currentQuestionData: null,
+            isQuestionActive: false,
+            isLoadingNextQuestion: false,
+            avatarUrl: '',
+            seenQuestionHashes: new Set(),
+        };
+
+        let loadingScreen, loadingMessage, mainScreen, gameScreen,
+            registrationForm, displayNameInput, registerBtn, inputErrorMessage,
+            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
+            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
+            publicUserIdOutput,
+            editNameBtn,
+            mainScreenButtonsLayout,
+            startGameBtn, mafiaFactBtn, devIntroBtnHeader,
+            stageDisplay, questionText,
+            optionsContainer, questionExplanation, backToMainBtn,
+            gameFeedback, aiThinkingIndicator,
+            modalContainer, modalTitle, modalContentDynamic, modalMessage,
+            changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
+            avatarGenerationContainer, generateAvatarBtn, avatarAiLoading,
+            avatarSuggestionsContainer, avatarErrorMessage, modalConfirmBtn, modalCancelBtn,
+            developersPanelContainer, closeDevelopersPanelBtn;
+
+        let modalConfirmCallback = null;
+        let modalCancelCallback = null;
+        let selectedAvatarForConfirmation = null;
+
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0;
+            }
+            return `h${Math.abs(hash)}`;
+        }
+
+
+        function showScreen(screenElement) {
+            if (!screenElement) return;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            screenElement.classList.add('active');
+
+            const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
+            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            
+            screenElement.scrollTop = 0;
+            updateUI();
+        }
+        
+        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
+            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
+                console.error("[showModal] Modal elements not found, cannot show modal.");
+                return;
+            }
+
+            audioManager.play('panelOpen'); // Sound Effect
+
+            modalContainer.classList.remove('panel-hidden');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
+            void modalContainer.offsetWidth; // Trigger reflow
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
+            
+            modalTitle.textContent = title;
+
+            modalMessage.classList.add('hidden');
+            changeNameInputContainer.classList.add('hidden');
+            avatarGenerationContainer.classList.add('hidden');
+            if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
+            if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+            if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
+
+
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+
+            if (modalType === "changeName") {
+                changeNameInputContainer.classList.remove('hidden');
+                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
+                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
+                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
+                if (message && message.trim() !== "") {
+                    modalMessage.innerHTML = message;
+                    modalMessage.classList.remove('hidden');
+                }
+            } else if (modalType === "avatar") {
+                avatarGenerationContainer.classList.remove('hidden');
+                if(avatarSuggestionsContainer) avatarSuggestionsContainer.innerHTML = '';
+                if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
+                 if (message && message.trim() !== "") {
+                    modalMessage.innerHTML = message;
+                    modalMessage.classList.remove('hidden');
+                }
+            } else {
+                modalMessage.innerHTML = message;
+                modalMessage.classList.remove('hidden');
+            }
+
+            modalConfirmBtn.textContent = confirmText;
+            modalConfirmCallback = onConfirm;
+            modalCancelCallback = onCancel;
+
+            if (cancelText || modalType === "changeName" || modalType === "avatar") {
+                modalCancelBtn.textContent = cancelText || "لغو";
+                modalCancelBtn.classList.remove('hidden');
+            } else {
+                modalCancelBtn.classList.add('hidden');
+            }
+        }
+
+        function hideModal() {
+            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
+                return;
+            }
+            
+            audioManager.play('panelClose'); // Sound Effect
+            modalContainer.classList.add('panel-hidden');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
+            modalConfirmCallback = null;
+            modalCancelCallback = null;
+            changeNameInputContainer.classList.add('hidden');
+            avatarGenerationContainer.classList.add('hidden');
+            modalMessage.classList.add('hidden');
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!developersPanelContainer || developersPanelContainer.classList.contains('panel-hidden'))) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
+        }
+
+        function handleModalConfirm() {
+            if (modalConfirmCallback) {
+                try {
+                    modalConfirmCallback();
+                } catch (e) {
+                    console.error("[handleModalConfirm] Error in modal confirm callback:", e);
+                    hideModal();
+                }
+            } else {
+                hideModal();
+            }
+        }
+
+        function handleModalCancel() {
+            if (modalCancelCallback) {
+                try {
+                    modalCancelCallback();
+                } catch (e) {
+                    console.error("[handleModalCancel] Error in modal cancel callback:", e);
+                }
+            }
+            hideModal();
+        }
+
+        function showDevelopersPanel() {
+            if (!developersPanelContainer) return;
+            audioManager.play('panelOpen'); // Sound Effect
+
+            developersPanelContainer.classList.remove('panel-hidden');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            void developersPanelContainer.offsetWidth; // Trigger reflow
+            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
+
+            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+                userProfileArea.classList.add('profile-area-hidden');
+            }
+        }
+
+        function hideDevelopersPanel() {
+            if (!developersPanelContainer) return;
+            audioManager.play('panelClose'); // Sound Effect
+
+            developersPanelContainer.classList.add('panel-hidden');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
+             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
+               (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
+                userProfileArea.classList.remove('profile-area-hidden');
+            }
+        }
+
+        function updateUI() {
+            if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
+            if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
+            if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
+
+            if(avatarImage && gameState.avatarUrl) {
+                avatarImage.src = gameState.avatarUrl;
+            } else if (avatarImage) {
+                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
+            }
+
+            let showRegistration = true;
+            let showActionButtons = false;
+            let showUserInfoAndAvatar = false;
+
+            if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                showRegistration = false;
+                showActionButtons = true;
+                if(startGameBtn) startGameBtn.classList.add('breathing'); // Add breathing animation
+                if (mainScreen && mainScreen.classList.contains('active')) {
+                    showUserInfoAndAvatar = true;
+                }
+            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            } else {
+                showRegistration = true;
+                showActionButtons = false;
+                showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            }
+
+            if(registrationForm){
+                if (showRegistration) {
+                    registrationForm.classList.remove('panel-hidden');
+                    registrationForm.classList.add('panel-visible');
+                } else {
+                    registrationForm.classList.add('panel-hidden');
+                    registrationForm.classList.remove('panel-visible');
+                }
+            }
+
+            if(mainScreenButtonsLayout){
+                if (showActionButtons) {
+                    mainScreenButtonsLayout.classList.remove('hidden');
+                } else {
+                    mainScreenButtonsLayout.classList.add('hidden');
+                }
+            }
+
+            if(userProfileArea){
+                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
+                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
+                if (showUserInfoAndAvatar && !isAnyPanelVisible) {
+                    userProfileArea.classList.remove('profile-area-hidden');
+                    userProfileArea.classList.remove('hidden');
+                    if(avatarContainer){
+                        if(window.innerWidth >= 768) {
+                            avatarContainer.classList.remove('hidden');
+                        } else {
+                            avatarContainer.classList.add('hidden');
+                        }
+                    }
+                    if(userInfoBox) userInfoBox.classList.remove('hidden');
+
+                } else if (!showUserInfoAndAvatar) {
+                    userProfileArea.classList.add('hidden');
+                    if(avatarContainer) avatarContainer.classList.add('hidden');
+                    if(userInfoBox) userInfoBox.classList.add('hidden');
+                } else if (isAnyPanelVisible) {
+                    userProfileArea.classList.add('profile-area-hidden');
+                }
+            }
+        }
+        
+        // =========================================================================
+        // START: REFACTORED AUTHENTICATION AND LOADING LOGIC
+        // =========================================================================
+        async function authenticateAndLoadGameData() {
+            try {
+                // 1. Initialize Firebase services
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                console.log("Firebase initialized.");
+
+                // 2. Wait for a user to be authenticated.
+                if (loadingMessage) loadingMessage.textContent = "در حال احراز هویت...";
+
+                // This promise will resolve only when onAuthStateChanged provides a valid user.
+                const user = await new Promise((resolve, reject) => {
+                    const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            unsubscribe(); // Stop listening to prevent re-triggering
+                            resolve(user);
+                        }
+                        // If user is null, we just wait. The signInAnonymously call below will trigger this.
+                    }, reject); // Reject the promise on auth errors
+                });
+                
+                // If we get here, the user is signed in.
+                console.log("User is signed in:", user.uid);
+                currentUserId = user.uid;
+                
+                // 3. Load user data from Firestore.
+                if (loadingMessage) loadingMessage.textContent = "در حال بارگذاری اطلاعات...";
+                await loadUserData();
+
+                // 4. All data is ready. Finalize and transition to the main screen.
+                isAuthReady = true;
+                if (loadingMessage) loadingMessage.textContent = "خوش آمدید!";
+                setTimeout(() => {
+                    if (mainScreen) showScreen(mainScreen);
+                }, 500);
+
+            } catch (error) {
+                console.error("Critical initialization error:", error);
+                if (loadingMessage) loadingMessage.textContent = `خطا در راه اندازی بازی: ${error.message}. لطفاً صفحه را رفرش کنید.`;
+                // The loading screen will remain visible, which is appropriate for a critical failure.
+            }
+        }
+
+        // This function is now only called when we are sure we have a user ID.
+        async function loadUserData() {
+            if (!currentUserId || !db) {
+                console.log("Cannot load user data: no currentUserId or db connection.");
+                return;
+            }
+            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    console.log("User data found, loading profile.");
+                    const data = docSnap.data();
+                    gameState.displayName = data.displayName || "";
+                    gameState.publicUserId = data.publicUserId || "";
+                    gameState.currentStage = data.currentStage || 1;
+                    gameState.avatarUrl = data.avatarUrl || '';
+                    gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
+                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
+                } else {
+                    console.log("No user profile found, setting default values.");
+                    gameState.displayName = "";
+                    gameState.publicUserId = "";
+                    gameState.avatarUrl = '';
+                    gameState.seenQuestionHashes = new Set();
+                }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+                // We'll show a modal but allow the game to continue with default data.
+                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد. ممکن است با اطلاعات پیش‌فرض ادامه دهید.", "باشه", null, () => hideModal());
+                gameState.displayName = '';
+                gameState.publicUserId = '';
+                gameState.avatarUrl = '';
+                gameState.seenQuestionHashes = new Set();
+            }
+        }
+        // =========================================================================
+        // END: REFACTORED AUTHENTICATION AND LOADING LOGIC
+        // =========================================================================
+
+        async function saveUserData() {
+            if (!currentUserId || !db) return;
+            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            try {
+                await setDoc(userDocRef, {
+                    displayName: gameState.displayName,
+                    publicUserId: gameState.publicUserId,
+                    currentStage: gameState.currentStage,
+                    avatarUrl: gameState.avatarUrl,
+                    seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
+                    lastUpdated: serverTimestamp()
+                }, { merge: true });
+                 console.log("User data saved successfully.");
+            } catch (error) {
+                console.error("Error saving user data:", error);
+                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
+            }
+        }
+        
+        const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
+        const IMAGEN_MODEL = "imagen-3.0-generate-002";
+
+        async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
+            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+
+            if (isJsonOutput) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                };
+                if (schema) {
+                    payload.generationConfig.responseSchema = schema;
+                }
+            }
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+                }
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return isJsonOutput ? JSON.parse(text) : text;
+                } else {
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
+                         throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
+                    }
+                    throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                if (!prompt.includes("offensive, hateful, or contain profanity")) {
+                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
+                }
+                return null;
+            } finally {
+                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden');
+            }
+        }
+
+        async function callImagenAPI(prompt, sampleCount = 1) {
+            if(avatarAiLoading) avatarAiLoading.classList.remove('hidden');
+            if(avatarErrorMessage) avatarErrorMessage.textContent = '';
+
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": sampleCount }
+            };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict?key=${GEMINI_API_KEY}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed: ${response.status} ${errorBody}`);
+                }
+                const result = await response.json();
+                if (result.predictions && result.predictions.length > 0) {
+                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
+                } else {
+                    throw new Error("پاسخ نامعتبر از سرویس ساخت تصویر دریافت شد.");
+                }
+            } catch (error) {
+                console.error("Error calling Imagen API:", error);
+                if(avatarErrorMessage) avatarErrorMessage.textContent = `خطا در ساخت آواتار: ${error.message}`;
+                return null;
+            } finally {
+                if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
+            }
+        }
+        
+        async function generateQuestion() {
+            if (gameState.isLoadingNextQuestion) return;
+            gameState.isLoadingNextQuestion = true;
+            if (questionText) questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
+            if (optionsContainer) optionsContainer.innerHTML = "";
+            if (questionExplanation) questionExplanation.classList.add('hidden');
+            if (gameFeedback) gameFeedback.textContent = "";
+            
+            let attempts = 0;
+            const maxAttempts = 3;
+            let questionData = null;
+
+            while (attempts < maxAttempts) {
+                let difficulty = "آسان";
+                if (gameState.currentStage > 20) {
+                    difficulty = "بسیار سخت";
+                } else if (gameState.currentStage > 10) {
+                    difficulty = "سخت";
+                } else if (gameState.currentStage > 5) {
+                    difficulty = "متوسط";
+                }
+                
+                const prompt = `
+                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
+                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                موضوعات پیشنهادی (برای تنوع):
+                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
+                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
+                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
+                ساختار JSON باید دقیقا به این صورت باشد:
+                {
+                  "question": "متن سوال به فارسی",
+                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
+                  "correctAnswerIndex": 0,
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
+                }
+                `;
+
+                const data = await callGeminiAPI(prompt, true);
+
+                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
+                    const questionHash = simpleHash(data.question);
+                    if (!gameState.seenQuestionHashes.has(questionHash)) {
+                        questionData = data;
+                        break;
+                    } else {
+                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
+                        attempts++;
+                    }
+                } else {
+                    console.error("Invalid question data structure received from AI:", data);
+                    attempts++;
+                }
+            }
+
+            if (questionData) {
+                gameState.currentQuestionData = questionData;
+                displayQuestion();
+            } else {
+                console.error("Failed to generate a unique question after multiple attempts.");
+                if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
+                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
+                    () => { hideModal(); generateQuestion(); },
+                    () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
+                );
+            }
+            
+            gameState.isLoadingNextQuestion = false;
+            gameState.isQuestionActive = true;
+        }
+
+        function displayQuestion() {
+            if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
+            const { question, options } = gameState.currentQuestionData;
+            questionText.textContent = question;
+            optionsContainer.innerHTML = "";
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right';
+                button.textContent = `${index + 1}. ${option}`;
+                button.dataset.index = index;
+                button.addEventListener('click', handleAnswerSelection);
+                optionsContainer.appendChild(button);
+            });
+            if(questionExplanation) questionExplanation.classList.add('hidden');
+            if(questionExplanation) questionExplanation.textContent = "";
+            if(gameFeedback) gameFeedback.textContent = "";
+            gameState.isQuestionActive = true;
+        }
+        
+        async function handleAnswerSelection(event) {
+            if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
+            gameState.isQuestionActive = false;
+
+            const selectedOptionButton = event.target.closest('.option-btn');
+            if (!selectedOptionButton) return;
+
+            const selectedIndex = parseInt(selectedOptionButton.dataset.index);
+            const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
+
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+
+            if (selectedIndex === correctAnswerIndex) {
+                audioManager.play('correct'); // Sound effect
+                selectedOptionButton.classList.add('correct');
+                gameFeedback.textContent = "پاسخ صحیح!";
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
+                
+                const questionHash = simpleHash(question);
+                gameState.seenQuestionHashes.add(questionHash);
+                gameState.currentStage++;
+                
+                await saveUserData();
+                setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
+            } else {
+                audioManager.play('incorrect'); // Sound effect
+                selectedOptionButton.classList.add('incorrect');
+                const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+                if (correctButton) correctButton.classList.add('correct');
+
+                const selectedOptionText = options[selectedIndex];
+                const correctAnswerText = options[correctAnswerIndex];
+                const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
+                سوال: "${question}"
+                پاسخ اشتباه بازیکن: "${selectedOptionText}"
+                پاسخ صحیح: "${correctAnswerText}"
+                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
+
+                const taunt = await callGeminiAPI(tauntPrompt);
+                if (taunt) {
+                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
+                } else {
+                    gameFeedback.textContent = "پاسخ اشتباه!";
+                }
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
+                
+                setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
+            }
+            if (explanation && questionExplanation) {
+                questionExplanation.textContent = `توضیح: ${explanation}`;
+                questionExplanation.classList.remove('hidden');
+            }
+        }
+        
+        async function generateAndDisplayAvatars() {
+            if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
+            avatarAiLoading.classList.remove('hidden');
+            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons, cartoonish, stylized, game art style";
+            const suggestions = await callImagenAPI(prompt, 4);
+
+            avatarSuggestionsContainer.innerHTML = '';
+            selectedAvatarForConfirmation = null;
+
+            if (suggestions && suggestions.length > 0) {
+                suggestions.forEach(base64Url => {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.className = 'avatar-suggestion-item';
+                    const img = document.createElement('img');
+                    img.src = base64Url;
+                    img.alt = "پیشنهاد آواتار";
+                    imgWrapper.appendChild(img);
+                    imgWrapper.addEventListener('click', () => {
+                        audioManager.play('click'); // Sound effect
+                        const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
+                        if (currentSelected) {
+                            currentSelected.classList.remove('selected');
+                        }
+                        imgWrapper.classList.add('selected');
+                        selectedAvatarForConfirmation = base64Url;
+                        modalConfirmBtn.disabled = false;
+                    });
+                    avatarSuggestionsContainer.appendChild(imgWrapper);
+                });
+                modalConfirmBtn.textContent = "انتخاب";
+                modalConfirmBtn.disabled = true;
+            } else {
+                if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
+                modalConfirmBtn.textContent = "تایید";
+                modalConfirmBtn.disabled = true;
+            }
+        }
+        
+        async function confirmAvatarSelection() {
+            if (selectedAvatarForConfirmation) {
+                gameState.avatarUrl = selectedAvatarForConfirmation;
+                await saveUserData();
+                updateUI();
+                hideModal();
+                showModal("موفقیت", "آواتار شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+            } else {
+                if(avatarErrorMessage) avatarErrorMessage.textContent = "لطفا ابتدا یک آواتار را انتخاب کنید.";
+            }
+        }
+
+        function validateAndSanitizeName(nameValue, errorElement, inputElement) {
+            if (!inputElement || !errorElement) return null;
+            const regex = /[^a-zA-Z0-9_.-]/g;
+            let sanitizedValue = nameValue.replace(regex, '');
+
+            if (nameValue !== sanitizedValue) {
+                inputElement.value = sanitizedValue;
+            }
+
+            const trimmedName = sanitizedValue.trim();
+
+            if (trimmedName === '') {
+                errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            if (trimmedName.length < 3) {
+                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            if (trimmedName.length > 20) {
+                errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
+                inputElement.classList.add('invalid');
+                return null;
+            }
+            errorElement.textContent = '';
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('invalid');
+            return trimmedName;
+        }
+
+        async function handleChangeDisplayName() {
+            if(!newDisplayNameInput || !changeNameErrorMessage) return;
+            const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+            if (!newName) return;
+
+            if (newName === gameState.displayName) {
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
+                return;
+            }
+
+            gameState.displayName = newName;
+            await saveUserData();
+            updateUI();
+            hideModal();
+            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+        }
+
+        async function generateMafiaFact() {
+            const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
+            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
+
+            const fact = await callGeminiAPI(prompt);
+            if (fact) {
+                showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
+            } else {
+                showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
+            }
+        }
+        
+        function generateAlphanumericPublicUserId(length = 5) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+        
+        function setupEventListeners() {
+            // Add a global click sound listener for all clash buttons
+            document.body.addEventListener('click', (event) => {
+                if (event.target.closest('.btn-clash:not(:disabled)')) {
+                    audioManager.play('click');
+                }
+            });
+
+            if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
+            if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
+
+            if (displayNameInput) {
+                displayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+                });
+                displayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        if(registerBtn) registerBtn.click();
+                    }
+                });
+            }
+
+            if (generateUserIdBtn) {
+                generateUserIdBtn.addEventListener('click', () => {
+                    const newPublicId = generateAlphanumericPublicUserId();
+                    if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
+                    gameState.publicUserId = newPublicId;
+                    if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+                });
+            }
+
+            if (newDisplayNameInput) {
+                newDisplayNameInput.addEventListener('input', () => {
+                    validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
+                });
+                newDisplayNameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                         if (modalConfirmCallback === handleChangeDisplayName) {
+                            if(modalConfirmBtn) modalConfirmBtn.click();
+                        }
+                    }
+                });
+            }
+
+            if (registerBtn) {
+                registerBtn.addEventListener('click', async () => {
+                    const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+
+                    let isPublicIdValid = false;
+                    if (!gameState.publicUserId) {
+                        if(userIdErrorMessage) {
+                            userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
+                            userIdErrorMessage.classList.remove('hidden');
+                        }
+                        isPublicIdValid = false;
+                    } else {
+                        if(userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+                        isPublicIdValid = true;
+                    }
+
+                    if (!validatedName || !isPublicIdValid) return;
+
+                    gameState.displayName = validatedName;
+
+                    await saveUserData();
+                    updateUI();
+                });
+            }
+
+            if (editNameBtn) {
+                editNameBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName) return;
+                    showModal( "تغییر نام", "تغییر نام در این بازی رایگان است.", "تغییر", "لغو",
+                        handleChangeDisplayName, hideModal, "changeName"
+                    );
+                });
+            }
+
+            if (avatarContainer) {
+                avatarContainer.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName) return;
+                    selectedAvatarForConfirmation = null;
+                    showModal( "تغییر آواتار", "", "انتخاب", "لغو",
+                        confirmAvatarSelection, hideModal, "avatar"
+                    );
+                    if(modalConfirmBtn) modalConfirmBtn.disabled = true;
+                });
+            }
+
+            if (generateAvatarBtn) {
+                generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
+            }
+
+            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
+            allActionButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
+                        event.stopPropagation();
+                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.",
+                            "باشه", null, () => hideModal()
+                        );
+                    }
+                }, true);
+            });
+
+            if (startGameBtn) {
+                startGameBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    audioManager.play('startGame'); // Special Sound
+                    showModal(
+                        "شروع بازی",
+                        "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
+                        "ادامه", null,
+                        () => {
+                            hideModal();
+                            if(gameScreen) showScreen(gameScreen);
+                            generateQuestion();
+                        }
+                    );
+                });
+            }
+
+            if (mafiaFactBtn) {
+                mafiaFactBtn.addEventListener('click', () => {
+                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    generateMafiaFact();
+                });
+            }
+            
+            if (devIntroBtnHeader) {
+                devIntroBtnHeader.addEventListener('click', () => {
+                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
+                        showDevelopersPanel();
+                    }
+                });
+            }
+
+            if (closeDevelopersPanelBtn) {
+                closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
+            }
+
+            if(backToMainBtn) {
+                backToMainBtn.addEventListener('click', async () => {
+                    await saveUserData();
+                    gameState.currentQuestionData = null;
+                    if(mainScreen) showScreen(mainScreen);
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                updateUI();
+            });
+        }
+        
+        async function initializeGame() {
+            // 1. Get all DOM element references
+            loadingScreen = document.getElementById('loading-screen');
+            loadingMessage = document.getElementById('loading-message');
+            mainScreen = document.getElementById('main-screen');
+            gameScreen = document.getElementById('game-screen');
+            registrationForm = document.getElementById('registration-form');
+            displayNameInput = document.getElementById('display-name-input');
+            registerBtn = document.getElementById('register-btn');
+            inputErrorMessage = document.getElementById('input-error-message');
+            userIdDisplayInput = document.getElementById('user-id-display');
+            generateUserIdBtn = document.getElementById('generate-user-id-btn');
+            userIdErrorMessage = document.getElementById('user-id-error-message');
+            userProfileArea = document.getElementById('user-profile-area');
+            avatarContainer = document.getElementById('avatar-container');
+            avatarImage = document.getElementById('avatar-image');
+            userInfoBox = document.getElementById('user-info-box');
+            displayNameOutput = document.getElementById('display-name-output');
+            publicUserIdOutput = document.getElementById('public-user-id-output');
+            editNameBtn = document.getElementById('edit-name-btn');
+            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
+            startGameBtn = document.getElementById('start-game-btn');
+            mafiaFactBtn = document.getElementById('mafia-fact-btn');
+            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
+            stageDisplay = document.getElementById('stage-display');
+            questionText = document.getElementById('question-text');
+            optionsContainer = document.getElementById('options-container');
+            questionExplanation = document.getElementById('question-explanation');
+            backToMainBtn = document.getElementById('back-to-main-btn');
+            gameFeedback = document.getElementById('game-feedback');
+            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
+            modalContainer = document.getElementById('modal-container');
+            modalTitle = document.getElementById('modal-title');
+            modalContentDynamic = document.getElementById('modal-content-dynamic');
+            modalMessage = document.getElementById('modal-message');
+            changeNameInputContainer = document.getElementById('change-name-input-container');
+            newDisplayNameInput = document.getElementById('new-display-name-input');
+            changeNameErrorMessage = document.getElementById('change-name-error-message');
+            avatarGenerationContainer = document.getElementById('avatar-generation-container');
+            generateAvatarBtn = document.getElementById('generate-avatar-btn');
+            avatarAiLoading = document.getElementById('avatar-ai-loading');
+            avatarSuggestionsContainer = document.getElementById('avatar-suggestions-container');
+            avatarErrorMessage = document.getElementById('avatar-error-message');
+            modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            modalCancelBtn = document.getElementById('modal-cancel-btn');
+            developersPanelContainer = document.getElementById('developers-panel-container');
+            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+
+            // 2. Initialize necessary modules like audio and event listeners
+            audioManager.init();
+            setupEventListeners();
+            if(userProfileArea) userProfileArea.classList.add('hidden');
+
+            // 3. Start the robust authentication and data loading process
+            await authenticateAndLoadGameData();
+            
+            // 4. After authentication, trigger a sign-in if no user is present.
+            // This will be caught by the onAuthStateChanged listener inside the loading function.
+            if (!getAuth().currentUser) {
+                await signInAnonymously(getAuth());
+            }
+        }
+
+        // Start the game initialization when the document is ready.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        } else {
+            initializeGame();
+        }
 
     </script>
 </body>
