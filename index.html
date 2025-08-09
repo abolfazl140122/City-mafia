@@ -3,228 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی مافیا</title>
+    <title>بازی مافیا - نسخه کلش</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* --- CLASH OF CLANS / CLASH ROYALE THEME --- */
+
+        :root {
+            --clash-blue-dark: #3a5b8a;
+            --clash-blue-light: #5c88c8;
+            --clash-gold: #ffc83a;
+            --clash-gold-dark: #e5a500;
+            --clash-brown-dark: #5b3a29;
+            --clash-text-light: #ffffff;
+            --clash-text-dark: #333333;
+            --clash-green: #59a845;
+            --clash-green-dark: #3a752b;
+            --clash-red: #c74243;
+            --clash-red-dark: #8f2a2b;
+            --clash-panel-bg: #4468a0;
+            --clash-panel-border: #9dc2ff;
+            --clash-panel-border-dark: #2a4166;
+        }
+
+        /* --- KEYFRAME ANIMATIONS --- */
+        @keyframes clash-panel-intro {
+            0% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+            70% { opacity: 1; transform: scale(1.05) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #a07200; }
+            50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.3), 0 8px 0 #a07200; }
+        }
+
+        @keyframes subtle-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
         body {
             font-family: 'Vazirmatn', sans-serif;
-            color: #e0e0e0;
-            overflow-x: hidden;
+            color: var(--clash-text-light);
+            background-color: #1a283e;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
+            overflow: hidden; /* Changed to hidden for better control with screens */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        .mafia-animated-bg {
-            background: linear-gradient(280deg, #0a0a0a, #181818, #101010, #202020, #0a0a0a);
-            background-size: 400% 400%;
-            animation: gradientAnimation 30s ease infinite;
+        /* Animated Background Layer */
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
+            top: 0; left: 0;
+            width: 200%; height: 200%;
+            background-image: url('https://www.transparenttextures.com/patterns/dust.png');
+            opacity: 0.15;
+            z-index: 0;
+            animation: subtle-pan 120s linear infinite;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .clash-font {
+            font-family: 'Lilita One', cursive;
+            letter-spacing: 1px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .panel {
-            background-color: rgba(30, 30, 30, 0.95);
-            border: 1px solid #c49730;
-            box-shadow: 0 0 20px rgba(200, 150, 50, 0.5);
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        .panel-clash {
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
         }
+        
+        /* Panel Corner Rivets */
+        .panel-clash::before, .panel-clash::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--clash-gold);
+            border-radius: 50%;
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 0 3px #000;
+        }
+        .panel-clash::before { top: 10px; left: 10px; }
+        .panel-clash::after { top: 10px; right: 10px; }
+        
+        #developers-panel::before, #developers-panel::after { top: 15px; }
+
 
         .panel-hidden {
             opacity: 0;
             transform: scale(0.9) translateY(-20px);
             pointer-events: none;
-            visibility: hidden; /* Ensure it's not interactive when hidden */
+            visibility: hidden;
         }
 
         .panel-visible {
             opacity: 1;
             transform: scale(1) translateY(0);
             visibility: visible;
+            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .btn-mafia {
-            background-color: #c49730;
-            color: #1a1a1a;
-            border: 2px solid #a57c1a;
-            padding: 8px 16px; /* Base padding */
-            font-size: 0.9rem; /* Base font size */
-            border-radius: 8px;
+        .btn-clash {
+            border-radius: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            white-space: nowrap; /* Prevent text wrapping inside buttons */
-            display: inline-flex; /* For aligning icon and text if any */
+            transition: all 0.1s ease-out; /* Faster transition */
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            color: var(--clash-text-dark);
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
         }
-        @media (min-width: 640px) {
-            .btn-mafia {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-        }
-
-        .btn-mafia:hover {
-            background-color: #d4a840;
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
-            transform: translateY(-2px);
-        }
-         .btn-mafia:disabled {
-            background-color: #7e6a3b;
-            color: #524425;
-            border-color: #6a531f;
+        .btn-clash:disabled {
+            filter: grayscale(80%);
             cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
+            box-shadow: 0 4px 0 #555 !important;
+            transform: translateY(0) !important;
         }
 
+        /* --- Primary Button (Gold) --- */
+        .btn-clash-primary {
+            background: linear-gradient(to bottom, #ffe47a, var(--clash-gold));
+            border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 6px 0 #a07200;
+            padding: 10px 24px;
+            font-size: 1.1rem;
+        }
+        @media (min-width: 640px) { .btn-clash-primary { padding: 12px 30px; font-size: 1.25rem; } }
 
-        .btn-mafia-secondary {
-            background-color: #4a4a4a;
-            color: #e0e0e0;
-            border: 2px solid #333333;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            border-radius: 8px;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        .btn-clash-primary:hover {
+            background: linear-gradient(to bottom, #fff0a0, #ffda5a);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #a07200;
         }
-         @media (min-width: 640px) {
-            .btn-mafia-secondary {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+        .btn-clash-primary:active {
+            transform: translateY(4px) !important;
+            box-shadow: 0 2px 0 #a07200 !important;
+            transition-duration: 0.05s;
         }
-        .btn-mafia-secondary:hover {
-            background-color: #5a5a5a;
-            color: #c49730;
-            transform: scale(1.05) translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        
+        /* Breathing animation for start button */
+        #start-game-btn.breathing {
+            animation: breathe 2.5s ease-in-out infinite;
+        }
+        
+        /* --- Secondary Button (Blue) --- */
+        .btn-clash-secondary {
+            background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light));
+            border: 2px solid var(--clash-panel-border-dark);
+            box-shadow: 0 5px 0 #2e5185;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
+
+        .btn-clash-secondary:hover {
+            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #2e5185;
+        }
+        .btn-clash-secondary:active {
+            transform: translateY(3px) !important;
+            box-shadow: 0 2px 0 #2e5185 !important;
+            transition-duration: 0.05s;
         }
 
-        .input-mafia {
-            background-color: #333;
-            border: 1px solid #c49730;
-            color: #e0e0e0;
-            border-radius: 8px;
-            padding: 10px;
+        .input-clash {
+            background-color: var(--clash-panel-border-dark);
+            border: 2px solid #2a4166;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px;
             font-size: 1rem;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
         }
-        @media (max-width: 639px) {
-            .input-mafia {
-                font-size: 0.9rem;
-                padding: 8px;
-            }
-        }
-
-        .input-mafia:focus {
+        .input-clash:focus {
             outline: none;
-            box-shadow: 0 0 10px rgba(200, 150, 50, 0.7);
+            border-color: var(--clash-gold);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 10px var(--clash-gold);
         }
-        .input-mafia.invalid {
-            border-color: #dc3545;
-            box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+        .input-clash.invalid {
+            border-color: var(--clash-red);
         }
-        .input-mafia:read-only {
-            background-color: #444;
+        .input-clash:read-only {
+            background-color: #314a70;
             cursor: default;
         }
-
-
+        
+        /* --- Option Buttons (Game Screen) --- */
         .option-btn {
-            background-color: rgba(50, 50, 50, 0.8);
-            border: 1px solid #c49730;
-            color: #e0e0e0;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-size: 0.9rem;
-            padding: 10px;
+            background: linear-gradient(to bottom, #7da8e8, #5c88c8);
+            border: 2px solid #2a4166;
+            box-shadow: 0 4px 0 #2e5185;
+            color: white;
+            transition: all 0.15s ease;
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        @media (min-width: 768px) {
-            .option-btn {
-                font-size: 1rem;
-                padding: 12px;
-            }
+        .option-btn:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2e5185;
         }
-
-        .option-btn:hover {
-            background-color: rgba(70, 70, 70, 0.9);
-            transform: scale(1.02);
+        .option-btn.correct {
+            background: linear-gradient(to bottom, #8fdd7d, var(--clash-green)) !important;
+            border-color: #2e6221 !important;
+            box-shadow: 0 4px 0 var(--clash-green-dark) !important;
+            transform: translateY(0) !important;
         }
-        .option-btn.correct { background-color: #28a745 !important; border-color: #1e7e34 !important; color: white !important; }
-        .option-btn.incorrect { background-color: #dc3545 !important; border-color: #b02a37 !important; color: white !important; }
-        .option-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .option-btn.incorrect {
+            background: linear-gradient(to bottom, #e87b7c, var(--clash-red)) !important;
+            border-color: #7c2425 !important;
+            box-shadow: 0 4px 0 var(--clash-red-dark) !important;
+            transform: translateY(0) !important;
+        }
+        .option-btn:disabled { opacity: 0.8; cursor: not-allowed; }
 
         .loader {
-            border: 8px solid #444;
-            border-top: 8px solid #c49730;
+            border: 8px solid #3a5b8a;
+            border-top: 8px solid var(--clash-gold);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             animation: spin 1s linear infinite;
         }
-        @media (min-width: 640px) {
-            .loader {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: #c49730; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a57c1a; }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 5px; border: 2px solid var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--clash-gold-dark); }
 
         .screen {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             padding: 10px; /* Base padding */
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.7s ease-in-out, visibility 0.7s;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow-y: auto;
+            z-index: 1; /* Ensure screens are on top of the background */
         }
-        @media (min-width: 640px) { /* sm */
-            .screen {
-                padding: 20px; /* Increased padding for larger screens */
-            }
-        }
-
-        #main-screen {
-            justify-content: flex-start;
-        }
-        #loading-screen {
-             justify-content: center;
-        }
-
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            position: relative;
-            z-index: 1;
-            overflow-y: auto;
-        }
+        @media (min-width: 640px) { .screen { padding: 20px; } }
+        #main-screen { justify-content: flex-start; }
+        #loading-screen { justify-content: center; }
+        .screen.active { opacity: 1; visibility: visible; position: relative; }
+        
         .screen-content-wrapper {
             width: 100%;
             max-width: 800px;
@@ -237,511 +293,155 @@
             flex-direction: column;
             flex-grow: 1;
         }
-        @media (min-width: 640px) {
-            .screen-content-wrapper {
-                 padding-bottom: 20px;
-            }
-        }
+        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
         #main-screen .screen-content-wrapper {
             justify-content: space-between;
-            min-height: calc(100vh - 20px); /* Base min-height */
-            padding-top: 60px; /* Initial padding for mobile to avoid user profile */
+            min-height: calc(100vh - 20px);
+            padding-top: 60px;
         }
-        @media (min-width: 640px) { /* sm */
-            #main-screen .screen-content-wrapper {
-                min-height: calc(100vh - 40px); /* Adjusted min-height for sm screens */
-                padding-top: 80px; /* Increased padding for sm screens */
-            }
-        }
-         @media (min-width: 768px) { /* md, user profile moves to top-right */
-            #main-screen .screen-content-wrapper {
-                padding-top: 20px; /* Reset padding-top as user profile is no longer in the way */
-            }
-        }
+        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
+        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
 
         /* User Profile Area Styling */
         #user-profile-area {
-            position: fixed;
-            z-index: 100;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px; /* IMPROVEMENT: Changed flex-start to center for better alignment */
             transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
         @media (max-width: 767px) { /* Mobile: Centered at top */
-            #user-profile-area {
-                top: 10px;
-                left: 50%;
-                transform: translateX(-50%) translateY(0);
-            }
-            #user-profile-area.profile-area-hidden {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-150%);
-            }
+            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
         }
         @media (min-width: 768px) { /* Desktop: Top right */
-            #user-profile-area {
-                top: 20px;
-                right: 20px; /* Changed from left: auto to ensure it's on the right */
-                left: auto;
-                transform: translateY(0);
-                align-items: center;
-            }
-            #user-profile-area.profile-area-hidden {
-                opacity: 0;
-                transform: translateY(-150%);
-            }
+            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); align-items: center; }
+            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
         }
 
         #user-info-box {
-            background-color: rgba(15, 15, 15, 0.85);
-            border: 1px solid #c49730;
-            border-radius: 10px;
-            padding: 8px 10px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-            width: max-content;
-            min-width: 0;
+            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
+            border: 4px solid #4a2f20;
+            border-top-color: #c89673;
+            border-left-color: #c89673;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            display: flex; flex-direction: row; align-items: center; gap: 8px;
+            width: max-content; min-width: 0;
         }
         @media (min-width: 768px) {
-            #user-info-box {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-                border-width: 2px;
-                border-radius: 12px;
-                padding: 12px 15px;
-                min-width: 180px;
-                max-width: 200px;
-                width: auto;
-            }
+            #user-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
         }
-
-
-        #user-info-box.hidden, #avatar-container.hidden {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-        }
-        @media (max-width: 767px) {
-            #user-info-box.hidden {
-                transform: translateX(-50%) translateY(-20px);
-            }
-        }
-
-        .user-info-item {
-            background-color: rgba(40, 40, 40, 0.7);
-            padding: 4px 7px;
-            border-radius: 6px;
-            border-left: 0px solid #c49730;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        
+        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
+        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
+        .user-info-item .value { font-size: 0.9em; font-weight: bold; }
         @media (min-width: 768px) {
-            .user-info-item {
-                padding: 6px 10px;
-                border-radius: 8px;
-                border-left-width: 3px;
-                display: block;
-            }
+            .user-info-item { display: block; }
+            .user-info-item .label { font-size: 0.9em; }
+            .user-info-item .value { font-size: 1.1em; }
         }
-
-        .user-info-item .label {
-            font-size: 0.7em;
-            color: #a0a0a0;
-            margin-bottom: 0;
-        }
-        @media (min-width: 768px) {
-            .user-info-item .label {
-                font-size: 0.85em;
-                margin-bottom: 1px;
-            }
-        }
-
-        .user-info-item .value {
-            font-size: 0.85em;
-            font-weight: bold;
-        }
-        @media (min-width: 768px) {
-            .user-info-item .value {
-                font-size: 1em;
-            }
-        }
-
-        #display-name-output-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        @media (max-width: 767px) {
-             #display-name-output-container {
-                flex-direction: row-reverse;
-            }
-        }
-
-        #edit-name-btn {
-            cursor: pointer;
-            font-size: 0.85em;
-            color: #c49730;
-            transition: color 0.3s ease;
-        }
-        #edit-name-btn:hover {
-            color: #d4a840;
-        }
-        @media (min-width: 768px) {
-            #edit-name-btn {
-                font-size: 0.95em;
-            }
-        }
-
-        #display-name-output-box .value {
-            color: #e0e0e0;
-            text-shadow: 0 0 5px rgba(200, 150, 50, 0.5);
-        }
-        @media (min-width: 768px) {
-            #display-name-output-box .value {
-                text-shadow: 0 0 7px rgba(200, 150, 50, 0.6);
-            }
-        }
-        #public-user-id-output-box .value {
-            color: #a0a0a0;
-            font-family: monospace;
-            font-size: 0.95em;
-        }
-        @media (min-width: 768px) {
-            #public-user-id-output-box .value {
-                font-size: 1em;
-            }
-        }
-
+        #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
+        #public-user-id-output-box .value { color: #eee; font-family: monospace; }
+        #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
+        #edit-name-btn:hover { color: #fff8a8; }
 
         #avatar-container {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 2px solid #c49730;
-            background-color: #333;
-            cursor: pointer;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
+            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
+            background-color: #333; cursor: pointer; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            flex-shrink: 0; /* Prevents avatar from shrinking */
         }
-        @media (min-width: 768px) {
-            #avatar-container {
-                width: 70px;
-                height: 70px;
-                margin-right: 10px;
-            }
-        }
+        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
+        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
+        
+        #avatar-suggestions-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
+        .avatar-suggestion-item { width: 100px; height: 100px; border-radius: 8px; border: 4px solid transparent; cursor: pointer; overflow: hidden; transition: border-color 0.3s ease, transform 0.2s ease; }
+        .avatar-suggestion-item:hover { transform: scale(1.05); }
+        .avatar-suggestion-item.selected { border-color: var(--clash-green); box-shadow: 0 0 10px var(--clash-green); }
 
-        #avatar-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        #main-screen-header { 
+            display: flex; justify-content: space-between; align-items: center; width: 100%; 
+            padding: 0.5rem; margin-bottom: 1rem; 
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            background-color: #6e4a31;
+            border-radius: 12px;
+            border: 4px solid #4a2f20;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
         }
-
-        #avatar-placeholder-icon {
-            font-size: 1.8rem;
-            color: #777;
-        }
-        @media (min-width: 768px) {
-            #avatar-placeholder-icon {
-                font-size: 2.2rem;
-            }
-        }
-
-        #avatar-suggestions-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .avatar-suggestion-item {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            overflow: hidden;
-            transition: border-color 0.3s ease, transform 0.2s ease;
-        }
-        .avatar-suggestion-item:hover {
-            border-color: #c49730;
-            transform: scale(1.05);
-        }
-        .avatar-suggestion-item.selected {
-            border-color: #28a745;
-            box-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
-        }
-
-        /* Main Screen Header Styling */
-        #main-screen-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding-top: 0.5rem; /* Reduced top padding for header itself */
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-         @media (min-width: 768px) { /* md */
-             #main-screen-header {
-                padding-top: 1rem; /* Adjust for desktop if needed */
-             }
-        }
-
-
+        
         #main-title {
             text-align: center;
             flex-grow: 1;
-            font-size: 2.25rem; /* text-4xl */
-            font-weight: bold;
-            color: #c49730;
-            text-shadow: 0 2px 2px rgba(0,0,0,0.8);
-            margin-right: auto; /* Pushes title towards center if icon is on left */
-            margin-left: auto; /* Pushes title towards center if icon is on right */
+            font-size: 3rem;
+            color: var(--clash-gold);
+            text-shadow: 
+                -3px -3px 0 var(--clash-brown-dark),  
+                 3px -3px 0 var(--clash-brown-dark),
+                -3px  3px 0 var(--clash-brown-dark),
+                 3px  3px 0 var(--clash-brown-dark),
+                 -3px 0 0 var(--clash-brown-dark),
+                 3px 0 0 var(--clash-brown-dark),
+                 0 -3px 0 var(--clash-brown-dark),
+                 0 3px 0 var(--clash-brown-dark),
+                 6px 6px 8px rgba(0,0,0,0.7);
         }
-        @media (min-width: 640px) { /* sm */
-            #main-title {
-                font-size: 3rem; /* text-5xl */
-            }
-        }
-        @media (min-width: 768px) { /* md */
-            #main-title {
-                font-size: 3.75rem; /* text-6xl */
-            }
-        }
+        @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
+        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
 
-        /* Developer Intro Icon Button - Header Position */
         #dev-intro-icon-btn-header {
-            background-color: transparent;
-            color: #c49730;
-            border: 2px solid #c49730;
-            padding: 0.5rem;
-            border-radius: 50%;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0; /* Prevent shrinking */
+            background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
+            padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
+            align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
         }
-        #dev-intro-icon-btn-header:hover {
-            background-color: rgba(196, 151, 48, 0.2);
-            color: #d4a840;
-            border-color: #d4a840;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            transform: scale(1.1);
-        }
-        #dev-intro-icon-btn-header svg {
-            width: 20px;
-            height: 20px;
-        }
-         @media (min-width: 640px) {
-            #dev-intro-icon-btn-header {
-                width: 44px;
-                height: 44px;
-                padding: 0.6rem;
-            }
-            #dev-intro-icon-btn-header svg {
-                width: 22px;
-                height: 22px;
-            }
-        }
-
-        /* Bottom Action Buttons Layout */
-        #main-screen-buttons-layout {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-top: auto;
-            padding-top: 1rem;
-        }
-
-        #top-action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            width: 100%;
-            padding-bottom: 5px;
-        }
-        @media (min-width: 640px) {
-            #top-action-buttons {
-                gap: 0.75rem;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-        }
-        @media (min-width: 768px) {
-            #top-action-buttons {
-                gap: 1rem;
-            }
-        }
-
-        #top-action-buttons .btn-mafia:not(#start-game-btn) {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-        }
-        @media (min-width: 640px) {
-            #top-action-buttons .btn-mafia:not(#start-game-btn) {
-                font-size: 0.85rem;
-                padding: 0.5rem 1rem;
-            }
-        }
-        @media (min-width: 768px) {
-            #top-action-buttons .btn-mafia:not(#start-game-btn) {
-                font-size: 0.9rem;
-                padding: 0.6rem 1.2rem;
-            }
-        }
-
-        #start-game-btn {
-             padding: 0.6rem 1.2rem !important;
-             font-size: 0.95rem !important;
-             order: 0;
-        }
-        @media (min-width: 640px) {
-            #start-game-btn {
-                padding: 0.7rem 1.5rem !important;
-                font-size: 1.05rem !important;
-            }
-        }
-        @media (min-width: 768px) {
-            #start-game-btn {
-                padding: 0.8rem 1.8rem !important;
-                font-size: 1.15rem !important;
-            }
-        }
-
-
+        #dev-intro-icon-btn-header:hover { background-color: #6c98d8; transform: scale(1.1); }
+        #dev-intro-icon-btn-header svg { width: 22px; height: 22px; }
+        
+        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
+        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
+        #start-game-btn { order: 0; }
+        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
+        
         #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
-            color: #dc3545;
-            font-size: 0.8rem;
-            text-align: right;
-            min-height: 1.2rem;
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
+            color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
-        @media (min-width: 640px) {
-            #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error {
-                font-size: 0.875rem;
-            }
-        }
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         /* Styles for Developers Panel */
-        #developers-panel-container {
-            background-color: rgba(10, 10, 10, 0.92);
-        }
+        #developers-panel-container { background-color: rgba(10, 10, 10, 0.85); }
         #developers-panel {
-            background: radial-gradient(circle at top center, rgba(45, 45, 55, 0.98), rgba(15, 15, 20, 0.99));
-            border: 2px solid #c49730;
-            box-shadow: 0 0 35px rgba(200, 150, 50, 0.65), 0 0 10px rgba(200, 150, 50, 0.4) inset;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 15px;
+            background-color: var(--clash-panel-bg);
+            border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
         }
         #close-developers-panel-btn {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 34px;
-            height: 34px;
-            background-color: rgba(196, 151, 48, 0.85);
-            color: #101010;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
-            line-height: 1;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 3px 7px rgba(0,0,0,0.5);
-            z-index: 10;
+            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
+            background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
+            border: 2px solid #7c2425;
+            box-shadow: 0 4px 0 #8f2a2b;
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
         }
-        #close-developers-panel-btn:hover {
-            background-color: #d4a840;
-            transform: scale(1.1) rotate(180deg);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-        }
+        #close-developers-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        #close-developers-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
 
         .developer-item {
-            background-color: rgba(28, 28, 35, 0.92);
-            padding: 1.2rem 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(196, 151, 48, 0.25);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-align: right;
-            margin-bottom: 1rem;
+            background-color: rgba(42, 65, 102, 0.9);
+            padding: 1rem 1.2rem; border-radius: 12px;
+            border: 2px solid rgba(157, 194, 255, 0.4);
         }
-        .developer-item:last-child {
-            margin-bottom: 0;
-        }
-        .developer-item:hover {
-            transform: translateY(-5px) scale(1.015);
-            box-shadow: 0 10px 28px rgba(196, 151, 48, 0.45);
-            border-color: rgba(196, 151, 48, 0.6);
-        }
-
-        .dev-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.6rem;
-            border-bottom: 1px solid rgba(196, 151, 48, 0.2);
-            padding-bottom: 0.6rem;
-        }
-        .dev-role-icon {
-            font-size: 1.7em;
-            color: #c49730;
-            margin-left: 10px;
-            width: 28px;
-            text-align: center;
-            line-height: 1;
-        }
-        .dev-role {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #e8e8e8;
-        }
-        .dev-username {
-            color: #efbe5a;
-            font-family: 'Vazirmatn', 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 1.25rem;
-            display: block;
-            margin-bottom: 0.5rem;
-            margin-top: 0.2rem;
-        }
-        .dev-description {
-            font-size: 0.9rem;
-            color: #b8b8b8;
-            line-height: 1.65;
-        }
-
+        .dev-header { border-bottom: 2px solid rgba(157, 194, 255, 0.3); }
+        .dev-role-icon { font-size: 1.7em; color: var(--clash-gold); margin-left: 10px; }
+        .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
+        .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
+        .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
     </style>
 </head>
 <body>
-    <div class="mafia-animated-bg"></div>
+    <!-- The old background is gone, body style handles the new one -->
 
     <div id="user-profile-area" class="hidden">
         <div id="avatar-container" class="hidden" title="تغییر آواتار">
@@ -749,14 +449,20 @@
         </div>
         <div id="user-info-box" class="hidden">
             <div id="display-name-output-box" class="user-info-item">
-                <div class="label">بازیکن:</div>
-                <div id="display-name-output-container">
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
+                    <span>بازیکن:</span>
+                </div>
+                <div id="display-name-output-container" class="flex items-center gap-2">
                     <span id="edit-name-btn" title="تغییر نام">✏️</span>
-                    <div id="display-name-output" class="value"></div>
+                    <div id="display-name-output" class="value clash-font"></div>
                 </div>
             </div>
             <div id="public-user-id-output-box" class="user-info-item">
-                <div class="label">شناسه کاربری:</div>
+                <div class="label flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
+                    <span>شناسه:</span>
+                </div>
                 <div id="public-user-id-output" class="value"></div>
             </div>
         </div>
@@ -764,168 +470,200 @@
 
     <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
         <div class="screen-content-wrapper justify-center">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-6 text-[#c49730]">بارگذاری بازی مافیا...</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
             <div class="loader mb-4"></div>
-            <p id="loading-message" class="text-lg sm:text-xl">در حال بررسی اتصال...</p>
+            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
         </div>
     </div>
 
     <div id="main-screen" class="screen">
-        <div class="screen-content-wrapper"> <!-- Increased padding-top here -->
+        <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
-                    <!-- Developer Intro Icon Button - Moved to the left (visual right in RTL) -->
                     <button id="dev-intro-icon-btn-header" title="معرفی توسعه دهندگان">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </button>
-                    <h1 id="main-title">شهر مافیا</h1>
-                     <!-- Spacer on the right (visual left in RTL) to balance the icon button -->
-                    <div style="width: 40px; flex-shrink: 0;"></div>
+                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                    <div style="width: 44px; flex-shrink: 0;"></div> <!-- Spacer -->
                 </div>
 
-                <div id="registration-form" class="mb-4 panel panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center text-[#c49730]">ثبت نام / ورود</h2>
-                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
-                    <p id="input-error-message" class=""></p>
+                <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
+                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
+                    <p id="input-error-message" class="hidden"></p>
 
                     <div class="mt-3 mb-2">
-                        <label for="user-id-display" class="block text-sm font-medium text-gray-300 mb-1">شناسه کاربری (5 رقمی):</label>
+                        <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
                         <div class="flex items-center gap-2">
-                            <input type="text" id="user-id-display" class="input-mafia w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="ابتدا بسازید">
-                            <button id="generate-user-id-btn" class="btn-mafia-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">ساخت شناسه</button>
+                            <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
+                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
                         </div>
-                        <p id="user-id-error-message" class=""></p>
+                        <p id="user-id-error-message" class="hidden"></p>
                     </div>
 
-                    <button id="register-btn" class="btn-mafia w-full p-2 sm:p-3 text-base sm:text-lg mt-3">ورود به شهر</button>
+                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
                 </div>
             </div>
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
-                <div id="top-action-buttons" class="">
-                    <button id="start-game-btn" class="btn-mafia">شروع بازی آنلاین</button>
-                    <button id="mafia-fact-btn" class="btn-mafia" style="order: 1;">دانستنی‌های مافیا ✨</button>
+                <div id="top-action-buttons">
+                    <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
+                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 1;">دانستنی‌ها ✨</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start"> <!-- Default padding-top for game screen -->
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-2 sm:p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-sm sm:text-base md:text-xl">
-                <button id="back-to-main-btn" class="btn-mafia-secondary">بازگشت ⟵</button>
-                <div>مرحله: <span id="stage-display" class="font-bold text-[#c49730]">1</span></div>
+        <div class="screen-content-wrapper justify-start">
+            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
+                <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
+                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
             </div>
 
-            <div id="question-container" class="panel panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[150px] sm:min-h-[200px] flex flex-col justify-center">
-                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed">سوال بارگذاری می‌شود...</p>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4"></div>
-                <p id="question-explanation" class="text-xs sm:text-sm mt-3 sm:mt-4 text-gray-400 text-center hidden"></p>
+            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
+                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
+                <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
             </div>
 
-            <div id="game-feedback" class="text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-8"></div>
+            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
             
-            <div id="ai-thinking-indicator" class="text-center mt-3 sm:mt-4 hidden">
+            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
                 <div class="loader inline-block"></div>
-                <p class="text-sm sm:text-base">دستیار هوش مصنوعی در حال فکر کردن است...</p>
+                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
             </div>
         </div>
     </div>
 
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-3 sm:p-4 panel-hidden z-50">
-        <div class="panel panel-visible p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
-            <h3 id="modal-title" class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#c49730]">توجه</h3>
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
+        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
+            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
             <div id="modal-content-dynamic">
-                <p id="modal-message" class="mb-2 sm:mb-3 text-sm sm:text-base"></p>
+                <p id="modal-message" class="mb-3 text-base"></p>
                 <div id="change-name-input-container" class="hidden mb-2">
-                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-mafia w-full mb-1 p-2 sm:p-3 text-base sm:text-lg" maxlength="20">
-                    <p id="change-name-error-message" class=""></p>
+                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
+                    <p id="change-name-error-message" class="hidden"></p>
                 </div>
                 <div id="avatar-generation-container" class="hidden">
-                    <button id="generate-avatar-btn" class="btn-mafia my-4">ساخت آواتار جدید با AI</button>
+                    <button id="generate-avatar-btn" class="btn-clash btn-clash-primary my-4 clash-font">ساخت آواتار جدید با AI</button>
                     <div id="avatar-ai-loading" class="my-4 hidden">
                         <div class="loader mx-auto"></div>
-                        <p class="mt-2 text-sm text-gray-400">در حال ساخت آواتارهای پیشنهادی... (ممکن است کمی طول بکشد)</p>
+                        <p class="mt-2 text-sm text-gray-300">در حال ساخت آواتارهای پیشنهادی...</p>
                     </div>
-                    <div id="avatar-suggestions-container">
-                        </div>
-                    <p id="avatar-error-message" class="text-red-400 text-sm mt-2"></p>
+                    <div id="avatar-suggestions-container"></div>
+                    <p id="avatar-error-message" class="text-red-300 text-sm mt-2"></p>
                 </div>
             </div>
-            <div id="modal-actions" class="flex justify-center gap-3 sm:gap-4 mt-4">
-                <button id="modal-confirm-btn" class="btn-mafia">تایید</button>
-                <button id="modal-cancel-btn" class="btn-mafia-secondary">لغو</button>
+            <div id="modal-actions" class="flex justify-center gap-4 mt-5">
+                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
+                <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font">لغو</button>
             </div>
         </div>
     </div>
-
+    
     <!-- Developers Panel -->
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 panel-hidden z-[51]">
-        <div id="developers-panel" class="panel p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative transform transition-all duration-500 ease-out">
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
+        <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
             <button id="close-developers-panel-btn">×</button>
-            <h3 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-[#c49730] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-120px)] sm:max-h-[calc(85vh-150px)] overflow-y-auto pr-2 sm:pr-3 pl-1">
+            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
+            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
                 <div class="developer-item">
-                    <div class="dev-header">
+                    <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💻</span>
                         <h4 class="dev-role">برنامه نویس ارشد</h4>
                     </div>
-                    <p class="dev-username">abolfazl1401</p>
+                    <p class="dev-username clash-font">abolfazl1401</p>
                     <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
                 </div>
-                <div class="developer-item">
-                    <div class="dev-header">
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">🎨</span>
                         <h4 class="dev-role">طراح گرافیک</h4>
                     </div>
-                    <p class="dev-username">Vahid</p>
+                    <p class="dev-username clash-font">Vahid</p>
                     <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
                 </div>
                 <div class="developer-item">
-                    <div class="dev-header">
+                    <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💡</span>
                         <h4 class="dev-role">ایده پرداز</h4>
                     </div>
-                    <p class="dev-username">Ali.k</p>
+                    <p class="dev-username clash-font">Ali.k</p>
                     <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
                 </div>
-                <div class="developer-item">
-                    <div class="dev-header">
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">☁️</span>
                         <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
-                    <p class="dev-username">Neda_Tech</p>
+                    <p class="dev-username clash-font">Neda_Tech</p>
                     <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
                 </div>
                 <div class="developer-item">
-                    <div class="dev-header">
+                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">⚙️</span>
                         <h4 class="dev-role">توسعه دهنده سرور</h4>
                     </div>
-                    <p class="dev-username">SinaCloud</p>
+                    <p class="dev-username clash-font">SinaCloud</p>
                     <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
                 </div>
                 <div class="developer-item">
-                    <div class="dev-header">
+                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">🚀</span>
                         <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
                     </div>
-                    <p class="dev-username">ParsaDevOps</p>
+                    <p class="dev-username clash-font">ParsaDevOps</p>
                     <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Audio Elements -->
+    <div id="audio-container" class="hidden">
+        <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
+        <audio id="sfx-panel-close" src="https://assets.mixkit.co/sfx/preview/mixkit-gate-latch-click-1929.mp3" preload="auto"></audio>
+        <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
+        <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
+        <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
+    </div>
 
     <script type="module">
+        // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- NEW: AUDIO MANAGER ---
+        const audioManager = {
+            sounds: {},
+            init() {
+                this.sounds.click = document.getElementById('sfx-click');
+                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
+                this.sounds.panelClose = document.getElementById('sfx-panel-close');
+                this.sounds.correct = document.getElementById('sfx-correct');
+                this.sounds.incorrect = document.getElementById('sfx-incorrect');
+                this.sounds.startGame = document.getElementById('sfx-start-game');
+
+                Object.values(this.sounds).forEach(sound => {
+                    if (sound) sound.volume = 0.4; // Adjust volume globally
+                });
+            },
+            play(soundName) {
+                const sound = this.sounds[soundName];
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.warn("Audio play failed:", e));
+                }
+            }
+        };
 
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
@@ -955,7 +693,7 @@
             isQuestionActive: false,
             isLoadingNextQuestion: false,
             avatarUrl: '',
-            seenQuestionHashes: new Set(), // <<--- NEW: To store hashes of seen questions
+            seenQuestionHashes: new Set(),
         };
 
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
@@ -979,13 +717,12 @@
         let modalCancelCallback = null;
         let selectedAvatarForConfirmation = null;
 
-        // <<--- NEW: Simple non-cryptographic hash function
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash |= 0; // Convert to 32bit integer
+                hash |= 0;
             }
             return `h${Math.abs(hash)}`;
         }
@@ -997,24 +734,35 @@
             screenElement.classList.add('active');
 
             const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
-            document.body.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
-            document.documentElement.style.overflow = isControllingOverflow ? 'hidden' : 'auto';
-
+            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            
             screenElement.scrollTop = 0;
             updateUI();
         }
-
+        
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
             if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
                 console.error("[showModal] Modal elements not found, cannot show modal.");
                 return;
             }
 
+            audioManager.play('panelOpen'); // Sound Effect
+
+            modalContainer.classList.remove('panel-hidden');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); // Reset animation
+            void modalContainer.offsetWidth; // Trigger reflow
+            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); // Start animation
+            
             modalTitle.textContent = title;
 
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
             avatarGenerationContainer.classList.add('hidden');
+            if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
+            if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
+            if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
+
 
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
@@ -1053,16 +801,17 @@
             } else {
                 modalCancelBtn.classList.add('hidden');
             }
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.classList.add('panel-visible');
         }
 
         function hideModal() {
             if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarGenerationContainer) {
                 return;
             }
+            
+            audioManager.play('panelClose'); // Sound Effect
             modalContainer.classList.add('panel-hidden');
-            modalContainer.classList.remove('panel-visible');
+            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
             modalConfirmCallback = null;
             modalCancelCallback = null;
             changeNameInputContainer.classList.add('hidden');
@@ -1100,8 +849,13 @@
 
         function showDevelopersPanel() {
             if (!developersPanelContainer) return;
+            audioManager.play('panelOpen'); // Sound Effect
+
             developersPanelContainer.classList.remove('panel-hidden');
-            developersPanelContainer.classList.add('panel-visible');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+            void developersPanelContainer.offsetWidth; // Trigger reflow
+            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
+
             if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
@@ -1109,8 +863,11 @@
 
         function hideDevelopersPanel() {
             if (!developersPanelContainer) return;
+            audioManager.play('panelClose'); // Sound Effect
+
             developersPanelContainer.classList.add('panel-hidden');
-            developersPanelContainer.classList.remove('panel-visible');
+            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
+
              if(userProfileArea && mainScreen && mainScreen.classList.contains('active') &&
                (!modalContainer || modalContainer.classList.contains('panel-hidden'))) {
                 userProfileArea.classList.remove('profile-area-hidden');
@@ -1135,6 +892,7 @@
             if (isAuthReady && gameState.displayName && gameState.publicUserId) {
                 showRegistration = false;
                 showActionButtons = true;
+                if(startGameBtn) startGameBtn.classList.add('breathing'); // Add breathing animation
                 if (mainScreen && mainScreen.classList.contains('active')) {
                     showUserInfoAndAvatar = true;
                 }
@@ -1142,10 +900,12 @@
                 showRegistration = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
             } else {
                 showRegistration = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
+                if(startGameBtn) startGameBtn.classList.remove('breathing');
             }
 
             if(registrationForm){
@@ -1167,17 +927,14 @@
             }
 
             if(userProfileArea){
-                const isAnyPanelVisible = (modalContainer && modalContainer.classList.contains('panel-visible')) ||
-                                        (developersPanelContainer && developersPanelContainer.classList.contains('panel-visible'));
+                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
+                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
                 if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                     userProfileArea.classList.remove('profile-area-hidden');
                     userProfileArea.classList.remove('hidden');
+                    // IMPROVEMENT: Avatar is now always shown if profile is visible. CSS handles layout.
                     if(avatarContainer){
-                        if(window.innerWidth >= 768) {
-                            avatarContainer.classList.remove('hidden');
-                        } else {
-                            avatarContainer.classList.add('hidden');
-                        }
+                        avatarContainer.classList.remove('hidden');
                     }
                     if(userInfoBox) userInfoBox.classList.remove('hidden');
 
@@ -1190,7 +947,7 @@
                 }
             }
         }
-
+        
         async function initFirebase() {
             try {
                 app = initializeApp(firebaseConfig);
@@ -1236,7 +993,7 @@
                 if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
             }
         }
-
+        
         async function loadUserData() {
             if (!currentUserId || !db) {
                 console.log("Cannot load user data: no currentUserId or db connection.");
@@ -1256,7 +1013,6 @@
                     gameState.publicUserId = data.publicUserId || "";
                     gameState.currentStage = data.currentStage || 1;
                     gameState.avatarUrl = data.avatarUrl || '';
-                    // <<--- MODIFIED: Load seen questions and convert to a Set for efficient lookup
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
                     console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
@@ -1285,7 +1041,6 @@
                     publicUserId: gameState.publicUserId,
                     currentStage: gameState.currentStage,
                     avatarUrl: gameState.avatarUrl,
-                    // <<--- MODIFIED: Convert Set to Array for Firestore storage
                     seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
@@ -1295,10 +1050,9 @@
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
-
-        // --- Gemini API Functions ---
+        
         const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash"; // Using a slightly more advanced model for better quality
+        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
         const IMAGEN_MODEL = "imagen-3.0-generate-002";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
@@ -1384,9 +1138,7 @@
                 if(avatarAiLoading) avatarAiLoading.classList.add('hidden');
             }
         }
-
-        // --- Game Logic Functions ---
-
+        
         async function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
@@ -1400,7 +1152,6 @@
             let questionData = null;
 
             while (attempts < maxAttempts) {
-                // <<--- NEW: Determine difficulty based on stage
                 let difficulty = "آسان";
                 if (gameState.currentStage > 20) {
                     difficulty = "بسیار سخت";
@@ -1409,24 +1160,19 @@
                 } else if (gameState.currentStage > 5) {
                     difficulty = "متوسط";
                 }
-
-                // <<--- NEW: Professional and enhanced prompt
+                
                 const prompt = `
                 شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
-                
                 وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
                 سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
-                
                 موضوعات پیشنهادی (برای تنوع):
                 - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
                 - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
                 - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
                 - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
-                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا" (مانند دکتر لکتر، روانپزشک، مذاکره‌کننده، ناتاشا).
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
                 - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
-                
-                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده و سوالی طرح کن که دانش کاربر را به چالش بکشد.
-                
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
                 خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
                 ساختار JSON باید دقیقا به این صورت باشد:
                 {
@@ -1443,14 +1189,14 @@
                     const questionHash = simpleHash(data.question);
                     if (!gameState.seenQuestionHashes.has(questionHash)) {
                         questionData = data;
-                        break; // Found a new, unique question
+                        break;
                     } else {
                         console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
                         attempts++;
                     }
                 } else {
                     console.error("Invalid question data structure received from AI:", data);
-                    attempts++; // Count as a failed attempt
+                    attempts++;
                 }
             }
 
@@ -1488,7 +1234,7 @@
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
         }
-
+        
         async function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
             gameState.isQuestionActive = false;
@@ -1502,11 +1248,11 @@
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
             if (selectedIndex === correctAnswerIndex) {
+                audioManager.play('correct'); // Sound effect
                 selectedOptionButton.classList.add('correct');
                 gameFeedback.textContent = "پاسخ صحیح!";
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-green-400';
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
                 
-                // <<--- MODIFIED: Add question hash to seen list and increment stage
                 const questionHash = simpleHash(question);
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
@@ -1514,6 +1260,7 @@
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
+                audioManager.play('incorrect'); // Sound effect
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
@@ -1532,9 +1279,8 @@
                 } else {
                     gameFeedback.textContent = "پاسخ اشتباه!";
                 }
-                gameFeedback.className = 'text-center text-base sm:text-lg font-semibold my-3 sm:my-4 h-auto text-red-400';
-                // Note: We do NOT add the hash to the seen list on wrong answers, so they might see it again to learn.
-                // Or we could add it to prevent farming wrong answers, but for now, let's keep it this way.
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
+                
                 setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
             }
             if (explanation && questionExplanation) {
@@ -1542,11 +1288,11 @@
                 questionExplanation.classList.remove('hidden');
             }
         }
-
+        
         async function generateAndDisplayAvatars() {
             if(!avatarAiLoading || !avatarSuggestionsContainer || !modalConfirmBtn) return;
             avatarAiLoading.classList.remove('hidden');
-            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons";
+            const prompt = "Cool mafia character avatar, portrait, dark theme, high detail, cinematic lighting, no text, no weapons, cartoonish, stylized, game art style";
             const suggestions = await callImagenAPI(prompt, 4);
 
             avatarSuggestionsContainer.innerHTML = '';
@@ -1561,6 +1307,7 @@
                     img.alt = "پیشنهاد آواتار";
                     imgWrapper.appendChild(img);
                     imgWrapper.addEventListener('click', () => {
+                        audioManager.play('click'); // Sound effect
                         const currentSelected = avatarSuggestionsContainer.querySelector('.selected');
                         if (currentSelected) {
                             currentSelected.classList.remove('selected');
@@ -1571,7 +1318,7 @@
                     });
                     avatarSuggestionsContainer.appendChild(imgWrapper);
                 });
-                modalConfirmBtn.textContent = "انتخاب این آواتار";
+                modalConfirmBtn.textContent = "انتخاب";
                 modalConfirmBtn.disabled = true;
             } else {
                 if(avatarErrorMessage) avatarErrorMessage.textContent = "متاسفانه نتوانستیم آواتاری بسازیم. دوباره تلاش کنید.";
@@ -1579,7 +1326,7 @@
                 modalConfirmBtn.disabled = true;
             }
         }
-
+        
         async function confirmAvatarSelection() {
             if (selectedAvatarForConfirmation) {
                 gameState.avatarUrl = selectedAvatarForConfirmation;
@@ -1605,20 +1352,24 @@
 
             if (trimmedName === '') {
                 errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
+                errorElement.classList.remove('hidden');
                 inputElement.classList.add('invalid');
                 return null;
             }
             if (trimmedName.length < 3) {
                 errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
                 inputElement.classList.add('invalid');
                 return null;
             }
             if (trimmedName.length > 20) {
                 errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
+                errorElement.classList.remove('hidden');
                 inputElement.classList.add('invalid');
                 return null;
             }
             errorElement.textContent = '';
+            errorElement.classList.add('hidden');
             inputElement.classList.remove('invalid');
             return trimmedName;
         }
@@ -1629,7 +1380,10 @@
             if (!newName) return;
 
             if (newName === gameState.displayName) {
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
                 if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
@@ -1652,7 +1406,7 @@
                 showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
             }
         }
-
+        
         function generateAlphanumericPublicUserId(length = 5) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = '';
@@ -1662,8 +1416,15 @@
             }
             return result;
         }
-
+        
         function setupEventListeners() {
+            // Add a global click sound listener for all clash buttons
+            document.body.addEventListener('click', (event) => {
+                if (event.target.closest('.btn-clash:not(:disabled)')) {
+                    audioManager.play('click');
+                }
+            });
+
             if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
             if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
 
@@ -1684,10 +1445,9 @@
                     const newPublicId = generateAlphanumericPublicUserId();
                     if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
                     gameState.publicUserId = newPublicId;
-                    if (userIdErrorMessage) userIdErrorMessage.textContent = '';
+                    if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
                 });
             }
-
 
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
@@ -1696,7 +1456,7 @@
                 newDisplayNameInput.addEventListener('keydown', (event) => {
                     if (event.key === 'Enter') {
                         event.preventDefault();
-                        if (modalConfirmCallback === handleChangeDisplayName && modalTitle && modalTitle.textContent.includes("تغییر نام نمایشی")) {
+                         if (modalConfirmCallback === handleChangeDisplayName) {
                             if(modalConfirmBtn) modalConfirmBtn.click();
                         }
                     }
@@ -1709,14 +1469,13 @@
 
                     let isPublicIdValid = false;
                     if (!gameState.publicUserId) {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
+                        if(userIdErrorMessage) {
+                            userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
+                            userIdErrorMessage.classList.remove('hidden');
+                        }
                         isPublicIdValid = false;
-                    } else if (userIdDisplayInput && userIdDisplayInput.value !== gameState.publicUserId) {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "خطا: شناسه کاربری نمایش داده شده با شناسه ساخته شده مغایرت دارد.";
-                        isPublicIdValid = false;
-                    }
-                    else {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "";
+                    } else {
+                        if(userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
                         isPublicIdValid = true;
                     }
 
@@ -1732,14 +1491,8 @@
             if (editNameBtn) {
                 editNameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
-                    showModal(
-                        "تغییر نام نمایشی",
-                        "تغییر نام در این بازی رایگان است.",
-                        "تغییر نام",
-                        "لغو",
-                        handleChangeDisplayName,
-                        hideModal,
-                        "changeName"
+                    showModal( "تغییر نام", "تغییر نام در این بازی رایگان است.", "تغییر", "لغو",
+                        handleChangeDisplayName, hideModal, "changeName"
                     );
                 });
             }
@@ -1748,14 +1501,8 @@
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
                     selectedAvatarForConfirmation = null;
-                    showModal(
-                        "تغییر آواتار",
-                        "",
-                        "انتخاب این آواتار",
-                        "لغو",
-                        confirmAvatarSelection,
-                        hideModal,
-                        "avatar"
+                    showModal( "تغییر آواتار", "", "انتخاب", "لغو",
+                        confirmAvatarSelection, hideModal, "avatar"
                     );
                     if(modalConfirmBtn) modalConfirmBtn.disabled = true;
                 });
@@ -1765,30 +1512,27 @@
                 generateAvatarBtn.addEventListener('click', generateAndDisplayAvatars);
             }
 
-            const allActionButtons = [startGameBtn, mafiaFactBtn, devIntroBtnHeader].filter(btn => btn !== null);
+            // BUG FIX: devIntroBtnHeader is removed from this list, so it's not blocked by the auth check.
+            const allActionButtons = [startGameBtn, mafiaFactBtn].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
                         event.stopPropagation();
-                        showModal(
-                            "ثبت نام لازم است",
-                            "برای دسترسی به این بخش، ابتدا باید با وارد کردن نام نمایشی و ساخت شناسه کاربری، ثبت نام خود را کامل کنید.",
-                            "باشه",
-                            null,
-                            () => hideModal()
+                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.",
+                            "باشه", null, () => hideModal()
                         );
                     }
                 }, true);
             });
 
-
             if (startGameBtn) {
                 startGameBtn.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
+                    audioManager.play('startGame'); // Special Sound
                     showModal(
                         "شروع بازی",
-                        "برای تجربه بهتر بازی لطفا از فیلترشکن در کشور ایالات‌متحده (آمریکا) استفاده کنید.",
-                        "متوجه شدم، ادامه بده", null,
+                        "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
+                        "ادامه", null,
                         () => {
                             hideModal();
                             if(gameScreen) showScreen(gameScreen);
@@ -1804,12 +1548,11 @@
                     generateMafiaFact();
                 });
             }
-
+            
+            // BUG FIX: The event listener for the developers button now works without needing the user to be logged in.
             if (devIntroBtnHeader) {
                 devIntroBtnHeader.addEventListener('click', () => {
-                    if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                        showDevelopersPanel();
-                    }
+                    showDevelopersPanel();
                 });
             }
 
@@ -1819,16 +1562,9 @@
 
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
-                    try {
-                        await saveUserData();
-                        gameState.currentQuestionData = null;
-                        if(mainScreen) {
-                            showScreen(mainScreen);
-                        }
-                    }
-                    catch (e) {
-                        console.error("Error in backToMainBtn click listener (game screen):", e);
-                    }
+                    await saveUserData();
+                    gameState.currentQuestionData = null;
+                    if(mainScreen) showScreen(mainScreen);
                 });
             }
 
@@ -1836,7 +1572,7 @@
                 updateUI();
             });
         }
-
+        
         async function initializeGame() {
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
@@ -1885,9 +1621,11 @@
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
+            audioManager.init(); // Initialize the audio manager
+
             if(userProfileArea) userProfileArea.classList.add('hidden');
 
-            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال به اینترنت...";
+            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
             if (!navigator.onLine) {
                 showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
                     hideModal();
@@ -1895,7 +1633,7 @@
                 });
                 return;
             }
-            if(loadingMessage) loadingMessage.textContent = "در حال آماده سازی اولین ورود...";
+            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
 
             try {
                 setupEventListeners();
