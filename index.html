@@ -5,21 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بازی مافیا - نسخه کلش</title>
 
-    <!-- START: SCRIPT DETECT DEVICE AND REDIRECT -->
-    <!-- این اسکریپت برای تشخیص دستگاه کاربر اضافه شده است -->
+    <!-- START: SCRIPT DETEKSI PERANGKAT DAN REDIRECT -->
     <script>
         (function() {
-            // این عبارت باقاعده (Regex) رشته User Agent مرورگر را برای کلمات کلیدی رایج موبایل بررسی می‌کند
-            const isMobile = /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            // این تابع بررسی می‌کند که آیا کاربر از یک دستگاه موبایل استفاده می‌کند یا خیر
+            // این کار با جستجوی کلمات کلیدی رایج در رشته User Agent مرورگر انجام می‌شود.
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-            // اگر دستگاه موبایل تشخیص داده شود، کاربر به صفحه مخصوص موبایل هدایت می‌شود
+            // اگر دستگاه، موبایل تشخیص داده شد
             if (isMobile) {
-                window.location.href = 'indroidUI.html';
+                // برای جلوگیری از حلقه ریدایرکت (redirect loop)، چک می‌کنیم که در حال حاضر در صفحه موبایل نباشیم
+                if (window.location.pathname.toLowerCase().indexOf('indroidui.htm') === -1) {
+                    // کاربر را به صفحه طراحی شده برای موبایل منتقل می‌کنیم
+                    window.location.href = 'indroidUI.htm';
+                }
             }
-            // در غیر این صورت (اگر دسکتاپ باشد)، اسکریپت کاری انجام نمی‌دهد و این صفحه به طور عادی بارگذاری می‌شود
+            // در غیر این صورت (اگر دسکتاپ یا لپ‌تاپ بود)، هیچ کاری انجام نمی‌شود و همین صفحه بارگذاری می‌شود.
         })();
     </script>
-    <!-- END: SCRIPT DETECT DEVICE AND REDIRECT -->
+    <!-- END: SCRIPT DETEKSI PERANGKAT -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
