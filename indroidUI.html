@@ -50,14 +50,18 @@
             100% { transform: rotate(360deg); }
         }
 
+        html, body {
+            height: 100%; /* Ensure html and body take full height */
+        }
+        
         body {
             font-family: 'Vazirmatn', sans-serif;
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow: hidden; /* Prevent body scroll */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
+            /* BUG FIX: Removed 'overflow: hidden' which prevented keyboard on mobile */
         }
 
         /* Animated Background Layer */
@@ -123,7 +127,7 @@
             border-radius: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.1s ease-out; /* Faster transition */
+            transition: all 0.1s ease-out;
             cursor: pointer;
             position: relative;
             white-space: nowrap;
@@ -140,7 +144,6 @@
             transform: translateY(0) !important;
         }
 
-        /* --- Primary Button (Gold) --- */
         .btn-clash-primary {
             background: linear-gradient(to bottom, #ffe47a, var(--clash-gold));
             border: 2px solid var(--clash-brown-dark);
@@ -266,7 +269,6 @@
             z-index: 1;
         }
         @media (min-width: 640px) { .screen { padding: 20px; } }
-        #main-screen { justify-content: flex-start; }
         #loading-screen { justify-content: center; }
         .screen.active { opacity: 1; visibility: visible; position: relative; }
         
@@ -285,7 +287,7 @@
         #main-screen .screen-content-wrapper {
             justify-content: space-between;
             min-height: calc(100vh - 20px);
-            padding-top: 60px; /* Space for profile area on mobile */
+            padding-top: 80px; /* Space for profile area on mobile */
         }
         @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
 
@@ -293,30 +295,25 @@
             position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px;
             transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        /* Mobile: Centered at top */
         @media (max-width: 767px) {
-            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
+            #user-profile-area { top: 15px; left: 50%; transform: translateX(-50%) translateY(0); }
             #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
         }
-        /* Desktop: Top right */
         @media (min-width: 768px) {
             #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); }
             #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
         }
 
         #user-info-box {
-            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
+            background-color: rgba(91, 58, 41, 0.85);
             border: 4px solid #4a2f20;
             border-top-color: #c89673;
             border-left-color: #c89673;
             border-radius: 12px;
             padding: 10px 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: column; gap: 6px; /* Vertical stacking for mobile */
+            display: flex; flex-direction: column; gap: 6px;
             width: max-content; min-width: 160px;
-        }
-        @media (min-width: 768px) {
-            #user-info-box { gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
         }
         #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
         
@@ -352,7 +349,7 @@
         #main-title {
             text-align: center;
             flex-grow: 1;
-            font-size: 2.8rem; /* smaller for mobile */
+            font-size: 2.8rem;
             color: var(--clash-gold);
             text-shadow: 
                 -2px -2px 0 var(--clash-brown-dark), 2px -2px 0 var(--clash-brown-dark),
@@ -373,21 +370,12 @@
         
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
-        #start-game-btn { order: 0; }
-        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
         
         #input-error-message, #user-id-error-message, #change-name-error-message, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
         .hidden { display: none !important; }
 
-        #developers-panel-container, #leaderboard-panel-container { background-color: rgba(10, 10, 10, 0.85); }
-        #developers-panel, #leaderboard-panel {
-            background-color: var(--clash-panel-bg);
-            border: 4px solid var(--clash-panel-border-dark);
-            border-top-color: var(--clash-panel-border);
-            border-left-color: var(--clash-panel-border);
-        }
         #close-developers-panel-btn, #close-leaderboard-panel-btn {
             position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
@@ -399,15 +387,16 @@
         #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
         
         .developer-item {
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 1rem 1.2rem; border-radius: 12px;
+            background-color: rgba(42, 65, 102, 0.9); padding: 1rem; border-radius: 12px;
             border: 2px solid rgba(157, 194, 255, 0.4);
         }
+        .dev-header { border-bottom: 2px solid rgba(157, 194, 255, 0.3); }
+        .dev-role-icon { font-size: 1.7em; color: var(--clash-gold); margin-left: 10px; }
+        .dev-role { font-size: 1.15rem; font-weight: 700; }
+        .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
+        .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; }
         
-        #leaderboard-list {
-            space-y-2; /* Using Tailwind class equivalent */
-            max-height-[calc(85vh-150px)]; overflow-y-auto; padding-right: 0.75rem; padding-left: 0.25rem;
-        }
+        #leaderboard-list { max-height: calc(85vh - 150px); overflow-y: auto; padding-right: 0.75rem; padding-left: 0.25rem; }
         .leaderboard-item {
             display: flex; align-items: center; background-color: rgba(42, 65, 102, 0.9);
             padding: 0.75rem; border-radius: 12px; border: 2px solid rgba(157, 194, 255, 0.4);
@@ -429,25 +418,13 @@
         }
         .leaderboard-stage { font-size: 0.9rem; color: #d0e0ff; font-weight: bold; }
 
-        /* --- NEW/MODIFIED STYLES for Avatar Link --- */
         #avatar-preview-container {
-            margin: 1rem auto;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--clash-gold);
-            overflow: hidden;
-            background-color: var(--clash-panel-border-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            margin: 1rem auto; width: 150px; height: 150px; border-radius: 50%;
+            border: 4px solid var(--clash-gold); overflow: hidden;
+            background-color: var(--clash-panel-border-dark); display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
-        #avatar-preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        #avatar-preview-image { width: 100%; height: 100%; object-fit: cover; }
 
     </style>
 </head>
@@ -459,7 +436,7 @@
         <div id="user-info-box" class="hidden">
             <div id="display-name-output-box" class="user-info-item">
                 <div class="label flex items-center gap-1 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"/></svg>
                     <span>بازیکن:</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -469,7 +446,7 @@
             </div>
             <div id="public-user-id-output-box" class="user-info-item">
                 <div class="label flex items-center gap-1 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"/></svg>
                     <span>شناسه:</span>
                 </div>
                 <div id="public-user-id-output" class="value"></div>
@@ -477,7 +454,7 @@
         </div>
     </div>
 
-    <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
+    <div id="loading-screen" class="screen active flex-col items-center justify-center text-center">
         <div class="screen-content-wrapper justify-center">
             <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
             <div class="loader mb-4"></div>
@@ -487,39 +464,37 @@
 
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
-            <div>
-                <div id="main-screen-header">
-                    <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
-                    </button>
-                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M17 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </button>
-                </div>
+            <div id="main-screen-header">
+                <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
+                </button>
+                <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M17 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </button>
+            </div>
 
-                <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
-                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
-                    <p id="input-error-message" class="hidden"></p>
+            <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
+                <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
+                <p id="input-error-message" class="hidden"></p>
 
-                    <div class="mt-3 mb-2">
-                        <label for="user-id-display" class="block text-sm font-medium mb-1 text-right">شناسه کاربری (5 رقمی):</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="user-id-display" class="input-clash w-full p-3 text-lg text-center" readonly placeholder="بساز!">
-                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-4 py-3 text-sm clash-font">ساخت شناسه</button>
-                        </div>
-                        <p id="user-id-error-message" class="hidden"></p>
+                <div class="mt-3 mb-2">
+                    <label for="user-id-display" class="block text-sm font-medium mb-1 text-right">شناسه کاربری (5 رقمی):</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="user-id-display" class="input-clash w-full p-3 text-lg text-center" readonly placeholder="بساز!">
+                        <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-4 py-3 text-sm clash-font">ساخت شناسه</button>
                     </div>
-
-                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-3 text-lg mt-4 clash-font">ورود به شهر</button>
+                    <p id="user-id-error-message" class="hidden"></p>
                 </div>
+
+                <button id="register-btn" class="btn-clash btn-clash-primary w-full p-3 text-lg mt-4 clash-font">ورود به شهر</button>
             </div>
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
                 <div id="top-action-buttons">
                     <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
-                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 1;">دانستنی‌ها ✨</button>
+                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font">دانستنی‌ها ✨</button>
                 </div>
             </div>
         </div>
@@ -556,20 +531,16 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- === AVATAR URL UI === -->
                 <div id="avatar-url-ui-container" class="hidden">
                     <div class="flex items-center gap-2 my-4">
                         <input type="url" id="avatar-url-input" placeholder="لینک مستقیم عکس را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr;">
                         <button id="check-avatar-url-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 clash-font">بررسی</button>
                     </div>
-                    
                     <div id="avatar-preview-container" class="hidden">
                         <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
                     </div>
-
                     <p id="avatar-error-message" class="hidden"></p>
                 </div>
-                <!-- === END OF AVATAR URL UI === -->
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -582,8 +553,35 @@
         <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
             <button id="close-developers-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
-            <div class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Developer items -->
+            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💻</span><h4 class="dev-role">برنامه نویس ارشد</h4>
+                    </div>
+                    <p class="dev-username clash-font">abolfazl1401</p>
+                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
+                </div>
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🎨</span><h4 class="dev-role">طراح گرافیک</h4>
+                    </div>
+                    <p class="dev-username clash-font">Vahid</p>
+                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
+                </div>
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">💡</span><h4 class="dev-role">ایده پرداز</h4>
+                    </div>
+                    <p class="dev-username clash-font">Ali.k</p>
+                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
+                </div>
+                 <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">☁️</span><h4 class="dev-role">توسعه دهنده سرور</h4>
+                    </div>
+                    <p class="dev-username clash-font">Neda_Tech</p>
+                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -592,9 +590,7 @@
         <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
             <button id="close-leaderboard-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
-            <div id="leaderboard-list" class="space-y-2">
-                <!-- Leaderboard items will be populated here -->
-            </div>
+            <div id="leaderboard-list" class="space-y-2"></div>
         </div>
     </div>
     
@@ -608,7 +604,6 @@
     </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (MOBILE OPTIMIZED & AVATAR URL) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -647,14 +642,9 @@
         let app, auth, db, currentUserId = null, isAuthReady = false;
 
         const gameState = {
-            displayName: '',
-            publicUserId: '',
-            currentStage: 1,
-            avatarUrl: '',
-            seenQuestionHashes: new Set(),
-            currentQuestionData: null,
-            isQuestionActive: false,
-            isLoadingNextQuestion: false,
+            displayName: '', publicUserId: '', currentStage: 1, avatarUrl: '',
+            seenQuestionHashes: new Set(), currentQuestionData: null,
+            isQuestionActive: false, isLoadingNextQuestion: false,
         };
 
         let loadingScreen, mainScreen, gameScreen, registrationForm, displayNameInput,
@@ -669,7 +659,6 @@
             closeDevelopersPanelBtn, leaderboardIconBtnHeader, leaderboardPanelContainer,
             leaderboardList, closeLeaderboardPanelBtn;
         
-        // --- Avatar URL UI Elements ---
         let avatarUrlUiContainer, avatarUrlInput, checkAvatarUrlBtn,
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
@@ -677,11 +666,8 @@
         let validatedAvatarUrl = null;
 
         function domReady(fn) {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', fn);
-            } else {
-                fn();
-            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+            else fn();
         }
         
         function getDOMElements() {
@@ -727,8 +713,6 @@
             leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
             leaderboardList = document.getElementById('leaderboard-list');
             closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
-
-            // Avatar URL elements
             avatarUrlUiContainer = document.getElementById('avatar-url-ui-container');
             avatarUrlInput = document.getElementById('avatar-url-input');
             checkAvatarUrlBtn = document.getElementById('check-avatar-url-btn');
@@ -740,7 +724,6 @@
         function showScreen(screenElement) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
-            document.body.style.overflowY = (screenElement.id === 'loading-screen') ? 'hidden' : 'auto';
             screenElement.scrollTop = 0;
             updateUI();
         }
@@ -899,19 +882,14 @@
             if (!currentUserId) return;
             const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
             const privateData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
-                lastUpdated: serverTimestamp()
+                displayName: gameState.displayName, publicUserId: gameState.publicUserId,
+                currentStage: gameState.currentStage, avatarUrl: gameState.avatarUrl,
+                seenQuestionHashes: Array.from(gameState.seenQuestionHashes), lastUpdated: serverTimestamp()
             };
             const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${currentUserId}`);
             const publicData = {
-                displayName: gameState.displayName,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                lastUpdated: serverTimestamp()
+                displayName: gameState.displayName, currentStage: gameState.currentStage,
+                avatarUrl: gameState.avatarUrl, lastUpdated: serverTimestamp()
             };
             try {
                 await Promise.all([
@@ -1039,7 +1017,7 @@
             }
         }
         
-        async function previewAvatarFromUrl() {
+        function previewAvatarFromUrl() {
             const url = avatarUrlInput.value.trim();
             validatedAvatarUrl = null;
             avatarPreviewContainer.classList.add('hidden');
@@ -1149,6 +1127,7 @@
                 gameState.publicUserId = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('').sort(() => 0.5 - Math.random()).slice(0, 5).join('');
                 userIdDisplayInput.value = gameState.publicUserId;
                 userIdErrorMessage.classList.add('hidden');
+                if(registerBtn) registerBtn.focus(); // UX Improvement
             });
             
             registerBtn.addEventListener('click', async () => {
