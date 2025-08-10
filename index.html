@@ -618,20 +618,6 @@
                         </div>
 
                         <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
-                        <p id="toggle-to-login" class="text-center mt-4 text-sm text-yellow-200 cursor-pointer hover:underline">حساب کاربری دارید؟ وارد شوید</p>
-                    </div>
-
-                    <!-- Login Form (Initially Hidden) -->
-                    <div id="login-form" class="hidden">
-                        <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ورود به حساب</h2>
-                        <label for="login-user-id-input" class="block mb-1">
-                            <span class="text-sm font-medium mb-1 inline-block">شناسه کاربری (5 رقمی):</span>
-                            <input type="text" id="login-user-id-input" placeholder="شناسه خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font text-center" maxlength="5" style="text-transform: uppercase;">
-                        </label>
-                        <p id="login-error-message" class="hidden"></p>
-
-                        <button id="login-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود</button>
-                        <p id="toggle-to-register" class="text-center mt-4 text-sm text-yellow-200 cursor-pointer hover:underline">حساب جدید می‌سازید؟ ثبت نام</p>
                     </div>
                 </div>
             </div>
@@ -676,7 +662,7 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- === NEW: AVATAR UPLOAD UI === -->
+                <!-- === AVATAR UPLOAD UI === -->
                 <div id="avatar-upload-ui-container" class="hidden">
                     <input type="file" id="avatar-file-input" class="hidden" accept="image/png, image/jpeg, image/gif">
                     <button id="select-avatar-file-btn" class="btn-clash btn-clash-secondary my-4 clash-font">انتخاب فایل از گالری</button>
@@ -788,8 +774,8 @@
     <script type="module">
         // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         // --- NEW: Import Firebase Storage modules ---
         import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
@@ -837,9 +823,6 @@
         let storage; // <-- NEW: Firebase Storage instance
         let currentUserId = null;
         let isAuthReady = false;
-        // This is a special ID for users who log in with their public ID.
-        // It helps `saveUserData` know which document to update.
-        let recoveredUserId = null; 
 
         const gameState = {
             displayName: '',
@@ -852,11 +835,10 @@
             seenQuestionHashes: new Set(),
         };
 
-        // --- UPDATED: Added new element IDs for login form ---
+        // --- UPDATED: Removed login form element variables ---
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
             authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
-            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage, toggleToLogin,
-            loginForm, loginUserIdInput, loginBtn, loginErrorMessage, toggleToRegister,
+            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
             publicUserIdOutput,
             editNameBtn,
@@ -1161,10 +1143,7 @@
                     if (user) {
                         console.log("User is signed in:", user.uid);
                         currentUserId = user.uid;
-                        // Only load user data automatically if we haven't just recovered a profile
-                        if (!recoveredUserId) {
-                           await loadUserData(user.uid);
-                        }
+                        await loadUserData(user.uid);
                     } else {
                         console.log("User is signed out. Attempting to sign in.");
                         await signInAnonymously(auth);
@@ -1172,7 +1151,6 @@
                         gameState.publicUserId = '';
                         gameState.avatarUrl = '';
                         gameState.seenQuestionHashes.clear();
-                        recoveredUserId = null;
                     }
                     isAuthReady = true;
                     updateUI();
@@ -1222,9 +1200,8 @@
         }
 
         async function saveUserData() {
-            // If a user logged in, we save data to their original UID.
-            // Otherwise, we use the current anonymous session UID.
-            const userIdToSave = recoveredUserId || currentUserId;
+            // Data is always saved to the current user's session ID.
+            const userIdToSave = currentUserId;
             if (!userIdToSave || !db) return;
             
             const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToSave}/mafiaGameData/profile`);
@@ -1240,7 +1217,7 @@
             const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userIdToSave}`);
             const publicData = {
                 displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId, // CRITICAL: Added for login functionality
+                publicUserId: gameState.publicUserId,
                 currentStage: gameState.currentStage,
                 avatarUrl: gameState.avatarUrl,
                 lastUpdated: serverTimestamp()
@@ -1525,7 +1502,7 @@
 
         // --- NEW: Function to upload the selected and resized avatar ---
         async function uploadAndSaveAvatar() {
-            const userIdToSave = recoveredUserId || currentUserId;
+            const userIdToSave = currentUserId;
             if (!selectedAvatarFile || !userIdToSave || !storage) {
                 avatarErrorMessage.textContent = 'فایلی برای آپلود انتخاب نشده است.';
                 avatarErrorMessage.classList.remove('hidden');
@@ -1716,66 +1693,6 @@
             leaderboardList.innerHTML = listHtml;
         }
         
-        async function handleLogin() {
-            if (!loginUserIdInput || !loginErrorMessage) return;
-            const publicIdToLogin = loginUserIdInput.value.trim().toUpperCase();
-
-            if (publicIdToLogin.length !== 5) {
-                loginErrorMessage.textContent = "شناسه کاربری باید ۵ کاراکتر باشد.";
-                loginErrorMessage.classList.remove('hidden');
-                loginUserIdInput.classList.add('invalid');
-                return;
-            }
-
-            loginErrorMessage.classList.add('hidden');
-            loginUserIdInput.classList.remove('invalid');
-            loginBtn.disabled = true;
-            loginBtn.textContent = "در حال ورود...";
-
-            try {
-                // Query the publicLeaderboard to find the user by their publicUserId
-                const leaderboardCol = collection(db, `artifacts/${appId}/publicLeaderboard`);
-                const q = query(leaderboardCol, where("publicUserId", "==", publicIdToLogin), limit(1));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    loginErrorMessage.textContent = "کاربری با این شناسه یافت نشد.";
-                    loginErrorMessage.classList.remove('hidden');
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = "ورود";
-                    return;
-                }
-                
-                const userDoc = querySnapshot.docs[0];
-                const foundUserId = userDoc.id; // This is the original UID
-                const userData = userDoc.data();
-
-                console.log(`User found! PublicID: ${publicIdToLogin}, UID: ${foundUserId}`);
-                
-                // Set the recoveredUserId to ensure data is saved to the correct document
-                recoveredUserId = foundUserId;
-                
-                // Load the user's data into the game state
-                gameState.displayName = userData.displayName;
-                gameState.publicUserId = userData.publicUserId;
-                gameState.currentStage = userData.currentStage;
-                gameState.avatarUrl = userData.avatarUrl;
-
-                // We also need the full profile data (like seen questions)
-                await loadUserData(foundUserId);
-                
-                updateUI(); // This will hide the auth panel and show the game buttons
-                
-            } catch (error) {
-                console.error("Error during login:", error);
-                loginErrorMessage.textContent = "خطا در ورود. اتصال خود را بررسی کنید.";
-                loginErrorMessage.classList.remove('hidden');
-                loginBtn.disabled = false;
-                loginBtn.textContent = "ورود";
-            }
-        }
-
-
         function setupEventListeners() {
             document.body.addEventListener('click', (event) => {
                 if (event.target.closest('.btn-clash:not(:disabled)')) {
@@ -1807,32 +1724,6 @@
                 });
             }
             
-            // --- NEW: Event listeners for login form ---
-            if(toggleToLogin) {
-                toggleToLogin.addEventListener('click', () => {
-                    registrationForm.classList.add('hidden');
-                    loginForm.classList.remove('hidden');
-                });
-            }
-            if(toggleToRegister) {
-                toggleToRegister.addEventListener('click', () => {
-                    loginForm.classList.add('hidden');
-                    registrationForm.classList.remove('hidden');
-                });
-            }
-            if(loginBtn) {
-                loginBtn.addEventListener('click', handleLogin);
-            }
-            if(loginUserIdInput) {
-                loginUserIdInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        if(loginBtn) loginBtn.click();
-                    }
-                });
-            }
-
-
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
                     validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
@@ -1867,9 +1758,6 @@
 
                     gameState.displayName = validatedName;
                     
-                    // A new registration doesn't have a recovered ID
-                    recoveredUserId = null; 
-
                     await saveUserData();
                     updateUI();
                 });
@@ -1986,14 +1874,6 @@
             userIdDisplayInput = document.getElementById('user-id-display');
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
-            toggleToLogin = document.getElementById('toggle-to-login');
-            
-            // Login Panel Elements
-            loginForm = document.getElementById('login-form');
-            loginUserIdInput = document.getElementById('login-user-id-input');
-            loginBtn = document.getElementById('login-btn');
-            loginErrorMessage = document.getElementById('login-error-message');
-            toggleToRegister = document.getElementById('toggle-to-register');
 
             userProfileArea = document.getElementById('user-profile-area');
             avatarContainer = document.getElementById('avatar-container');
