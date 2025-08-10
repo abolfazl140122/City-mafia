@@ -59,6 +59,11 @@
             overflow: hidden; /* Changed to hidden for better control with screens */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
+            /* Android Fix: Improve touch responsiveness */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         /* Animated Background Layer */
@@ -200,6 +205,12 @@
             padding: 12px;
             font-size: 1rem;
             box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
+            /* Android Fix: Improve touch interaction */
+            -webkit-user-select: auto;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: auto;
+            touch-action: manipulation;
         }
         .input-clash:focus {
             outline: none;
@@ -364,6 +375,9 @@
             border-radius: 12px;
             border: 4px solid #4a2f20;
             box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+            /* Android Fix: Ensure header buttons are clickable */
+            position: relative;
+            z-index: 10;
         }
         
         #main-title {
@@ -393,14 +407,14 @@
             align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
         }
         .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
-        .header-icon-btn svg { width: 24px; height: 24px; } /* Slightly larger icon */
+        .header-icon-btn svg { width: 24px; height: 24px; pointer-events: none; } /* Slightly larger icon */
         
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
         #start-game-btn { order: 0; }
         #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
         
-        #input-error-message, #user-id-error-message, #change-name-error-message, #create-clan-error-message, #chat-message-error, #avatar-error-message {
+        #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
         .hidden { display: none !important; }
@@ -574,39 +588,51 @@
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
-                    <!-- Leaderboard Button with new Icon -->
                     <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                           <path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
                     </button>
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    <!-- Developers Button -->
                     <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M17 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M17 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     </button>
                 </div>
 
-                <div id="registration-form" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام / ورود</h2>
-                    <input type="text" id="display-name-input" placeholder="نام نمایشی (فقط انگلیسی)" class="input-clash w-full mb-1 p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
-                    <p id="input-error-message" class="hidden"></p>
+                <div id="auth-panel" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+                    <!-- Registration Form -->
+                    <div id="registration-form">
+                        <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام</h2>
+                        <!-- Android Fix: Using a label to improve tap target -->
+                        <label for="display-name-input" class="block mb-1">
+                            <span class="text-sm font-medium mb-1 inline-block">نام نمایشی (فقط انگلیسی):</span>
+                            <input type="text" id="display-name-input" placeholder="نام نمایشی خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
+                        </label>
+                        <p id="input-error-message" class="hidden"></p>
 
-                    <div class="mt-3 mb-2">
-                        <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
-                            <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
+                        <div class="mt-3 mb-2">
+                            <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
+                                <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
+                            </div>
+                            <p id="user-id-error-message" class="hidden"></p>
                         </div>
-                        <p id="user-id-error-message" class="hidden"></p>
+
+                        <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
+                        <p id="toggle-to-login" class="text-center mt-4 text-sm text-yellow-200 cursor-pointer hover:underline">حساب کاربری دارید؟ وارد شوید</p>
                     </div>
 
-                    <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
+                    <!-- Login Form (Initially Hidden) -->
+                    <div id="login-form" class="hidden">
+                        <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ورود به حساب</h2>
+                        <label for="login-user-id-input" class="block mb-1">
+                            <span class="text-sm font-medium mb-1 inline-block">شناسه کاربری (5 رقمی):</span>
+                            <input type="text" id="login-user-id-input" placeholder="شناسه خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font text-center" maxlength="5" style="text-transform: uppercase;">
+                        </label>
+                        <p id="login-error-message" class="hidden"></p>
+
+                        <button id="login-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود</button>
+                        <p id="toggle-to-register" class="text-center mt-4 text-sm text-yellow-200 cursor-pointer hover:underline">حساب جدید می‌سازید؟ ثبت نام</p>
+                    </div>
                 </div>
             </div>
 
@@ -763,7 +789,7 @@
         // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         // --- NEW: Import Firebase Storage modules ---
         import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
@@ -811,6 +837,9 @@
         let storage; // <-- NEW: Firebase Storage instance
         let currentUserId = null;
         let isAuthReady = false;
+        // This is a special ID for users who log in with their public ID.
+        // It helps `saveUserData` know which document to update.
+        let recoveredUserId = null; 
 
         const gameState = {
             displayName: '',
@@ -823,9 +852,11 @@
             seenQuestionHashes: new Set(),
         };
 
+        // --- UPDATED: Added new element IDs for login form ---
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
-            registrationForm, displayNameInput, registerBtn, inputErrorMessage,
-            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
+            authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
+            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage, toggleToLogin,
+            loginForm, loginUserIdInput, loginBtn, loginErrorMessage, toggleToRegister,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
             publicUserIdOutput,
             editNameBtn,
@@ -1055,36 +1086,36 @@
                 avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
             }
 
-            let showRegistration = true;
+            let showAuthPanel = true;
             let showActionButtons = false;
             let showUserInfoAndAvatar = false;
 
             if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                showRegistration = false;
+                showAuthPanel = false;
                 showActionButtons = true;
                 if(startGameBtn) startGameBtn.classList.add('breathing');
                 if (mainScreen && mainScreen.classList.contains('active')) {
                     showUserInfoAndAvatar = true;
                 }
             } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
-                showRegistration = true;
+                showAuthPanel = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
                 if(startGameBtn) startGameBtn.classList.remove('breathing');
             } else {
-                showRegistration = true;
+                showAuthPanel = true;
                 showActionButtons = false;
                 showUserInfoAndAvatar = false;
                 if(startGameBtn) startGameBtn.classList.remove('breathing');
             }
 
-            if(registrationForm){
-                if (showRegistration) {
-                    registrationForm.classList.remove('panel-hidden');
-                    registrationForm.classList.add('panel-visible');
+            if(authPanel){
+                if (showAuthPanel) {
+                    authPanel.classList.remove('panel-hidden');
+                    authPanel.classList.add('panel-visible');
                 } else {
-                    registrationForm.classList.add('panel-hidden');
-                    registrationForm.classList.remove('panel-visible');
+                    authPanel.classList.add('panel-hidden');
+                    authPanel.classList.remove('panel-visible');
                 }
             }
 
@@ -1130,23 +1161,18 @@
                     if (user) {
                         console.log("User is signed in:", user.uid);
                         currentUserId = user.uid;
-                        await loadUserData();
+                        // Only load user data automatically if we haven't just recovered a profile
+                        if (!recoveredUserId) {
+                           await loadUserData(user.uid);
+                        }
                     } else {
                         console.log("User is signed out. Attempting to sign in.");
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            try {
-                                await signInWithCustomToken(auth, __initial_auth_token);
-                            } catch (error) {
-                                console.error("[onAuthStateChanged] Custom token sign-in error, trying anonymous:", error);
-                                await signInAnonymously(auth);
-                            }
-                        } else {
-                            await signInAnonymously(auth);
-                        }
+                        await signInAnonymously(auth);
                         gameState.displayName = '';
                         gameState.publicUserId = '';
                         gameState.avatarUrl = '';
                         gameState.seenQuestionHashes.clear();
+                        recoveredUserId = null;
                     }
                     isAuthReady = true;
                     updateUI();
@@ -1165,20 +1191,16 @@
             }
         }
         
-        async function loadUserData() {
-            if (!currentUserId || !db) {
-                console.log("Cannot load user data: no currentUserId or db connection.");
-                gameState.displayName = '';
-                gameState.publicUserId = '';
-                gameState.avatarUrl = '';
-                gameState.seenQuestionHashes = new Set();
+        async function loadUserData(userIdToLoad) {
+            if (!userIdToLoad || !db) {
+                console.log("Cannot load user data: no userIdToLoad or db connection.");
                 return;
             }
-            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToLoad}/mafiaGameData/profile`);
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
-                    console.log("User data found, loading profile.");
+                    console.log("User data found, loading profile for", userIdToLoad);
                     const data = docSnap.data();
                     gameState.displayName = data.displayName || "";
                     gameState.publicUserId = data.publicUserId || "";
@@ -1187,7 +1209,7 @@
                     gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
                     console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
                 } else {
-                    console.log("No user profile found, setting default values.");
+                    console.log("No user profile found for", userIdToLoad);
                     gameState.displayName = "";
                     gameState.publicUserId = "";
                     gameState.avatarUrl = '';
@@ -1196,17 +1218,16 @@
             } catch (error) {
                 console.error("Error loading user data:", error);
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-                gameState.displayName = '';
-                gameState.publicUserId = '';
-                gameState.avatarUrl = '';
-                gameState.seenQuestionHashes = new Set();
             }
         }
 
         async function saveUserData() {
-            if (!currentUserId || !db) return;
+            // If a user logged in, we save data to their original UID.
+            // Otherwise, we use the current anonymous session UID.
+            const userIdToSave = recoveredUserId || currentUserId;
+            if (!userIdToSave || !db) return;
             
-            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToSave}/mafiaGameData/profile`);
             const privateData = {
                 displayName: gameState.displayName,
                 publicUserId: gameState.publicUserId,
@@ -1215,10 +1236,11 @@
                 seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                 lastUpdated: serverTimestamp()
             };
-
-            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${currentUserId}`);
+            
+            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userIdToSave}`);
             const publicData = {
                 displayName: gameState.displayName,
+                publicUserId: gameState.publicUserId, // CRITICAL: Added for login functionality
                 currentStage: gameState.currentStage,
                 avatarUrl: gameState.avatarUrl,
                 lastUpdated: serverTimestamp()
@@ -1229,7 +1251,7 @@
                     setDoc(userDocRef, privateData, { merge: true }),
                     setDoc(leaderboardDocRef, publicData, { merge: true })
                 ]);
-                 console.log("User data and public leaderboard data saved successfully.");
+                 console.log("User data and public leaderboard data saved successfully for", userIdToSave);
             } catch (error) {
                 console.error("Error saving user data:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
@@ -1503,7 +1525,8 @@
 
         // --- NEW: Function to upload the selected and resized avatar ---
         async function uploadAndSaveAvatar() {
-            if (!selectedAvatarFile || !currentUserId || !storage) {
+            const userIdToSave = recoveredUserId || currentUserId;
+            if (!selectedAvatarFile || !userIdToSave || !storage) {
                 avatarErrorMessage.textContent = 'فایلی برای آپلود انتخاب نشده است.';
                 avatarErrorMessage.classList.remove('hidden');
                 return;
@@ -1517,9 +1540,9 @@
             avatarUploadStatus.textContent = 'در حال آماده‌سازی تصویر...';
 
             try {
-                const resizedBlob = await resizeImage(selectedAvatarFile, 400, 400, 0.85); // Resize to 400x400 max, 85% quality
+                const resizedBlob = await resizeImage(selectedAvatarFile, 400, 400, 0.85);
 
-                const filePath = `artifacts/${appId}/user_avatars/${currentUserId}.jpg`;
+                const filePath = `artifacts/${appId}/user_avatars/${userIdToSave}.jpg`;
                 const storageRef = ref(storage, filePath);
                 const uploadTask = uploadBytesResumable(storageRef, resizedBlob);
 
@@ -1692,6 +1715,66 @@
 
             leaderboardList.innerHTML = listHtml;
         }
+        
+        async function handleLogin() {
+            if (!loginUserIdInput || !loginErrorMessage) return;
+            const publicIdToLogin = loginUserIdInput.value.trim().toUpperCase();
+
+            if (publicIdToLogin.length !== 5) {
+                loginErrorMessage.textContent = "شناسه کاربری باید ۵ کاراکتر باشد.";
+                loginErrorMessage.classList.remove('hidden');
+                loginUserIdInput.classList.add('invalid');
+                return;
+            }
+
+            loginErrorMessage.classList.add('hidden');
+            loginUserIdInput.classList.remove('invalid');
+            loginBtn.disabled = true;
+            loginBtn.textContent = "در حال ورود...";
+
+            try {
+                // Query the publicLeaderboard to find the user by their publicUserId
+                const leaderboardCol = collection(db, `artifacts/${appId}/publicLeaderboard`);
+                const q = query(leaderboardCol, where("publicUserId", "==", publicIdToLogin), limit(1));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    loginErrorMessage.textContent = "کاربری با این شناسه یافت نشد.";
+                    loginErrorMessage.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = "ورود";
+                    return;
+                }
+                
+                const userDoc = querySnapshot.docs[0];
+                const foundUserId = userDoc.id; // This is the original UID
+                const userData = userDoc.data();
+
+                console.log(`User found! PublicID: ${publicIdToLogin}, UID: ${foundUserId}`);
+                
+                // Set the recoveredUserId to ensure data is saved to the correct document
+                recoveredUserId = foundUserId;
+                
+                // Load the user's data into the game state
+                gameState.displayName = userData.displayName;
+                gameState.publicUserId = userData.publicUserId;
+                gameState.currentStage = userData.currentStage;
+                gameState.avatarUrl = userData.avatarUrl;
+
+                // We also need the full profile data (like seen questions)
+                await loadUserData(foundUserId);
+                
+                updateUI(); // This will hide the auth panel and show the game buttons
+                
+            } catch (error) {
+                console.error("Error during login:", error);
+                loginErrorMessage.textContent = "خطا در ورود. اتصال خود را بررسی کنید.";
+                loginErrorMessage.classList.remove('hidden');
+                loginBtn.disabled = false;
+                loginBtn.textContent = "ورود";
+            }
+        }
+
 
         function setupEventListeners() {
             document.body.addEventListener('click', (event) => {
@@ -1723,6 +1806,32 @@
                     if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
                 });
             }
+            
+            // --- NEW: Event listeners for login form ---
+            if(toggleToLogin) {
+                toggleToLogin.addEventListener('click', () => {
+                    registrationForm.classList.add('hidden');
+                    loginForm.classList.remove('hidden');
+                });
+            }
+            if(toggleToRegister) {
+                toggleToRegister.addEventListener('click', () => {
+                    loginForm.classList.add('hidden');
+                    registrationForm.classList.remove('hidden');
+                });
+            }
+            if(loginBtn) {
+                loginBtn.addEventListener('click', handleLogin);
+            }
+            if(loginUserIdInput) {
+                loginUserIdInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        if(loginBtn) loginBtn.click();
+                    }
+                });
+            }
+
 
             if (newDisplayNameInput) {
                 newDisplayNameInput.addEventListener('input', () => {
@@ -1757,6 +1866,9 @@
                     if (!validatedName || !isPublicIdValid) return;
 
                     gameState.displayName = validatedName;
+                    
+                    // A new registration doesn't have a recovered ID
+                    recoveredUserId = null; 
 
                     await saveUserData();
                     updateUI();
@@ -1860,11 +1972,13 @@
         }
         
         async function initializeGame() {
-            // ... (keep existing initializations)
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
+            
+            // Auth Panel Elements
+            authPanel = document.getElementById('auth-panel');
             registrationForm = document.getElementById('registration-form');
             displayNameInput = document.getElementById('display-name-input');
             registerBtn = document.getElementById('register-btn');
@@ -1872,6 +1986,14 @@
             userIdDisplayInput = document.getElementById('user-id-display');
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
+            toggleToLogin = document.getElementById('toggle-to-login');
+            
+            // Login Panel Elements
+            loginForm = document.getElementById('login-form');
+            loginUserIdInput = document.getElementById('login-user-id-input');
+            loginBtn = document.getElementById('login-btn');
+            loginErrorMessage = document.getElementById('login-error-message');
+            toggleToRegister = document.getElementById('toggle-to-register');
 
             userProfileArea = document.getElementById('user-profile-area');
             avatarContainer = document.getElementById('avatar-container');
