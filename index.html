@@ -368,16 +368,31 @@
         #avatar-image { width: 100%; height: 100%; object-fit: cover; }
         
         #main-screen-header { 
-            display: flex; justify-content: center; align-items: center; width: 100%; 
-            padding: 0.5rem;
+            display: flex; 
+            justify-content: center; /* MODIFIED: to keep title centered */
+            align-items: center; 
+            width: 100%; 
+            padding: 0.5rem; 
             background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
             background-color: #6e4a31;
             border-radius: 12px;
             border: 4px solid #4a2f20;
             box-shadow: 0 6px 10px rgba(0,0,0,0.5);
-            /* Android Fix: Ensure header buttons are clickable */
             position: relative;
             z-index: 10;
+        }
+
+        /* --- NEW/MODIFIED: Container for buttons below the header --- */
+        #header-secondary-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            margin-top: -20px; /* Pulls the buttons up under the header */
+            padding-bottom: 1rem; /* Space below the buttons */
+            position: relative;
+            z-index: 5; /* Ensures buttons are clickable */
         }
         
         #main-title {
@@ -587,14 +602,14 @@
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
             <div>
-                <!-- ===== START: SECTION CHANGED ===== -->
-                <!-- The header now only contains the main title -->
-                <div id="main-screen-header">
+                <!-- === MODIFIED STRUCTURE === -->
+                <div id="main-screen-header" class="justify-center">
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+                    <!-- Buttons moved out of here -->
                 </div>
 
-                <!-- New container for the icon buttons, placed below the header -->
-                <div id="top-icon-buttons-container" class="flex justify-center items-center gap-6 mt-6 mb-2">
+                <!-- === NEW CONTAINER FOR BUTTONS === -->
+                <div id="header-secondary-actions">
                     <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
                     </button>
@@ -602,7 +617,6 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M17 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     </button>
                 </div>
-                <!-- ===== END: SECTION CHANGED ===== -->
 
                 <div id="auth-panel" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
                     <!-- Registration Form -->
