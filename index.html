@@ -450,10 +450,6 @@
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
 
         /* Styles for Leaderboard Panel */
-        #leaderboard-list {
-            space-y-2; /* Using Tailwind class equivalent */
-            max-h-[calc(85vh-150px)]; overflow-y-auto; pr-3 pl-1;
-        }
         .leaderboard-item {
             display: flex;
             align-items: center;
@@ -749,7 +745,7 @@
         <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
             <button id="close-leaderboard-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
-            <div id="leaderboard-list" class="space-y-2">
+            <div id="leaderboard-list" class="space-y-2 max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
                 <!-- Leaderboard items will be populated here -->
                 <div class="text-center py-8">
                     <div class="loader mx-auto"></div>
