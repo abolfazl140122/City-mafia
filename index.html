@@ -745,8 +745,9 @@
         // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // --- MODIFIED: Added writeBatch and deleteDoc for managing displayNames collection ---
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, writeBatch, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
+        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -789,6 +790,7 @@
         let app;
         let auth;
         let db;
+        // let storage; // <-- REMOVED: No longer needed
         let currentUserId = null;
         let isAuthReady = false;
 
@@ -821,6 +823,7 @@
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
         
+        // --- NEW/MODIFIED: Elements for avatar URL input ---
         let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
@@ -892,6 +895,7 @@
                 }
             } else if (modalType === "avatar") {
                 avatarUploadUiContainer.classList.remove('hidden');
+                // Reset avatar URL UI
                 if(avatarUrlInput) avatarUrlInput.value = '';
                 if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
                 if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
@@ -906,6 +910,7 @@
             }
 
             modalConfirmBtn.textContent = confirmText;
+            // --- MODIFIED: Disable confirm button for avatar until a valid URL is previewed ---
             modalConfirmBtn.disabled = (modalType === 'avatar');
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
@@ -1100,6 +1105,7 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
+                // storage = getStorage(app); // --- REMOVED: No longer needed
                 console.log("Firebase initialized (Auth, Firestore).");
 
                 onAuthStateChanged(auth, async (user) => {
@@ -1161,28 +1167,11 @@
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
-        
-        // --- NEW: Function to check if a display name is already taken.
-        async function isDisplayNameTaken(name) {
-            if (!db) return true; // Fail safe
-            const nameRef = doc(db, `artifacts/${appId}/displayNames`, name);
-            try {
-                const docSnap = await getDoc(nameRef);
-                // The name is taken if the document exists AND the userId in it is not the current user's.
-                return docSnap.exists() && docSnap.data().userId !== currentUserId;
-            } catch (error) {
-                console.error("Error checking display name:", error);
-                return true; // Assume taken on error to be safe
-            }
-        }
 
-        async function saveUserData(oldDisplayName = null) {
+        async function saveUserData() {
             const userIdToSave = currentUserId;
             if (!userIdToSave || !db) return;
-
-            const batch = writeBatch(db);
-
-            // 1. User's private profile data
+            
             const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToSave}/mafiaGameData/profile`);
             const privateData = {
                 displayName: gameState.displayName,
@@ -1192,9 +1181,7 @@
                 seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                 lastUpdated: serverTimestamp()
             };
-            batch.set(userDocRef, privateData, { merge: true });
-
-            // 2. Public leaderboard data
+            
             const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userIdToSave}`);
             const publicData = {
                 displayName: gameState.displayName,
@@ -1203,35 +1190,16 @@
                 avatarUrl: gameState.avatarUrl,
                 lastUpdated: serverTimestamp()
             };
-            batch.set(leaderboardDocRef, publicData, { merge: true });
-            
-            // --- MODIFIED: Manage the displayNames collection for uniqueness ---
-            // If the name has changed, delete the old name record and create a new one.
-            if (oldDisplayName && oldDisplayName !== gameState.displayName) {
-                const oldNameRef = doc(db, `artifacts/${appId}/displayNames`, oldDisplayName);
-                batch.delete(oldNameRef);
-            }
-            // Add/update the new display name record.
-            const newNameRef = doc(db, `artifacts/${appId}/displayNames`, gameState.displayName);
-            batch.set(newNameRef, { userId: userIdToSave });
 
             try {
-                await batch.commit();
-                console.log("User data and display name record saved successfully for", userIdToSave);
+                await Promise.all([
+                    setDoc(userDocRef, privateData, { merge: true }),
+                    setDoc(leaderboardDocRef, publicData, { merge: true })
+                ]);
+                 console.log("User data and public leaderboard data saved successfully for", userIdToSave);
             } catch (error) {
-                console.error("Error saving user data with batch:", error);
-                // Handle specific Firestore permission errors for duplicate names
-                if (error.code === 'permission-denied') {
-                    showModal("خطا", "این نام قبلاً توسط شخص دیگری گرفته شده است. لطفاً نام دیگری انتخاب کنید.", "باشه");
-                    // Revert local gameState if the name change failed
-                    if (oldDisplayName) {
-                        gameState.displayName = oldDisplayName;
-                    }
-                } else {
-                    showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
-                }
-                // Throw the error so the calling function knows it failed
-                throw error;
+                console.error("Error saving user data:", error);
+                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
         
@@ -1405,7 +1373,7 @@
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
                 
-                await saveUserData(gameState.displayName).catch(() => {}); // Pass current name, no old name to delete
+                await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
                 audioManager.play('incorrect');
@@ -1437,18 +1405,21 @@
             }
         }
         
+        // --- NEW: Function to check if a string is a valid image URL ---
         function isValidImageUrl(url) {
             if (!url) return false;
+            // A simple regex to check for http/https and common image extensions
             const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
             return imageRegex.test(url);
         }
 
+        // --- NEW: Function to preview avatar from a URL ---
         function previewAvatarFromUrl() {
             if (!avatarUrlInput || !avatarPreviewImage || !avatarPreviewContainer || !avatarErrorMessage || !modalConfirmBtn) return;
             
             const url = avatarUrlInput.value.trim();
             avatarErrorMessage.classList.add('hidden');
-            modalConfirmBtn.disabled = true;
+            modalConfirmBtn.disabled = true; // Always disable confirm until image loads
 
             if (!isValidImageUrl(url)) {
                 avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست. لینک باید مستقیم و به یک فایل تصویری (jpg, png, gif) ختم شود.';
@@ -1465,10 +1436,11 @@
             };
             avatarPreviewImage.onload = () => {
                 avatarPreviewContainer.classList.remove('hidden');
-                modalConfirmBtn.disabled = false;
+                modalConfirmBtn.disabled = false; // Enable confirm button on successful load
             };
         }
 
+        // --- MODIFIED: Function to save avatar URL directly to Firestore ---
         async function saveAvatarFromUrl() {
             const userIdToSave = currentUserId;
             if (!avatarUrlInput || !userIdToSave) {
@@ -1494,7 +1466,7 @@
 
             try {
                 gameState.avatarUrl = newUrl;
-                await saveUserData(gameState.displayName); // Pass current name, no old name to delete
+                await saveUserData();
                 updateUI();
                 hideModal();
                 showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
@@ -1505,6 +1477,7 @@
                     avatarErrorMessage.classList.remove('hidden');
                 }
             } finally {
+                // Re-enable buttons in case of failure
                 if(modalConfirmBtn) modalConfirmBtn.disabled = false;
                 if(modalCancelBtn) modalCancelBtn.disabled = false;
             }
@@ -1546,41 +1519,25 @@
         }
 
         async function handleChangeDisplayName() {
-            if (!newDisplayNameInput || !changeNameErrorMessage) return;
+            if(!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
-            const oldName = gameState.displayName;
-            if (newName === oldName) {
-                changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-                changeNameErrorMessage.classList.remove('hidden');
-                newDisplayNameInput.classList.add('invalid');
-                return;
-            }
-
-            // --- MODIFIED: Check for name availability first ---
-            const nameIsTaken = await isDisplayNameTaken(newName);
-            if (nameIsTaken) {
-                changeNameErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
-                changeNameErrorMessage.classList.remove('hidden');
-                newDisplayNameInput.classList.add('invalid');
+            if (newName === gameState.displayName) {
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
             gameState.displayName = newName;
-            try {
-                await saveUserData(oldName); // Pass the old name to be deleted from displayNames collection
-                updateUI();
-                hideModal();
-                showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
-            } catch (error) {
-                // If saveUserData fails (e.g., due to a race condition caught by security rules),
-                // the error is already shown. We just need to revert the local state.
-                gameState.displayName = oldName;
-                updateUI();
-            }
+            await saveUserData();
+            updateUI();
+            hideModal();
+            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
         }
-
 
         async function generateMafiaFact() {
             const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
@@ -1724,24 +1681,10 @@
 
                     if (!validatedName || !isPublicIdValid) return;
 
-                    // --- MODIFIED: Check for name availability before registering ---
-                    const nameIsTaken = await isDisplayNameTaken(validatedName);
-                    if (nameIsTaken) {
-                        inputErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
-                        inputErrorMessage.classList.remove('hidden');
-                        displayNameInput.classList.add('invalid');
-                        return;
-                    }
-                    
                     gameState.displayName = validatedName;
                     
-                    try {
-                        await saveUserData(); // No old name to pass on registration
-                        updateUI();
-                    } catch (error) {
-                        // Error is already handled inside saveUserData, just log it.
-                        console.error("Registration failed:", error);
-                    }
+                    await saveUserData();
+                    updateUI();
                 });
             }
 
@@ -1757,17 +1700,19 @@
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
+                    // --- MODIFIED: Show avatar URL modal ---
                     showModal(
                         "تغییر آواتار",
                         "لینک مستقیم یک تصویر را وارد کرده و دکمه پیش‌نمایش را بزنید.",
                         "ذخیره", "لغو",
-                        saveAvatarFromUrl,
-                        hideModal,
+                        saveAvatarFromUrl,  // onConfirm
+                        hideModal,          // onCancel
                         "avatar"
                     );
                 });
             }
             
+            // --- NEW: Event listeners for avatar URL UI ---
             if(previewAvatarBtn) {
                 previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
             }
@@ -1780,7 +1725,7 @@
                 });
             }
 
-            const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null);
+            const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null); // MODIFIED: Added new buttons
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
@@ -1834,7 +1779,7 @@
 
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
-                    await saveUserData(gameState.displayName).catch(() => {});
+                    await saveUserData();
                     gameState.currentQuestionData = null;
                     if(mainScreen) showScreen(mainScreen);
                 });
@@ -1887,6 +1832,7 @@
             newDisplayNameInput = document.getElementById('new-display-name-input');
             changeNameErrorMessage = document.getElementById('change-name-error-message');
             
+            // --- NEW/MODIFIED: Avatar URL UI element initialization ---
             avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
             avatarUrlInput = document.getElementById('avatar-url-input');
             previewAvatarBtn = document.getElementById('preview-avatar-btn');
