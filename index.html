@@ -458,20 +458,12 @@
             border-radius: 12px;
             border: 2px solid rgba(157, 194, 255, 0.4);
             gap: 1rem;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.2s ease, transform 0.2s ease;
         }
         .leaderboard-item:hover {
             background-color: rgba(60, 85, 122, 0.9);
             transform: scale(1.02);
         }
-        /* --- NEW: Style for highlighting the current user --- */
-        .leaderboard-item.current-user-highlight {
-            background-color: rgba(74, 109, 160, 0.95); /* A slightly lighter, more prominent blue */
-            border-color: var(--clash-gold);
-            transform: scale(1.03);
-            box-shadow: 0 0 12px var(--clash-gold), 0 0 4px var(--clash-gold-dark);
-        }
-
         .leaderboard-rank {
             font-family: 'Lilita One', cursive;
             font-size: 1.75rem;
@@ -486,7 +478,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 3px solid var(--clاش-gold-dark);
+            border: 3px solid var(--clash-gold-dark);
             object-fit: cover;
             background-color: #2a4166;
             flex-shrink: 0;
@@ -755,6 +747,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
+        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -797,6 +790,7 @@
         let app;
         let auth;
         let db;
+        // let storage; // <-- REMOVED: No longer needed
         let currentUserId = null;
         let isAuthReady = false;
 
@@ -1111,6 +1105,7 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
+                // storage = getStorage(app); // --- REMOVED: No longer needed
                 console.log("Firebase initialized (Auth, Firestore).");
 
                 onAuthStateChanged(auth, async (user) => {
@@ -1208,22 +1203,12 @@
             }
         }
         
-        // --- NEW: API Key fallback system ---
-        const GEMINI_API_KEYS = [
-            "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw",
-            "AIzaSyAuSwOzmzC_FDaFi9JmDlcQu4VwLqdYwJc",
-            "AIzaSyBVQHukPoESRJutlj24FsYGGegBHHWwcJM",
-            "AIzaSyDfMZwyWNnRFUDLHKR1t_hZ5cWv2c_KvvE",
-            "AIzaSyA8xlV8Nviwdt-xc9r5NeKsBMTRW5Wv724"
-        ];
-        let currentApiKeyIndex = 0;
+        const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
         const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
 
         async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
             if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
-            
-            const currentApiKey = GEMINI_API_KEYS[currentApiKeyIndex];
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${currentApiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory };
@@ -1243,20 +1228,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 if (!response.ok) {
-                    const errorBodyText = await response.text();
-                    console.error(`API Error (Key Index: ${currentApiKeyIndex}): Status ${response.status}`, errorBodyText);
-                    
-                    // --- API Key Fallback Logic ---
-                    if ((response.status === 400 || response.status === 429) && currentApiKeyIndex < GEMINI_API_KEYS.length - 1) {
-                        currentApiKeyIndex++;
-                        console.warn(`Switching to backup API key #${currentApiKeyIndex}`);
-                        return callGeminiAPI(prompt, isJsonOutput, schema); // Retry with the next key
-                    }
-                    throw new Error(`API request failed with status ${response.status}: ${errorBodyText}`);
+                    const errorBody = await response.text();
+                    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
                 }
-
                 const result = await response.json();
                 if (result.candidates && result.candidates.length > 0 &&
                     result.candidates[0].content && result.candidates[0].content.parts &&
@@ -1272,10 +1247,7 @@
             } catch (error) {
                 console.error("Error calling Gemini API:", error);
                 if (!prompt.includes("offensive, hateful, or contain profanity")) {
-                    const userMessage = currentApiKeyIndex >= GEMINI_API_KEYS.length - 1 
-                        ? "تمام سرورهای هوش مصنوعی پاسخگو نیستند. لطفاً کمی بعد دوباره تلاش کنید."
-                        : "مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.";
-                    showModal("خطای هوش مصنوعی", `${userMessage}<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
+                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
                 }
                 return null;
             } finally {
@@ -1305,25 +1277,25 @@
                     difficulty = "متوسط";
                 }
                 
-                // --- IMPROVED PROMPT ---
                 const prompt = `
-                شما یک طراح بازی خلاق و متخصص در دنیای مافیا هستید. وظیفه شما طراحی یک سوال چالش‌برانگیز و **غیرتکراری** برای یک بازی مافیایی است.
-                
-                **دستورالعمل:**
-                1.  یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
-                2.  سطح دشواری سوال باید "${difficulty}" باشد، زیرا کاربر در مرحله ${gameState.currentStage} قرار دارد.
-                3.  **خلاقیت به خرج بده!** به دنبال زوایای جدید و جزئیات کمتر شناخته‌شده باش. از سوالات کلیشه‌ای و بسیار ساده پرهیز کن.
-                4.  **موضوعات پیشنهادی برای الهام:** تاریخچه مافیای سیسیل، کامورا یا اندرانگتا؛ وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا؛ سازمان‌های یاکوزا یا کارتل‌ها؛ جزئیات دقیق و عمیق از فیلم‌ها و سریال‌های معروف (پدرخوانده، پیکی بلایندرز، سوپرانوها)؛ اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای بازی "شهر مافیا".
-                
-                **خروجی:**
-                پاسخ شما باید **فقط و فقط** یک آبجکت JSON معتبر و خام باشد. هیچ‌گونه متن، توضیحات اضافی، یا علامت‌های markdown مانند \`\`\`json در ابتدا یا انتهای پاسخ نباشد.
-                
-                **ساختار دقیق JSON:**
+                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
+                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
+                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
+                موضوعات پیشنهادی (برای تنوع):
+                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
+                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
+                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
+                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
+                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
+                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
+                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
+                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
+                ساختار JSON باید دقیقا به این صورت باشد:
                 {
-                  "question": "متن سوال جذاب و غیرتکراری به فارسی",
+                  "question": "متن سوال به فارسی",
                   "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
                   "correctAnswerIndex": 0,
-                  "explanation": "توضیح کوتاه، جالب و آموزنده در مورد پاسخ صحیح به زبان فارسی"
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
                 }
                 `;
 
@@ -1609,9 +1581,8 @@
                 }
                 
                 const users = [];
-                // --- MODIFIED: Store document ID (user's auth UID) along with data ---
                 querySnapshot.forEach(doc => {
-                    users.push({ id: doc.id, ...doc.data() });
+                    users.push(doc.data());
                 });
 
                 renderLeaderboardList(users);
@@ -1629,11 +1600,8 @@
             const listHtml = users.map((user, index) => {
                 const rank = index + 1;
                 const avatarSrc = user.avatarUrl || 'https://placehold.co/50x50/2a4166/ffffff?text=?';
-                // --- NEW: Check if this is the current user ---
-                const isCurrentUser = user.id === currentUserId;
-
                 return `
-                    <div class="leaderboard-item ${isCurrentUser ? 'current-user-highlight' : ''}">
+                    <div class="leaderboard-item">
                         <span class="leaderboard-rank">${rank}</span>
                         <img src="${avatarSrc}" alt="Avatar for ${user.displayName}" class="leaderboard-avatar" onerror="this.src='https://placehold.co/50x50/2a4166/ffffff?text=?'">
                         <div class="leaderboard-info">
