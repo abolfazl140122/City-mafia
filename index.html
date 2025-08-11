@@ -742,13 +742,12 @@
     </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
+        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT & UNIQUE DISPLAY NAME) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
-        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
-
+        // --- MODIFIED: Added runTransaction ---
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
         // --- AUDIO MANAGER ---
         const audioManager = {
             sounds: {},
@@ -790,7 +789,6 @@
         let app;
         let auth;
         let db;
-        // let storage; // <-- REMOVED: No longer needed
         let currentUserId = null;
         let isAuthReady = false;
 
@@ -823,7 +821,6 @@
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
         
-        // --- NEW/MODIFIED: Elements for avatar URL input ---
         let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
@@ -895,7 +892,6 @@
                 }
             } else if (modalType === "avatar") {
                 avatarUploadUiContainer.classList.remove('hidden');
-                // Reset avatar URL UI
                 if(avatarUrlInput) avatarUrlInput.value = '';
                 if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
                 if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
@@ -910,7 +906,6 @@
             }
 
             modalConfirmBtn.textContent = confirmText;
-            // --- MODIFIED: Disable confirm button for avatar until a valid URL is previewed ---
             modalConfirmBtn.disabled = (modalType === 'avatar');
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
@@ -1105,7 +1100,6 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                // storage = getStorage(app); // --- REMOVED: No longer needed
                 console.log("Firebase initialized (Auth, Firestore).");
 
                 onAuthStateChanged(auth, async (user) => {
@@ -1167,7 +1161,88 @@
                 showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
             }
         }
+        
+        // --- NEW: Function to save all user data within a transaction. ---
+        // This function will be called BY the transaction, not directly.
+        function updateUserDataInTransaction(transaction, userId, newData) {
+            if (!userId || !db) {
+                throw new Error("User ID or DB not available for transaction.");
+            }
 
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/mafiaGameData/profile`);
+            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userId}`);
+
+            const privateData = {
+                ...newData,
+                seenQuestionHashes: Array.from(newData.seenQuestionHashes || new Set()),
+                lastUpdated: serverTimestamp()
+            };
+            
+            const publicData = {
+                displayName: newData.displayName,
+                publicUserId: newData.publicUserId,
+                currentStage: newData.currentStage,
+                avatarUrl: newData.avatarUrl,
+                lastUpdated: serverTimestamp()
+            };
+
+            transaction.set(userDocRef, privateData, { merge: true });
+            transaction.set(leaderboardDocRef, publicData, { merge: true });
+        }
+        
+        // --- NEW: Function to check for name uniqueness and save data in a transaction ---
+        async function checkAndReserveDisplayName(newName, oldName = null) {
+            if (!currentUserId || !db) return { success: false, error: "AUTH_ERROR" };
+
+            const newNameLower = newName.toLowerCase();
+            const oldNameLower = oldName ? oldName.toLowerCase() : null;
+            
+            // If name hasn't changed (only case might have), no need to check uniqueness.
+            if (newNameLower === oldNameLower) {
+                await saveUserData(); // Just save the potential case change
+                return { success: true };
+            }
+
+            const newNameRef = doc(db, "displayNames", newNameLower);
+            const oldNameRef = oldNameLower ? doc(db, "displayNames", oldNameLower) : null;
+            
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const newNameDoc = await transaction.get(newNameRef);
+                    
+                    // Check if the new name is taken by ANOTHER user.
+                    if (newNameDoc.exists() && newNameDoc.data().uid !== currentUserId) {
+                        throw new Error("NAME_TAKEN");
+                    }
+                    
+                    // Prepare the complete data to be saved.
+                    const updatedGameState = { ...gameState, displayName: newName };
+
+                    // Update the main user data and leaderboard data
+                    updateUserDataInTransaction(transaction, currentUserId, updatedGameState);
+                    
+                    // Create the reservation for the new display name
+                    transaction.set(newNameRef, { uid: currentUserId });
+                    
+                    // If this was a name change, remove the old name reservation
+                    if (oldNameRef) {
+                        transaction.delete(oldNameRef);
+                    }
+                });
+
+                console.log(`Transaction successful. Display name '${newName}' reserved.`);
+                return { success: true };
+
+            } catch (error) {
+                console.error("Transaction failed:", error);
+                if (error.message === "NAME_TAKEN") {
+                    return { success: false, error: "NAME_TAKEN" };
+                }
+                return { success: false, error: "TRANSACTION_FAILED" };
+            }
+        }
+        
+        // --- This function is now only for simple data saves that don't change the name ---
         async function saveUserData() {
             const userIdToSave = currentUserId;
             if (!userIdToSave || !db) return;
@@ -1192,6 +1267,7 @@
             };
 
             try {
+                // We don't need a transaction here if the name isn't changing.
                 await Promise.all([
                     setDoc(userDocRef, privateData, { merge: true }),
                     setDoc(leaderboardDocRef, publicData, { merge: true })
@@ -1405,21 +1481,18 @@
             }
         }
         
-        // --- NEW: Function to check if a string is a valid image URL ---
         function isValidImageUrl(url) {
             if (!url) return false;
-            // A simple regex to check for http/https and common image extensions
             const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
             return imageRegex.test(url);
         }
 
-        // --- NEW: Function to preview avatar from a URL ---
         function previewAvatarFromUrl() {
             if (!avatarUrlInput || !avatarPreviewImage || !avatarPreviewContainer || !avatarErrorMessage || !modalConfirmBtn) return;
             
             const url = avatarUrlInput.value.trim();
             avatarErrorMessage.classList.add('hidden');
-            modalConfirmBtn.disabled = true; // Always disable confirm until image loads
+            modalConfirmBtn.disabled = true;
 
             if (!isValidImageUrl(url)) {
                 avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست. لینک باید مستقیم و به یک فایل تصویری (jpg, png, gif) ختم شود.';
@@ -1436,11 +1509,10 @@
             };
             avatarPreviewImage.onload = () => {
                 avatarPreviewContainer.classList.remove('hidden');
-                modalConfirmBtn.disabled = false; // Enable confirm button on successful load
+                modalConfirmBtn.disabled = false;
             };
         }
 
-        // --- MODIFIED: Function to save avatar URL directly to Firestore ---
         async function saveAvatarFromUrl() {
             const userIdToSave = currentUserId;
             if (!avatarUrlInput || !userIdToSave) {
@@ -1466,7 +1538,7 @@
 
             try {
                 gameState.avatarUrl = newUrl;
-                await saveUserData();
+                await saveUserData(); // This is safe as it doesn't change the display name
                 updateUI();
                 hideModal();
                 showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
@@ -1477,7 +1549,6 @@
                     avatarErrorMessage.classList.remove('hidden');
                 }
             } finally {
-                // Re-enable buttons in case of failure
                 if(modalConfirmBtn) modalConfirmBtn.disabled = false;
                 if(modalCancelBtn) modalCancelBtn.disabled = false;
             }
@@ -1518,12 +1589,13 @@
             return trimmedName;
         }
 
+        // --- MODIFIED: Function to handle changing display name using the transaction ---
         async function handleChangeDisplayName() {
             if(!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
-            if (newName === gameState.displayName) {
+            if (newName.toLowerCase() === gameState.displayName.toLowerCase()) {
                 if(changeNameErrorMessage) {
                    changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                    changeNameErrorMessage.classList.remove('hidden');
@@ -1532,11 +1604,31 @@
                 return;
             }
 
-            gameState.displayName = newName;
-            await saveUserData();
-            updateUI();
-            hideModal();
-            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+            modalConfirmBtn.disabled = true;
+            modalCancelBtn.disabled = true;
+            
+            const result = await checkAndReserveDisplayName(newName, gameState.displayName);
+            
+            modalConfirmBtn.disabled = false;
+            modalCancelBtn.disabled = false;
+
+            if (result.success) {
+                gameState.displayName = newName;
+                updateUI();
+                hideModal();
+                showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+            } else if (result.error === "NAME_TAKEN") {
+                if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
+            } else {
+                 if(changeNameErrorMessage) {
+                   changeNameErrorMessage.textContent = "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید.";
+                   changeNameErrorMessage.classList.remove('hidden');
+                }
+            }
         }
 
         async function generateMafiaFact() {
@@ -1662,7 +1754,8 @@
                     }
                 });
             }
-
+            
+            // --- MODIFIED: Register button now uses the transaction-based function ---
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
@@ -1681,10 +1774,27 @@
 
                     if (!validatedName || !isPublicIdValid) return;
 
-                    gameState.displayName = validatedName;
+                    registerBtn.disabled = true;
                     
-                    await saveUserData();
-                    updateUI();
+                    const result = await checkAndReserveDisplayName(validatedName, null);
+
+                    registerBtn.disabled = false;
+
+                    if (result.success) {
+                        gameState.displayName = validatedName;
+                        updateUI();
+                    } else if (result.error === "NAME_TAKEN") {
+                        if(inputErrorMessage) {
+                            inputErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
+                            inputErrorMessage.classList.remove('hidden');
+                        }
+                        if(displayNameInput) displayNameInput.classList.add('invalid');
+                    } else {
+                        if(inputErrorMessage) {
+                            inputErrorMessage.textContent = "خطا در ثبت نام. لطفاً مجدداً تلاش کنید.";
+                            inputErrorMessage.classList.remove('hidden');
+                        }
+                    }
                 });
             }
 
@@ -1700,19 +1810,17 @@
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
-                    // --- MODIFIED: Show avatar URL modal ---
                     showModal(
                         "تغییر آواتار",
                         "لینک مستقیم یک تصویر را وارد کرده و دکمه پیش‌نمایش را بزنید.",
                         "ذخیره", "لغو",
-                        saveAvatarFromUrl,  // onConfirm
-                        hideModal,          // onCancel
+                        saveAvatarFromUrl,
+                        hideModal,
                         "avatar"
                     );
                 });
             }
             
-            // --- NEW: Event listeners for avatar URL UI ---
             if(previewAvatarBtn) {
                 previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
             }
@@ -1725,7 +1833,7 @@
                 });
             }
 
-            const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null); // MODIFIED: Added new buttons
+            const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null);
             allActionButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
@@ -1832,7 +1940,6 @@
             newDisplayNameInput = document.getElementById('new-display-name-input');
             changeNameErrorMessage = document.getElementById('change-name-error-message');
             
-            // --- NEW/MODIFIED: Avatar URL UI element initialization ---
             avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
             avatarUrlInput = document.getElementById('avatar-url-input');
             previewAvatarBtn = document.getElementById('preview-avatar-btn');
