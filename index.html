@@ -1831,19 +1831,19 @@
                 });
             }
             
-            if (devIntroBtnHeader) {
-                devIntroBtnHeader.addEventListener('click', showDevelopersPanel);
+            // --- FIX: Event listeners for Developers & Leaderboard Panels ---
+            if (devIntroBtnHeader && typeof showDevelopersPanel === "function") {
+                devIntroBtnHeader.addEventListener("click", showDevelopersPanel);
+            }
+            if (closeDevelopersPanelBtn && typeof hideDevelopersPanel === "function") {
+                closeDevelopersPanelBtn.addEventListener("click", hideDevelopersPanel);
             }
 
-            if (closeDevelopersPanelBtn) {
-                closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
+            if (leaderboardIconBtnHeader && typeof showLeaderboardPanel === "function") {
+                leaderboardIconBtnHeader.addEventListener("click", showLeaderboardPanel);
             }
-
-            if (leaderboardIconBtnHeader) {
-                leaderboardIconBtnHeader.addEventListener('click', showLeaderboardPanel);
-            }
-            if (closeLeaderboardPanelBtn) {
-                closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
+            if (closeLeaderboardPanelBtn && typeof hideLeaderboardPanel === "function") {
+                closeLeaderboardPanelBtn.addEventListener("click", hideLeaderboardPanel);
             }
 
             if(backToMainBtn) {
