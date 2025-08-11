@@ -185,6 +185,15 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
         @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
+        
+        /* --- START: Style for icons inside buttons --- */
+        .btn-clash-secondary svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px; /* Space between icon and text */
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
+        }
+        /* --- END: Style for icons inside buttons --- */
 
         .btn-clash-secondary:hover {
             background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
@@ -368,11 +377,8 @@
         #avatar-image { width: 100%; height: 100%; object-fit: cover; }
         
         #main-screen-header { 
-            display: flex; 
-            justify-content: center; /* MODIFIED: to keep title centered */
-            align-items: center; 
-            width: 100%; 
-            padding: 0.5rem; 
+            display: flex; justify-content: center; align-items: center; width: 100%; 
+            padding: 0.5rem; margin-bottom: 0; /* Reduced margin-bottom */
             background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
             background-color: #6e4a31;
             border-radius: 12px;
@@ -380,19 +386,6 @@
             box-shadow: 0 6px 10px rgba(0,0,0,0.5);
             position: relative;
             z-index: 10;
-        }
-
-        /* --- NEW/MODIFIED: Container for buttons below the header --- */
-        #header-secondary-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            width: 100%;
-            margin-top: -20px; /* Pulls the buttons up under the header */
-            padding-bottom: 1rem; /* Space below the buttons */
-            position: relative;
-            z-index: 5; /* Ensures buttons are clickable */
         }
         
         #main-title {
@@ -414,16 +407,6 @@
         @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
         @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
 
-        /* Shared style for header icon buttons */
-        .header-icon-btn {
-            background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
-            padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
-            align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
-        }
-        .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
-        .header-icon-btn svg { width: 24px; height: 24px; pointer-events: none; } /* Slightly larger icon */
-        
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.75rem; width: 100%; padding-bottom: 5px; }
         #start-game-btn { order: 0; }
@@ -602,21 +585,23 @@
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
             <div>
-                <!-- === MODIFIED STRUCTURE === -->
-                <div id="main-screen-header" class="justify-center">
+                <div id="main-screen-header">
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                    <!-- Buttons moved out of here -->
                 </div>
 
-                <!-- === NEW CONTAINER FOR BUTTONS === -->
-                <div id="header-secondary-actions">
-                    <button id="leaderboard-icon-btn-header" class="header-icon-btn" title="رتبه‌بندی کاربران">
+                <!-- START: NEW BUTTONS CONTAINER -->
+                <div id="secondary-actions-container" class="flex justify-center items-center gap-3 my-4 sm:my-6">
+                    <button id="leaderboard-btn" class="btn-clash btn-clash-secondary clash-font">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 4.67 3.41 8.94 8 10.91c4.59-1.97 8-6.24 8-10.91V5l-8-3z"/></svg>
+                        <span>کاربران برتر</span>
                     </button>
-                    <button id="dev-intro-icon-btn-header" class="header-icon-btn" title="معرفی توسعه دهندگان">
+                    <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M17 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>سازندگان</span>
                     </button>
                 </div>
+                <!-- END: NEW BUTTONS CONTAINER -->
+
 
                 <div id="auth-panel" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
                     <!-- Registration Form -->
@@ -856,7 +841,7 @@
             seenQuestionHashes: new Set(),
         };
 
-        // --- UPDATED: Removed login form element variables ---
+        // --- UPDATED: Element variable declarations ---
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
             authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
@@ -864,7 +849,7 @@
             publicUserIdOutput,
             editNameBtn,
             mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, devIntroBtnHeader,
+            startGameBtn, mafiaFactBtn,
             stageDisplay, questionText,
             optionsContainer, questionExplanation, backToMainBtn,
             gameFeedback, aiThinkingIndicator,
@@ -872,7 +857,8 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn,
-            leaderboardIconBtnHeader, leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
+            leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn,
+            developersBtn, leaderboardBtn; // <-- NEW: Buttons variables
         
         // --- NEW: Elements for avatar upload ---
         let avatarUploadUiContainer, avatarFileInput, selectAvatarFileBtn,
@@ -1852,17 +1838,19 @@
                 });
             }
             
-            if (devIntroBtnHeader) {
-                devIntroBtnHeader.addEventListener('click', showDevelopersPanel);
+            // --- START: UPDATED EVENT LISTENERS ---
+            if (developersBtn) {
+                developersBtn.addEventListener('click', showDevelopersPanel);
             }
+            if (leaderboardBtn) {
+                leaderboardBtn.addEventListener('click', showLeaderboardPanel);
+            }
+            // --- END: UPDATED EVENT LISTENERS ---
 
             if (closeDevelopersPanelBtn) {
                 closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
 
-            if (leaderboardIconBtnHeader) {
-                leaderboardIconBtnHeader.addEventListener('click', showLeaderboardPanel);
-            }
             if (closeLeaderboardPanelBtn) {
                 closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
             }
@@ -1906,7 +1894,12 @@
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
-            devIntroBtnHeader = document.getElementById('dev-intro-icon-btn-header');
+            
+            // --- START: UPDATED ELEMENT SELECTION ---
+            developersBtn = document.getElementById('developers-btn');
+            leaderboardBtn = document.getElementById('leaderboard-btn');
+            // --- END: UPDATED ELEMENT SELECTION ---
+
             stageDisplay = document.getElementById('stage-display');
             questionText = document.getElementById('question-text');
             optionsContainer = document.getElementById('options-container');
@@ -1938,7 +1931,6 @@
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
 
-            leaderboardIconBtnHeader = document.getElementById('leaderboard-icon-btn-header');
             leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
             leaderboardList = document.getElementById('leaderboard-list');
             closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
