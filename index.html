@@ -375,7 +375,6 @@
             border-radius: 12px;
             border: 4px solid #4a2f20;
             box-shadow: 0 6px 10px rgba(0,0,0,0.5);
-            /* Android Fix: Ensure header buttons are clickable */
             position: relative;
             z-index: 10;
         }
@@ -405,6 +404,10 @@
             padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
             align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
+            /* === BUG FIX: Ensure buttons are on top of the title's bounding box === */
+            position: relative;
+            z-index: 5;
+            /* === END OF BUG FIX === */
         }
         .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
         .header-icon-btn svg { width: 24px; height: 24px; pointer-events: none; } /* Slightly larger icon */
@@ -1831,19 +1834,19 @@
                 });
             }
             
-            // --- FIX: Event listeners for Developers & Leaderboard Panels ---
-            if (devIntroBtnHeader && typeof showDevelopersPanel === "function") {
-                devIntroBtnHeader.addEventListener("click", showDevelopersPanel);
-            }
-            if (closeDevelopersPanelBtn && typeof hideDevelopersPanel === "function") {
-                closeDevelopersPanelBtn.addEventListener("click", hideDevelopersPanel);
+            if (devIntroBtnHeader) {
+                devIntroBtnHeader.addEventListener('click', showDevelopersPanel);
             }
 
-            if (leaderboardIconBtnHeader && typeof showLeaderboardPanel === "function") {
-                leaderboardIconBtnHeader.addEventListener("click", showLeaderboardPanel);
+            if (closeDevelopersPanelBtn) {
+                closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             }
-            if (closeLeaderboardPanelBtn && typeof hideLeaderboardPanel === "function") {
-                closeLeaderboardPanelBtn.addEventListener("click", hideLeaderboardPanel);
+
+            if (leaderboardIconBtnHeader) {
+                leaderboardIconBtnHeader.addEventListener('click', showLeaderboardPanel);
+            }
+            if (closeLeaderboardPanelBtn) {
+                closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
             }
 
             if(backToMainBtn) {
