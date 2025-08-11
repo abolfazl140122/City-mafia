@@ -504,7 +504,7 @@
             margin-right: 4px;
         }
 
-        /* --- NEW STYLES for Avatar Upload --- */
+        /* --- NEW STYLES for Avatar URL Input --- */
         #avatar-preview-container {
             margin: 1rem auto;
             width: 150px;
@@ -521,27 +521,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-        #avatar-upload-progress-container {
-            width: 90%;
-            margin: 1rem auto 0;
-            background-color: var(--clash-panel-border-dark);
-            border-radius: 8px;
-            padding: 4px;
-            border: 1px solid var(--clash-panel-border);
-        }
-        #avatar-upload-progress-bar {
-            width: 0%;
-            height: 12px;
-            background-color: var(--clash-green);
-            border-radius: 5px;
-            transition: width 0.3s ease;
-        }
-        #avatar-upload-status {
-            font-size: 0.8rem;
-            margin-top: 4px;
-            color: var(--clash-text-light);
-            text-align: center;
         }
 
     </style>
@@ -656,23 +635,20 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- === AVATAR UPLOAD UI === -->
+                <!-- === MODIFIED: AVATAR URL UI === -->
                 <div id="avatar-upload-ui-container" class="hidden">
-                    <input type="file" id="avatar-file-input" class="hidden" accept="image/png, image/jpeg, image/gif">
-                    <button id="select-avatar-file-btn" class="btn-clash btn-clash-secondary my-4 clash-font">انتخاب فایل از گالری</button>
-                    
+                    <div class="flex flex-col sm:flex-row items-stretch gap-2 my-4">
+                        <input type="url" id="avatar-url-input" placeholder="لینک مستقیم تصویر را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr; text-align: left;">
+                        <button id="preview-avatar-btn" class="btn-clash btn-clash-secondary clash-font whitespace-nowrap px-4">پیش‌نمایش</button>
+                    </div>
+
                     <div id="avatar-preview-container" class="hidden">
                         <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
                     </div>
 
-                    <div id="avatar-upload-progress-container" class="hidden">
-                        <div id="avatar-upload-progress-bar"></div>
-                        <p id="avatar-upload-status"></p>
-                    </div>
-
                     <p id="avatar-error-message" class="hidden"></p>
                 </div>
-                <!-- === END OF AVATAR UPLOAD UI === -->
+                <!-- === END OF AVATAR URL UI === -->
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -766,12 +742,12 @@
     </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH AUDIO AND ANIMATION ENHANCEMENTS) ---
+        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // --- NEW: Import Firebase Storage modules ---
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+        // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
+        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -814,7 +790,7 @@
         let app;
         let auth;
         let db;
-        let storage; // <-- NEW: Firebase Storage instance
+        // let storage; // <-- REMOVED: No longer needed
         let currentUserId = null;
         let isAuthReady = false;
 
@@ -829,7 +805,7 @@
             seenQuestionHashes: new Set(),
         };
         
-        // --- MODIFIED: Removed old header button variables, added new button variables ---
+        // --- Variables ---
         let loadingScreen, loadingMessage, mainScreen, gameScreen,
             authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
@@ -837,7 +813,7 @@
             publicUserIdOutput,
             editNameBtn,
             mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn, // <-- NEW VARIABLES
+            startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn,
             stageDisplay, questionText,
             optionsContainer, questionExplanation, backToMainBtn,
             gameFeedback, aiThinkingIndicator,
@@ -847,14 +823,12 @@
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
         
-        // --- NEW: Elements for avatar upload ---
-        let avatarUploadUiContainer, avatarFileInput, selectAvatarFileBtn,
-            avatarPreviewContainer, avatarPreviewImage, avatarUploadProgressContainer,
-            avatarUploadProgressBar, avatarUploadStatus, avatarErrorMessage;
+        // --- NEW/MODIFIED: Elements for avatar URL input ---
+        let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
+            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
-        let selectedAvatarFile = null; // --- NEW: To store the selected file for upload
 
         function simpleHash(str) {
             let hash = 0;
@@ -901,6 +875,8 @@
             if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
             if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
+            if (avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
+
 
             const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
 
@@ -919,13 +895,11 @@
                 }
             } else if (modalType === "avatar") {
                 avatarUploadUiContainer.classList.remove('hidden');
-                // Reset avatar upload UI
+                // Reset avatar URL UI
+                if(avatarUrlInput) avatarUrlInput.value = '';
                 if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
-                if(avatarUploadProgressContainer) avatarUploadProgressContainer.classList.add('hidden');
                 if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
-                if(avatarFileInput) avatarFileInput.value = '';
-                selectedAvatarFile = null;
-
+                
                 if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
@@ -936,7 +910,8 @@
             }
 
             modalConfirmBtn.textContent = confirmText;
-            modalConfirmBtn.disabled = (modalType === 'avatar'); // Disable confirm until a file is chosen
+            // --- MODIFIED: Disable confirm button for avatar until a valid URL is previewed ---
+            modalConfirmBtn.disabled = (modalType === 'avatar');
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
 
@@ -1130,8 +1105,8 @@
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                storage = getStorage(app); // --- NEW: Initialize Firebase Storage
-                console.log("Firebase initialized (Auth, Firestore, Storage).");
+                // storage = getStorage(app); // --- REMOVED: No longer needed
+                console.log("Firebase initialized (Auth, Firestore).");
 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
@@ -1194,7 +1169,6 @@
         }
 
         async function saveUserData() {
-            // Data is always saved to the current user's session ID.
             const userIdToSave = currentUserId;
             if (!userIdToSave || !db) return;
             
@@ -1430,125 +1404,82 @@
                 questionExplanation.classList.remove('hidden');
             }
         }
-
-        // --- NEW: Function to resize image before upload ---
-        function resizeImage(file, maxWidth, maxHeight, quality) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.src = URL.createObjectURL(file);
-                img.onload = () => {
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                    } else {
-                        if (height > maxHeight) {
-                            width = Math.round((width * maxHeight) / height);
-                            height = maxHeight;
-                        }
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    canvas.toBlob(blob => {
-                        resolve(blob);
-                    }, 'image/jpeg', quality);
-                };
-                img.onerror = (error) => reject(error);
-            });
-        }
         
-        // --- NEW: Function to handle file selection from input ---
-        function handleAvatarFileSelected(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // --- NEW: Function to check if a string is a valid image URL ---
+        function isValidImageUrl(url) {
+            if (!url) return false;
+            // A simple regex to check for http/https and common image extensions
+            const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
+            return imageRegex.test(url);
+        }
 
-            // Validation
-            if (!file.type.startsWith('image/')) {
-                avatarErrorMessage.textContent = 'فقط فایل‌های تصویری مجاز هستند.';
+        // --- NEW: Function to preview avatar from a URL ---
+        function previewAvatarFromUrl() {
+            if (!avatarUrlInput || !avatarPreviewImage || !avatarPreviewContainer || !avatarErrorMessage || !modalConfirmBtn) return;
+            
+            const url = avatarUrlInput.value.trim();
+            avatarErrorMessage.classList.add('hidden');
+            modalConfirmBtn.disabled = true; // Always disable confirm until image loads
+
+            if (!isValidImageUrl(url)) {
+                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست. لینک باید مستقیم و به یک فایل تصویری (jpg, png, gif) ختم شود.';
                 avatarErrorMessage.classList.remove('hidden');
+                avatarPreviewContainer.classList.add('hidden');
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) { // 5 MB limit
-                avatarErrorMessage.textContent = 'حجم فایل نباید بیشتر از 5 مگابایت باشد.';
+
+            avatarPreviewImage.src = url;
+            avatarPreviewImage.onerror = () => {
+                avatarErrorMessage.textContent = 'خطا در بارگذاری تصویر. لینک را بررسی کنید یا از لینک دیگری استفاده نمایید.';
                 avatarErrorMessage.classList.remove('hidden');
+                avatarPreviewContainer.classList.add('hidden');
+            };
+            avatarPreviewImage.onload = () => {
+                avatarPreviewContainer.classList.remove('hidden');
+                modalConfirmBtn.disabled = false; // Enable confirm button on successful load
+            };
+        }
+
+        // --- MODIFIED: Function to save avatar URL directly to Firestore ---
+        async function saveAvatarFromUrl() {
+            const userIdToSave = currentUserId;
+            if (!avatarUrlInput || !userIdToSave) {
+                if(avatarErrorMessage) {
+                    avatarErrorMessage.textContent = 'خطا: فیلد ورودی URL یافت نشد.';
+                    avatarErrorMessage.classList.remove('hidden');
+                }
                 return;
             }
             
-            avatarErrorMessage.classList.add('hidden');
-            selectedAvatarFile = file;
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                avatarPreviewImage.src = e.target.result;
-                avatarPreviewContainer.classList.remove('hidden');
-                modalConfirmBtn.disabled = false; // Enable upload button
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- NEW: Function to upload the selected and resized avatar ---
-        async function uploadAndSaveAvatar() {
-            const userIdToSave = currentUserId;
-            if (!selectedAvatarFile || !userIdToSave || !storage) {
-                avatarErrorMessage.textContent = 'فایلی برای آپلود انتخاب نشده است.';
-                avatarErrorMessage.classList.remove('hidden');
+            const newUrl = avatarUrlInput.value.trim();
+            
+            if (!isValidImageUrl(newUrl)) {
+                if(avatarErrorMessage) {
+                    avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
+                    avatarErrorMessage.classList.remove('hidden');
+                }
                 return;
             }
 
             modalConfirmBtn.disabled = true;
             modalCancelBtn.disabled = true;
-            selectAvatarFileBtn.disabled = true;
-
-            avatarUploadProgressContainer.classList.remove('hidden');
-            avatarUploadStatus.textContent = 'در حال آماده‌سازی تصویر...';
 
             try {
-                const resizedBlob = await resizeImage(selectedAvatarFile, 400, 400, 0.85);
-
-                const filePath = `artifacts/${appId}/user_avatars/${userIdToSave}.jpg`;
-                const storageRef = ref(storage, filePath);
-                const uploadTask = uploadBytesResumable(storageRef, resizedBlob);
-
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        avatarUploadProgressBar.style.width = progress + '%';
-                        avatarUploadStatus.textContent = `در حال آپلود: ${Math.round(progress)}%`;
-                    }, 
-                    (error) => {
-                        console.error("Upload failed:", error);
-                        avatarErrorMessage.textContent = 'خطا در آپلود تصویر. لطفاً دوباره تلاش کنید.';
-                        avatarErrorMessage.classList.remove('hidden');
-                        modalConfirmBtn.disabled = false;
-                        modalCancelBtn.disabled = false;
-                        selectAvatarFileBtn.disabled = false;
-                    }, 
-                    async () => {
-                        avatarUploadStatus.textContent = 'آپلود کامل شد. در حال ذخیره...';
-                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        
-                        gameState.avatarUrl = downloadURL;
-                        await saveUserData();
-                        updateUI();
-                        hideModal();
-                        showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
-                    }
-                );
-            } catch (error) {
-                 console.error("Image processing/upload error:", error);
-                 avatarErrorMessage.textContent = 'خطا در پردازش تصویر.';
-                 avatarErrorMessage.classList.remove('hidden');
-                 modalConfirmBtn.disabled = false;
-                 modalCancelBtn.disabled = false;
-                 selectAvatarFileBtn.disabled = false;
+                gameState.avatarUrl = newUrl;
+                await saveUserData();
+                updateUI();
+                hideModal();
+                showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
+            } catch(error) {
+                console.error("Error saving avatar URL:", error);
+                if(avatarErrorMessage) {
+                    avatarErrorMessage.textContent = 'خطا در ذخیره سازی آواتار. لطفاً دوباره تلاش کنید.';
+                    avatarErrorMessage.classList.remove('hidden');
+                }
+            } finally {
+                // Re-enable buttons in case of failure
+                if(modalConfirmBtn) modalConfirmBtn.disabled = false;
+                if(modalCancelBtn) modalCancelBtn.disabled = false;
             }
         }
         
@@ -1769,24 +1700,29 @@
             if (avatarContainer) {
                 avatarContainer.addEventListener('click', () => {
                     if (!isAuthReady || !gameState.displayName) return;
-                    // --- UPDATED: Show avatar upload modal ---
+                    // --- MODIFIED: Show avatar URL modal ---
                     showModal(
                         "تغییر آواتار",
-                        "یک تصویر برای آواتار خود انتخاب کنید. (حداکثر حجم: 5MB)",
-                        "آپلود و ذخیره", "لغو",
-                        uploadAndSaveAvatar, // onConfirm
-                        hideModal,           // onCancel
+                        "لینک مستقیم یک تصویر را وارد کرده و دکمه پیش‌نمایش را بزنید.",
+                        "ذخیره", "لغو",
+                        saveAvatarFromUrl,  // onConfirm
+                        hideModal,          // onCancel
                         "avatar"
                     );
                 });
             }
             
-            // --- NEW: Event listeners for avatar upload UI ---
-            if(selectAvatarFileBtn) {
-                selectAvatarFileBtn.addEventListener('click', () => avatarFileInput.click());
+            // --- NEW: Event listeners for avatar URL UI ---
+            if(previewAvatarBtn) {
+                previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
             }
-            if(avatarFileInput) {
-                avatarFileInput.addEventListener('change', handleAvatarFileSelected);
+            if(avatarUrlInput) {
+                avatarUrlInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        previewAvatarFromUrl();
+                    }
+                });
             }
 
             const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null); // MODIFIED: Added new buttons
@@ -1825,7 +1761,6 @@
                 });
             }
             
-            // --- MODIFIED: Attaching events to the new buttons ---
             if (developersBtn) {
                 developersBtn.addEventListener('click', showDevelopersPanel);
             }
@@ -1856,13 +1791,11 @@
         }
         
         async function initializeGame() {
-            // --- MODIFIED: Getting the new button elements ---
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
             
-            // Auth Panel Elements
             authPanel = document.getElementById('auth-panel');
             registrationForm = document.getElementById('registration-form');
             displayNameInput = document.getElementById('display-name-input');
@@ -1882,8 +1815,8 @@
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
             mafiaFactBtn = document.getElementById('mafia-fact-btn');
-            developersBtn = document.getElementById('developers-btn'); // <-- New
-            leaderboardBtn = document.getElementById('leaderboard-btn'); // <-- New
+            developersBtn = document.getElementById('developers-btn');
+            leaderboardBtn = document.getElementById('leaderboard-btn');
             stageDisplay = document.getElementById('stage-display');
             questionText = document.getElementById('question-text');
             optionsContainer = document.getElementById('options-container');
@@ -1899,15 +1832,12 @@
             newDisplayNameInput = document.getElementById('new-display-name-input');
             changeNameErrorMessage = document.getElementById('change-name-error-message');
             
-            // --- NEW: Avatar upload UI element initialization ---
+            // --- NEW/MODIFIED: Avatar URL UI element initialization ---
             avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
-            avatarFileInput = document.getElementById('avatar-file-input');
-            selectAvatarFileBtn = document.getElementById('select-avatar-file-btn');
+            avatarUrlInput = document.getElementById('avatar-url-input');
+            previewAvatarBtn = document.getElementById('preview-avatar-btn');
             avatarPreviewContainer = document.getElementById('avatar-preview-container');
             avatarPreviewImage = document.getElementById('avatar-preview-image');
-            avatarUploadProgressContainer = document.getElementById('avatar-upload-progress-container');
-            avatarUploadProgressBar = document.getElementById('avatar-upload-progress-bar');
-            avatarUploadStatus = document.getElementById('avatar-upload-status');
             avatarErrorMessage = document.getElementById('avatar-error-message');
 
             modalConfirmBtn = document.getElementById('modal-confirm-btn');
