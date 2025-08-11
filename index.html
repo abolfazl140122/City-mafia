@@ -742,12 +742,12 @@
     </div>
 
     <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT & UNIQUE DISPLAY NAME) ---
+        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // --- MODIFIED: Added runTransaction ---
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
+        // --- MODIFIED: Added writeBatch and deleteDoc for managing displayNames collection ---
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, writeBatch, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
         // --- AUDIO MANAGER ---
         const audioManager = {
             sounds: {},
@@ -1162,91 +1162,27 @@
             }
         }
         
-        // --- NEW: Function to save all user data within a transaction. ---
-        // This function will be called BY the transaction, not directly.
-        function updateUserDataInTransaction(transaction, userId, newData) {
-            if (!userId || !db) {
-                throw new Error("User ID or DB not available for transaction.");
-            }
-
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/mafiaGameData/profile`);
-            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userId}`);
-
-            const privateData = {
-                ...newData,
-                seenQuestionHashes: Array.from(newData.seenQuestionHashes || new Set()),
-                lastUpdated: serverTimestamp()
-            };
-            
-            const publicData = {
-                displayName: newData.displayName,
-                publicUserId: newData.publicUserId,
-                currentStage: newData.currentStage,
-                avatarUrl: newData.avatarUrl,
-                lastUpdated: serverTimestamp()
-            };
-
-            transaction.set(userDocRef, privateData, { merge: true });
-            transaction.set(leaderboardDocRef, publicData, { merge: true });
-        }
-        
-        // --- NEW: Function to check for name uniqueness and save data in a transaction ---
-        async function checkAndReserveDisplayName(newName, oldName = null) {
-            if (!currentUserId || !db) return { success: false, error: "AUTH_ERROR" };
-
-            const newNameLower = newName.toLowerCase();
-            const oldNameLower = oldName ? oldName.toLowerCase() : null;
-            
-            // If name hasn't changed (only case might have), no need to check uniqueness.
-            if (newNameLower === oldNameLower) {
-                await saveUserData(); // Just save the potential case change
-                return { success: true };
-            }
-
-            const newNameRef = doc(db, "displayNames", newNameLower);
-            const oldNameRef = oldNameLower ? doc(db, "displayNames", oldNameLower) : null;
-            
+        // --- NEW: Function to check if a display name is already taken.
+        async function isDisplayNameTaken(name) {
+            if (!db) return true; // Fail safe
+            const nameRef = doc(db, `artifacts/${appId}/displayNames`, name);
             try {
-                await runTransaction(db, async (transaction) => {
-                    const newNameDoc = await transaction.get(newNameRef);
-                    
-                    // Check if the new name is taken by ANOTHER user.
-                    if (newNameDoc.exists() && newNameDoc.data().uid !== currentUserId) {
-                        throw new Error("NAME_TAKEN");
-                    }
-                    
-                    // Prepare the complete data to be saved.
-                    const updatedGameState = { ...gameState, displayName: newName };
-
-                    // Update the main user data and leaderboard data
-                    updateUserDataInTransaction(transaction, currentUserId, updatedGameState);
-                    
-                    // Create the reservation for the new display name
-                    transaction.set(newNameRef, { uid: currentUserId });
-                    
-                    // If this was a name change, remove the old name reservation
-                    if (oldNameRef) {
-                        transaction.delete(oldNameRef);
-                    }
-                });
-
-                console.log(`Transaction successful. Display name '${newName}' reserved.`);
-                return { success: true };
-
+                const docSnap = await getDoc(nameRef);
+                // The name is taken if the document exists AND the userId in it is not the current user's.
+                return docSnap.exists() && docSnap.data().userId !== currentUserId;
             } catch (error) {
-                console.error("Transaction failed:", error);
-                if (error.message === "NAME_TAKEN") {
-                    return { success: false, error: "NAME_TAKEN" };
-                }
-                return { success: false, error: "TRANSACTION_FAILED" };
+                console.error("Error checking display name:", error);
+                return true; // Assume taken on error to be safe
             }
         }
-        
-        // --- This function is now only for simple data saves that don't change the name ---
-        async function saveUserData() {
+
+        async function saveUserData(oldDisplayName = null) {
             const userIdToSave = currentUserId;
             if (!userIdToSave || !db) return;
-            
+
+            const batch = writeBatch(db);
+
+            // 1. User's private profile data
             const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToSave}/mafiaGameData/profile`);
             const privateData = {
                 displayName: gameState.displayName,
@@ -1256,7 +1192,9 @@
                 seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
                 lastUpdated: serverTimestamp()
             };
-            
+            batch.set(userDocRef, privateData, { merge: true });
+
+            // 2. Public leaderboard data
             const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userIdToSave}`);
             const publicData = {
                 displayName: gameState.displayName,
@@ -1265,17 +1203,35 @@
                 avatarUrl: gameState.avatarUrl,
                 lastUpdated: serverTimestamp()
             };
+            batch.set(leaderboardDocRef, publicData, { merge: true });
+            
+            // --- MODIFIED: Manage the displayNames collection for uniqueness ---
+            // If the name has changed, delete the old name record and create a new one.
+            if (oldDisplayName && oldDisplayName !== gameState.displayName) {
+                const oldNameRef = doc(db, `artifacts/${appId}/displayNames`, oldDisplayName);
+                batch.delete(oldNameRef);
+            }
+            // Add/update the new display name record.
+            const newNameRef = doc(db, `artifacts/${appId}/displayNames`, gameState.displayName);
+            batch.set(newNameRef, { userId: userIdToSave });
 
             try {
-                // We don't need a transaction here if the name isn't changing.
-                await Promise.all([
-                    setDoc(userDocRef, privateData, { merge: true }),
-                    setDoc(leaderboardDocRef, publicData, { merge: true })
-                ]);
-                 console.log("User data and public leaderboard data saved successfully for", userIdToSave);
+                await batch.commit();
+                console.log("User data and display name record saved successfully for", userIdToSave);
             } catch (error) {
-                console.error("Error saving user data:", error);
-                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
+                console.error("Error saving user data with batch:", error);
+                // Handle specific Firestore permission errors for duplicate names
+                if (error.code === 'permission-denied') {
+                    showModal("خطا", "این نام قبلاً توسط شخص دیگری گرفته شده است. لطفاً نام دیگری انتخاب کنید.", "باشه");
+                    // Revert local gameState if the name change failed
+                    if (oldDisplayName) {
+                        gameState.displayName = oldDisplayName;
+                    }
+                } else {
+                    showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
+                }
+                // Throw the error so the calling function knows it failed
+                throw error;
             }
         }
         
@@ -1449,7 +1405,7 @@
                 gameState.seenQuestionHashes.add(questionHash);
                 gameState.currentStage++;
                 
-                await saveUserData();
+                await saveUserData(gameState.displayName).catch(() => {}); // Pass current name, no old name to delete
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
                 audioManager.play('incorrect');
@@ -1538,7 +1494,7 @@
 
             try {
                 gameState.avatarUrl = newUrl;
-                await saveUserData(); // This is safe as it doesn't change the display name
+                await saveUserData(gameState.displayName); // Pass current name, no old name to delete
                 updateUI();
                 hideModal();
                 showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
@@ -1589,47 +1545,42 @@
             return trimmedName;
         }
 
-        // --- MODIFIED: Function to handle changing display name using the transaction ---
         async function handleChangeDisplayName() {
-            if(!newDisplayNameInput || !changeNameErrorMessage) return;
+            if (!newDisplayNameInput || !changeNameErrorMessage) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
-            if (newName.toLowerCase() === gameState.displayName.toLowerCase()) {
-                if(changeNameErrorMessage) {
-                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-                   changeNameErrorMessage.classList.remove('hidden');
-                }
-                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
+            const oldName = gameState.displayName;
+            if (newName === oldName) {
+                changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+                changeNameErrorMessage.classList.remove('hidden');
+                newDisplayNameInput.classList.add('invalid');
                 return;
             }
 
-            modalConfirmBtn.disabled = true;
-            modalCancelBtn.disabled = true;
-            
-            const result = await checkAndReserveDisplayName(newName, gameState.displayName);
-            
-            modalConfirmBtn.disabled = false;
-            modalCancelBtn.disabled = false;
+            // --- MODIFIED: Check for name availability first ---
+            const nameIsTaken = await isDisplayNameTaken(newName);
+            if (nameIsTaken) {
+                changeNameErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
+                changeNameErrorMessage.classList.remove('hidden');
+                newDisplayNameInput.classList.add('invalid');
+                return;
+            }
 
-            if (result.success) {
-                gameState.displayName = newName;
+            gameState.displayName = newName;
+            try {
+                await saveUserData(oldName); // Pass the old name to be deleted from displayNames collection
                 updateUI();
                 hideModal();
                 showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
-            } else if (result.error === "NAME_TAKEN") {
-                if(changeNameErrorMessage) {
-                   changeNameErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
-                   changeNameErrorMessage.classList.remove('hidden');
-                }
-                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
-            } else {
-                 if(changeNameErrorMessage) {
-                   changeNameErrorMessage.textContent = "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید.";
-                   changeNameErrorMessage.classList.remove('hidden');
-                }
+            } catch (error) {
+                // If saveUserData fails (e.g., due to a race condition caught by security rules),
+                // the error is already shown. We just need to revert the local state.
+                gameState.displayName = oldName;
+                updateUI();
             }
         }
+
 
         async function generateMafiaFact() {
             const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
@@ -1754,8 +1705,7 @@
                     }
                 });
             }
-            
-            // --- MODIFIED: Register button now uses the transaction-based function ---
+
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
@@ -1774,26 +1724,23 @@
 
                     if (!validatedName || !isPublicIdValid) return;
 
-                    registerBtn.disabled = true;
+                    // --- MODIFIED: Check for name availability before registering ---
+                    const nameIsTaken = await isDisplayNameTaken(validatedName);
+                    if (nameIsTaken) {
+                        inputErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
+                        inputErrorMessage.classList.remove('hidden');
+                        displayNameInput.classList.add('invalid');
+                        return;
+                    }
                     
-                    const result = await checkAndReserveDisplayName(validatedName, null);
-
-                    registerBtn.disabled = false;
-
-                    if (result.success) {
-                        gameState.displayName = validatedName;
+                    gameState.displayName = validatedName;
+                    
+                    try {
+                        await saveUserData(); // No old name to pass on registration
                         updateUI();
-                    } else if (result.error === "NAME_TAKEN") {
-                        if(inputErrorMessage) {
-                            inputErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
-                            inputErrorMessage.classList.remove('hidden');
-                        }
-                        if(displayNameInput) displayNameInput.classList.add('invalid');
-                    } else {
-                        if(inputErrorMessage) {
-                            inputErrorMessage.textContent = "خطا در ثبت نام. لطفاً مجدداً تلاش کنید.";
-                            inputErrorMessage.classList.remove('hidden');
-                        }
+                    } catch (error) {
+                        // Error is already handled inside saveUserData, just log it.
+                        console.error("Registration failed:", error);
                     }
                 });
             }
@@ -1887,7 +1834,7 @@
 
             if(backToMainBtn) {
                 backToMainBtn.addEventListener('click', async () => {
-                    await saveUserData();
+                    await saveUserData(gameState.displayName).catch(() => {});
                     gameState.currentQuestionData = null;
                     if(mainScreen) showScreen(mainScreen);
                 });
