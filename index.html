@@ -49,6 +49,22 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* --- NEW LOADING SCREEN ANIMATIONS --- */
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 200, 58, 0.4)); }
+            50% { filter: drop-shadow(0 0 16px rgba(255, 200, 58, 0.8)); }
+        }
+        
+        @keyframes tipFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
 
         body {
@@ -289,9 +305,68 @@
         }
         @media (min-width: 640px) { .screen { padding: 20px; } }
         #main-screen { justify-content: flex-start; }
-        #loading-screen { justify-content: center; }
+        #loading-screen { 
+            justify-content: center; 
+            background: radial-gradient(circle, rgba(42,65,102,0.5) 0%, rgba(26,40,62,0.8) 70%);
+        }
         .screen.active { opacity: 1; visibility: visible; position: relative; }
         
+        /* --- NEW: Professional Loading Screen Styles --- */
+        #loading-content-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+        }
+        #loading-logo {
+            max-width: 280px;
+            width: 70%;
+            margin-bottom: 1.5rem;
+            animation: fadeInScaleUp 1s ease-out, pulseGlow 3s infinite 1s;
+        }
+        #loading-progress-bar-container {
+            width: 100%;
+            background-color: var(--clash-panel-border-dark);
+            border: 3px solid #2a4166;
+            border-radius: 12px;
+            padding: 4px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        #loading-progress-bar-fill {
+            height: 18px;
+            width: 0%; /* Starts at 0, controlled by JS */
+            background: linear-gradient(to right, var(--clash-gold-dark), var(--clash-gold));
+            border-radius: 8px;
+            transition: width 0.5s ease-out;
+            box-shadow: 0 0 10px var(--clash-gold);
+        }
+        #loading-message {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 2px #000;
+            min-height: 28px; /* Prevent layout shift */
+        }
+        #loading-tip {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #d0e0ff;
+            font-style: italic;
+            background-color: rgba(0,0,0,0.25);
+            padding: 8px 12px;
+            border-radius: 8px;
+            min-height: 50px; /* Prevent layout shift */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: tipFadeIn 0.8s ease-out;
+        }
+
         .screen-content-wrapper {
             width: 100%;
             max-width: 800px;
@@ -553,11 +628,19 @@
         </div>
     </div>
 
-    <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
-        <div class="screen-content-wrapper justify-center">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
-            <div class="loader mb-4"></div>
-            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
+    <!-- MODIFIED: Professional Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div id="loading-content-box">
+            <img id="loading-logo" src="https://up.20script.ir/file/7e7a-Copilot-20250812-110015-removebg-preview.png" alt="لوگوی بازی شهر مافیا">
+            <h1 class="text-4xl sm:text-5xl font-bold clash-font text-[var(--clash-gold)]" style="text-shadow: 3px 3px 4px #000;">شهر مافیا</h1>
+            
+            <div id="loading-progress-bar-container">
+                <div id="loading-progress-bar-fill"></div>
+            </div>
+            
+            <p id="loading-message" class="text-lg">در حال آماده سازی...</p>
+            
+            <p id="loading-tip">✨ در حال جستجو در آرشیوهای مخفی... ✨</p>
         </div>
     </div>
 
@@ -840,6 +923,10 @@
         
         // --- NEW: Elements for Game Mode Panel ---
         let gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn, multiplayerBtn;
+
+        // --- NEW: Elements for Professional Loading Screen ---
+        let loadingProgressBarFill, loadingTip;
+        let tipInterval;
         
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
@@ -1154,6 +1241,42 @@
             }
         }
         
+        // --- NEW: Loading simulation function ---
+        function simulateLoading() {
+            const tips = [
+                "✨ آیا می‌دانستید نقش «گادفادر» یا «پدرخوانده» قدرتمندترین شهروند بازی است؟",
+                "✨ در سناریوی «شب‌های مافیا»، نقش «دکتر لکتر» می‌تواند خودش را فقط یک بار نجات دهد.",
+                "✨ «آل کاپون»، یکی از معروف‌ترین گنگسترهای تاریخ، سرانجام به خاطر فرار مالیاتی دستگیر شد.",
+                "✨ فیلم «رفقای خوب» (Goodfellas) بر اساس داستان واقعی «هنری هیل»، گنگستر سابق، ساخته شده است.",
+                "✨ اصطلاح «Omertà» به قانون سکوت در بین اعضای مافیا اشاره دارد."
+            ];
+            let currentTipIndex = Math.floor(Math.random() * tips.length);
+            
+            if (loadingTip) loadingTip.innerHTML = tips[currentTipIndex];
+
+            tipInterval = setInterval(() => {
+                currentTipIndex = (currentTipIndex + 1) % tips.length;
+                if (loadingTip) {
+                    loadingTip.style.animation = 'none';
+                    loadingTip.offsetHeight; // Trigger reflow
+                    loadingTip.style.animation = 'tipFadeIn 0.8s ease-out';
+                    loadingTip.innerHTML = tips[currentTipIndex];
+                }
+            }, 4000);
+
+            // Stage 1
+            setTimeout(() => {
+                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '30%';
+                if (loadingMessage) loadingMessage.textContent = 'در حال برقراری ارتباط با سرور...';
+            }, 500);
+
+            // Stage 2
+            setTimeout(() => {
+                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '65%';
+                if (loadingMessage) loadingMessage.textContent = 'آماده‌سازی رابط کاربری...';
+            }, 1500);
+        }
+
         async function initFirebase() {
             try {
                 app = initializeApp(firebaseConfig);
@@ -1177,11 +1300,14 @@
                     isAuthReady = true;
                     updateUI();
 
+                    // Final stage of loading
                     if (loadingScreen && loadingScreen.classList.contains('active')) {
-                        if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
+                        clearInterval(tipInterval); // Stop changing tips
+                        if (loadingProgressBarFill) loadingProgressBarFill.style.width = '100%';
+                        if (loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
                             if(mainScreen) showScreen(mainScreen);
-                        }, 500);
+                        }, 800);
                     }
                 });
             } catch (error) {
@@ -1198,6 +1324,8 @@
             }
             const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToLoad}/mafiaGameData/profile`);
             try {
+                if (loadingMessage) loadingMessage.textContent = 'در حال بارگذاری اطلاعات شما...';
+                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '85%';
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
                     console.log("User data found, loading profile for", userIdToLoad);
@@ -1960,11 +2088,17 @@
             singlePlayerBtn = document.getElementById('single-player-btn');
             multiplayerBtn = document.getElementById('multiplayer-btn');
 
+            // --- NEW: Get Professional Loading Screen elements ---
+            loadingProgressBarFill = document.getElementById('loading-progress-bar-fill');
+            loadingTip = document.getElementById('loading-tip');
+
+
             // --- Initialize game logic ---
             audioManager.init();
             if(userProfileArea) userProfileArea.classList.add('hidden');
+            
+            simulateLoading(); // Start the visual loading simulation
 
-            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
             if (!navigator.onLine) {
                 showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
                     hideModal();
@@ -1972,7 +2106,6 @@
                 });
                 return;
             }
-            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
 
             try {
                 setupEventListeners();
