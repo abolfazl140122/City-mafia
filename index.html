@@ -412,8 +412,11 @@
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; width: 100%; padding-bottom: 5px; } /* MODIFIED: Increased gap */
         
-        /* --- BUG FIX: Removed order properties to rely on HTML source order --- */
-        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
+        /* --- BUG FIX: Re-ordering main buttons --- */
+        #leaderboard-btn { order: 1; }
+        #start-game-btn { order: 2; }
+        #developers-btn { order: 3; }
+        #mafia-fact-btn { order: 4; font-size: 1rem !important; padding: 10px 20px !important; }
         
         #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
@@ -563,7 +566,6 @@
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
             <div>
-                <!-- === MODIFIED: Header only contains the title now === -->
                 <div id="main-screen-header">
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
                 </div>
@@ -572,7 +574,6 @@
                     <!-- Registration Form -->
                     <div id="registration-form">
                         <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام</h2>
-                        <!-- Android Fix: Using a label to improve tap target -->
                         <label for="display-name-input" class="block mb-1">
                             <span class="text-sm font-medium mb-1 inline-block">نام نمایشی (فقط انگلیسی):</span>
                             <input type="text" id="display-name-input" placeholder="نام نمایشی خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
@@ -594,7 +595,6 @@
             </div>
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
-                 <!-- === BUG FIX & UI CHANGE: Buttons reordered for better layout, order properties removed === -->
                 <div id="top-action-buttons">
                     <button id="leaderboard-btn" class="btn-clash btn-clash-secondary clash-font">🏆 رتبه‌بندی</button>
                     <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
@@ -636,7 +636,6 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- === MODIFIED: AVATAR URL UI === -->
                 <div id="avatar-upload-ui-container" class="hidden">
                     <div class="flex flex-col sm:flex-row items-stretch gap-2 my-4">
                         <input type="url" id="avatar-url-input" placeholder="لینک مستقیم تصویر را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr; text-align: left;">
@@ -649,7 +648,6 @@
 
                     <p id="avatar-error-message" class="hidden"></p>
                 </div>
-                <!-- === END OF AVATAR URL UI === -->
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -664,7 +662,6 @@
             <button id="close-developers-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
             <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Developer items are now populated -->
                 <div class="developer-item">
                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💻</span>
@@ -723,7 +720,6 @@
             <button id="close-leaderboard-panel-btn">×</button>
             <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
             <div id="leaderboard-list" class="space-y-2 max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Leaderboard items will be populated here -->
                 <div class="text-center py-8">
                     <div class="loader mx-auto"></div>
                     <p class="mt-3 font-bold">در حال بارگذاری لیست کاربران برتر...</p>
@@ -746,10 +742,7 @@
         // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // --- BUG FIX: Added 'where' for display name uniqueness check ---
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
-        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -824,7 +817,6 @@
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
         
-        // --- NEW/MODIFIED: Elements for avatar URL input ---
         let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
@@ -896,7 +888,6 @@
                 }
             } else if (modalType === "avatar") {
                 avatarUploadUiContainer.classList.remove('hidden');
-                // Reset avatar URL UI
                 if(avatarUrlInput) avatarUrlInput.value = '';
                 if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
                 if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
@@ -912,7 +903,6 @@
 
             modalConfirmBtn.textContent = confirmText;
             modalConfirmBtn.disabled = (modalType === 'avatar');
-            modalCancelBtn.disabled = false; // Always enable cancel button
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
 
@@ -1203,37 +1193,21 @@
             }
         }
 
-        // --- NEW FEATURE: Check if a display name is already taken by another user ---
-        async function isDisplayNameTaken(nameToCheck) {
-            if (!db) {
-                console.error("Firestore DB not initialized.");
-                return true; // Fail safe, assume it's taken
-            }
-            
-            const usersRef = collection(db, `artifacts/${appId}/publicLeaderboard`);
-            // Note: This query is case-sensitive.
-            // IMPORTANT: You MUST create a Firestore index for this query to work.
-            // Go to Firestore -> Indexes -> Create Index.
-            // Collection: publicLeaderboard, Field: displayName (Ascending), Scope: Collection.
-            const q = query(usersRef, where("displayName", "==", nameToCheck), limit(1));
+        // --- NEW FEATURE: Function to check if a display name is already taken ---
+        async function isDisplayNameTaken(name) {
+            if (!db) return false;
+            const normalizedName = name.toLowerCase(); // Case-insensitive check
+            const leaderboardCol = collection(db, `artifacts/${appId}/publicLeaderboard`);
+            const q = query(leaderboardCol, where("displayName", "==", normalizedName), limit(1));
             
             try {
                 const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    return false; // Name is available
-                }
-                
-                // A user with this name exists. Check if it's the current user.
-                const foundUserId = querySnapshot.docs[0].id;
-                
-                // If it's the current user, it's not "taken by someone else".
-                return foundUserId !== currentUserId; 
-                
+                return !querySnapshot.empty;
             } catch (error) {
-                console.error("Error checking display name uniqueness:", error);
-                showModal("خطای سرور", "امکان بررسی یکتا بودن نام وجود ندارد. این ممکن است به دلیل عدم وجود ایندکس در پایگاه داده باشد. لطفاً با پشتیبانی تماس بگیرید. <br><small>" + error.message + "</small>", "باشه");
-                return true; // Fail safe, assume it's taken to prevent duplicates.
+                console.error("Error checking for display name uniqueness:", error);
+                // In case of error, assume it's not taken to not block the user, but log it.
+                // Or you could show an error to the user.
+                return false; 
             }
         }
         
@@ -1311,25 +1285,21 @@
                     difficulty = "متوسط";
                 }
                 
+                // --- BUG FIX: Simplified and more robust prompt for the AI ---
                 const prompt = `
-                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
-                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
-                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
-                موضوعات پیشنهادی (برای تنوع):
-                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
-                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
-                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
-                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
-                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
-                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
-                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
-                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
-                ساختار JSON باید دقیقا به این صورت باشد:
+                وظیفه: یک سوال چهار گزینه‌ای جدید و خلاقانه به زبان فارسی با موضوع "مافیا" ایجاد کن.
+                سطح دشواری: "${difficulty}" (برای کاربر در مرحله ${gameState.currentStage}).
+                موضوعات: تاریخچه مافیا، فیلم‌های معروف (مانند پدرخوانده)، اصطلاحات بازی مافیا، یا سازمان‌های جنایی معروف.
+                
+                مهم: سوال باید کاملا بر اساس تاریخچه، فیلم‌ها، یا مکانیک‌های بازی باشد و به هیچ وجه خشونت واقعی، جرایم صریح یا محتوای توهین‌آمیز را ترویج یا توصیف نکند.
+                
+                خروجی باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا علامت \`\`\` باشد.
+                ساختار JSON:
                 {
-                  "question": "متن سوال به فارسی",
+                  "question": "متن سوال",
                   "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
                   "correctAnswerIndex": 0,
-                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
+                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح"
                 }
                 `;
 
@@ -1547,38 +1517,49 @@
             return trimmedName;
         }
 
+        // --- FEATURE UPDATE: Function to change display name with uniqueness check ---
         async function handleChangeDisplayName() {
-            if(!newDisplayNameInput || !changeNameErrorMessage) return;
+            if(!newDisplayNameInput || !changeNameErrorMessage || !modalConfirmBtn || !modalCancelBtn) return;
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
-            if (newName === gameState.displayName) {
-               if(changeNameErrorMessage) {
-                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-                   changeNameErrorMessage.classList.remove('hidden');
-               }
-               if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
-               return;
-            }
-
-            // --- BUG FIX: Check if name is taken before changing ---
-            modalConfirmBtn.disabled = true;
-            modalCancelBtn.disabled = true;
-            const nameIsTaken = await isDisplayNameTaken(newName);
-            if (nameIsTaken) {
-                changeNameErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
+            if (newName.toLowerCase() === gameState.displayName.toLowerCase()) {
+                changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                 changeNameErrorMessage.classList.remove('hidden');
                 newDisplayNameInput.classList.add('invalid');
-                modalConfirmBtn.disabled = false;
-                modalCancelBtn.disabled = false;
                 return;
             }
 
-            gameState.displayName = newName;
-            await saveUserData();
-            updateUI();
-            hideModal();
-            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+            modalConfirmBtn.disabled = true;
+            modalCancelBtn.disabled = true;
+            modalConfirmBtn.textContent = 'در حال بررسی...';
+
+            try {
+                const isTaken = await isDisplayNameTaken(newName);
+                if (isTaken) {
+                    changeNameErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
+                    changeNameErrorMessage.classList.remove('hidden');
+                    newDisplayNameInput.classList.add('invalid');
+                    return; // Stop the process
+                }
+
+                // If name is not taken, proceed
+                gameState.displayName = newName;
+                await saveUserData();
+                updateUI();
+                hideModal();
+                showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
+
+            } catch (error) {
+                console.error("Error during name change process:", error);
+                changeNameErrorMessage.textContent = "خطایی در هنگام تغییر نام رخ داد.";
+                changeNameErrorMessage.classList.remove('hidden');
+            } finally {
+                // Always re-enable buttons and reset text
+                modalConfirmBtn.disabled = false;
+                modalCancelBtn.disabled = false;
+                modalConfirmBtn.textContent = 'تغییر';
+            }
         }
 
         async function generateMafiaFact() {
@@ -1705,10 +1686,12 @@
                 });
             }
 
+            // --- FEATURE UPDATE: Registration with uniqueness check ---
             if (registerBtn) {
                 registerBtn.addEventListener('click', async () => {
+                    if (registerBtn.disabled) return;
+                    
                     const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-
                     let isPublicIdValid = false;
                     if (!gameState.publicUserId) {
                         if(userIdErrorMessage) {
@@ -1723,20 +1706,31 @@
 
                     if (!validatedName || !isPublicIdValid) return;
 
-                    // --- BUG FIX: Check if name is taken before registering ---
                     registerBtn.disabled = true;
-                    const nameIsTaken = await isDisplayNameTaken(validatedName);
-                    if (nameIsTaken) {
-                        inputErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
-                        inputErrorMessage.classList.remove('hidden');
-                        displayNameInput.classList.add('invalid');
-                        registerBtn.disabled = false;
-                        return;
-                    }
+                    registerBtn.textContent = 'در حال بررسی...';
 
-                    gameState.displayName = validatedName;
-                    await saveUserData();
-                    updateUI();
+                    try {
+                        const isTaken = await isDisplayNameTaken(validatedName);
+                        if (isTaken) {
+                            inputErrorMessage.textContent = "این نام قبلاً توسط شخص دیگری گرفته شده است.";
+                            inputErrorMessage.classList.remove('hidden');
+                            displayNameInput.classList.add('invalid');
+                            return;
+                        }
+
+                        // If name is not taken, proceed
+                        gameState.displayName = validatedName;
+                        await saveUserData();
+                        updateUI();
+
+                    } catch (error) {
+                        console.error("Error during registration:", error);
+                        inputErrorMessage.textContent = "خطایی در هنگام ثبت نام رخ داد.";
+                        inputErrorMessage.classList.remove('hidden');
+                    } finally {
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'ورود به شهر';
+                    }
                 });
             }
 
