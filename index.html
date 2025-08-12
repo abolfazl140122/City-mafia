@@ -3,1882 +3,989 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی مافیا - نسخه کلش</title>
+    <title>پیام‌رسان طلایی (آنلاین)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
     <style>
-        /* --- CLASH OF CLANS / CLASH ROYALE THEME --- */
-
-        :root {
-            --clash-blue-dark: #3a5b8a;
-            --clash-blue-light: #5c88c8;
-            --clash-gold: #ffc83a;
-            --clash-gold-dark: #e5a500;
-            --clash-brown-dark: #5b3a29;
-            --clash-text-light: #ffffff;
-            --clash-text-dark: #333333;
-            --clash-green: #59a845;
-            --clash-green-dark: #3a752b;
-            --clash-red: #c74243;
-            --clash-red-dark: #8f2a2b;
-            --clash-panel-bg: #4468a0;
-            --clash-panel-border: #9dc2ff;
-            --clash-panel-border-dark: #2a4166;
-        }
-
-        /* --- KEYFRAME ANIMATIONS --- */
-        @keyframes clash-panel-intro {
-            0% { opacity: 0; transform: scale(0.8) translateY(-30px); }
-            70% { opacity: 1; transform: scale(1.05) translateY(0); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #a07200; }
-            50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.3), 0 8px 0 #a07200; }
-        }
-
-        @keyframes subtle-pan {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 200%; }
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Vazirmatn', sans-serif;
         }
         
+        .bg-primary { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); }
+        .bg-secondary { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); }
+        .text-gold { color: #ffd700; }
+        .bg-gold { background-color: #ffd700; }
+        .border-gold { border-color: #ffd700; }
+        .hover-gold:hover { background-color: #ffed4e; }
+        
+        .chat-bubble-sent {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #1a1a1a;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            position: relative;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-bubble-sent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .chat-bubble-received {
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-bubble-received:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .verified-badge {
+            background: #1da1f2;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+        
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+        
+        .animate-slide-in-right { animation: slideInRight 0.3s ease-out; }
+        .animate-slide-in-left { animation: slideInLeft 0.3s ease-out; }
+        .animate-fade-in-up { animation: fadeInUp 0.4s ease-out; }
+        .animate-pulse-hover:hover { animation: pulse 0.6s ease-in-out; }
+        .animate-glow { animation: glow 2s ease-in-out infinite; }
+        
+        @keyframes slideInFromTop {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInFromBottom {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInFromRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInFromLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .animate-slide-in-top { animation: slideInFromTop 0.5s ease-out; }
+        .animate-slide-in-bottom { animation: slideInFromBottom 0.5s ease-out; }
+        .animate-slide-in-right-page { animation: slideInFromRight 0.4s ease-out; }
+        .animate-slide-in-left-page { animation: slideInFromLeft 0.4s ease-out; }
+        .animate-scale-in { animation: scaleIn 0.3s ease-out; }
+        .animate-bounce-in { animation: bounceIn 0.6s ease-out; }
+        
+        .page-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .input-focus {
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+        
+        .input-focus:focus {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .phone-input {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .chat-item {
+            transition: all 0.3s ease;
+            transform: translateX(0);
+        }
+        
+        .chat-item:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        }
+        
+        .button-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button-hover:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .button-hover:hover:before {
+            left: 100%;
+        }
+        
+        /* Spinner for loading */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            color: var(--clash-text-light);
-            background-color: #1a283e;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow: hidden; /* Changed to hidden for better control with screens */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            position: relative;
-            /* Android Fix: Improve touch responsiveness */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* Animated Background Layer */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 200%; height: 200%;
-            background-image: url('https://www.transparenttextures.com/patterns/dust.png');
-            opacity: 0.15;
-            z-index: 0;
-            animation: subtle-pan 120s linear infinite;
-        }
-
-        .clash-font {
-            font-family: 'Lilita One', cursive;
-            letter-spacing: 1px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .panel-clash {
-            background-color: var(--clash-panel-bg);
-            border: 4px solid var(--clash-panel-border-dark);
-            border-top-color: var(--clash-panel-border);
-            border-left-color: var(--clash-panel-border);
-            border-radius: 16px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-            transition: opacity 0.3s ease-in-out;
-            position: relative;
-        }
-        
-        /* Panel Corner Rivets */
-        .panel-clash::before, .panel-clash::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: var(--clash-gold);
-            border-radius: 50%;
-            border: 2px solid var(--clash-brown-dark);
-            box-shadow: 0 0 3px #000;
-        }
-        .panel-clash::before { top: 10px; left: 10px; }
-        .panel-clash::after { top: 10px; right: 10px; }
-        
-        #developers-panel::before, #developers-panel::after, #leaderboard-panel::before, #leaderboard-panel::after { top: 15px; }
-
-
-        .panel-hidden {
-            opacity: 0;
-            transform: scale(0.9) translateY(-20px);
-            pointer-events: none;
-            visibility: hidden;
-        }
-
-        .panel-visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            visibility: visible;
-            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .btn-clash {
-            border-radius: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: all 0.1s ease-out; /* Faster transition */
-            cursor: pointer;
-            position: relative;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--clash-text-dark);
-            text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
-        }
-        .btn-clash:disabled {
-            filter: grayscale(80%);
-            cursor: not-allowed;
-            box-shadow: 0 4px 0 #555 !important;
-            transform: translateY(0) !important;
-        }
-
-        /* --- Primary Button (Gold) --- */
-        .btn-clash-primary {
-            background: linear-gradient(to bottom, #ffe47a, var(--clash-gold));
-            border: 2px solid var(--clash-brown-dark);
-            box-shadow: 0 6px 0 #a07200;
-            padding: 10px 24px;
-            font-size: 1.1rem;
-        }
-        @media (min-width: 640px) { .btn-clash-primary { padding: 12px 30px; font-size: 1.25rem; } }
-
-        .btn-clash-primary:hover {
-            background: linear-gradient(to bottom, #fff0a0, #ffda5a);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 #a07200;
-        }
-        .btn-clash-primary:active {
-            transform: translateY(4px) !important;
-            box-shadow: 0 2px 0 #a07200 !important;
-            transition-duration: 0.05s;
-        }
-        
-        /* Breathing animation for start button */
-        #start-game-btn.breathing {
-            animation: breathe 2.5s ease-in-out infinite;
-        }
-        
-        /* --- Secondary Button (Blue) --- */
-        .btn-clash-secondary {
-            background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light));
-            border: 2px solid var(--clash-panel-border-dark);
-            box-shadow: 0 5px 0 #2e5185;
-            padding: 8px 18px;
-            font-size: 0.9rem;
-            color: var(--clash-text-light);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-        }
-        @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
-
-        .btn-clash-secondary:hover {
-            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #2e5185;
-        }
-        .btn-clash-secondary:active {
-            transform: translateY(3px) !important;
-            box-shadow: 0 2px 0 #2e5185 !important;
-            transition-duration: 0.05s;
-        }
-
-        .input-clash {
-            background-color: var(--clash-panel-border-dark);
-            border: 2px solid #2a4166;
-            color: #fff;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 1rem;
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-            /* Android Fix: Improve touch interaction */
-            -webkit-user-select: auto;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: auto;
-            touch-action: manipulation;
-        }
-        .input-clash:focus {
-            outline: none;
-            border-color: var(--clash-gold);
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 10px var(--clash-gold);
-        }
-        .input-clash.invalid {
-            border-color: var(--clash-red);
-        }
-        .input-clash:read-only {
-            background-color: #314a70;
-            cursor: default;
-        }
-        
-        /* --- Option Buttons (Game Screen) --- */
-        .option-btn {
-            background: linear-gradient(to bottom, #7da8e8, #5c88c8);
-            border: 2px solid #2a4166;
-            box-shadow: 0 4px 0 #2e5185;
-            color: white;
-            transition: all 0.15s ease;
-            font-size: 1rem;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-        .option-btn:hover:not(:disabled) {
-            background: linear-gradient(to bottom, #9dc2ff, #6c98d8);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #2e5185;
-        }
-        .option-btn.correct {
-            background: linear-gradient(to bottom, #8fdd7d, var(--clash-green)) !important;
-            border-color: #2e6221 !important;
-            box-shadow: 0 4px 0 var(--clash-green-dark) !important;
-            transform: translateY(0) !important;
-        }
-        .option-btn.incorrect {
-            background: linear-gradient(to bottom, #e87b7c, var(--clash-red)) !important;
-            border-color: #7c2425 !important;
-            box-shadow: 0 4px 0 var(--clash-red-dark) !important;
-            transform: translateY(0) !important;
-        }
-        .option-btn:disabled { opacity: 0.8; cursor: not-allowed; }
-
-        .loader {
-            border: 8px solid #3a5b8a;
-            border-top: 8px solid var(--clash-gold);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-        
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 5px; border: 2px solid var(--clash-blue-dark); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--clash-gold-dark); }
-
-        .screen {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100vh;
-            padding: 10px; /* Base padding */
-            box-sizing: border-box;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            z-index: 1; /* Ensure screens are on top of the background */
-        }
-        @media (min-width: 640px) { .screen { padding: 20px; } }
-        #main-screen { justify-content: flex-start; }
-        #loading-screen { justify-content: center; }
-        .screen.active { opacity: 1; visibility: visible; position: relative; }
-        
-        .screen-content-wrapper {
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-bottom: 10px;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
-        #main-screen .screen-content-wrapper {
-            justify-content: space-between;
-            min-height: calc(100vh - 20px);
-            padding-top: 60px;
-        }
-        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
-        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
-
-        /* User Profile Area Styling */
-        #user-profile-area {
-            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px;
-            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        @media (max-width: 767px) { /* Mobile: Centered at top */
-            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
-        }
-        @media (min-width: 768px) { /* Desktop: Top right */
-            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); align-items: center; }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
-        }
-
-        #user-info-box {
-            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
-            border: 4px solid #4a2f20;
-            border-top-color: #c89673;
-            border-left-color: #c89673;
-            border-radius: 12px;
-            padding: 10px 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: row; align-items: center; gap: 8px;
-            width: max-content; min-width: 0;
-        }
-        @media (min-width: 768px) {
-            #user-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
-        }
-        #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
-        
-        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
-        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
-        .user-info-item .value { font-size: 0.9em; font-weight: bold; }
-        @media (min-width: 768px) {
-            .user-info-item { display: block; }
-            .user-info-item .label { font-size: 0.9em; }
-            .user-info-item .value { font-size: 1.1em; }
-        }
-        #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
-        #public-user-id-output-box .value { color: #eee; font-family: monospace; }
-        #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
-        #edit-name-btn:hover { color: #fff8a8; }
-
-        #avatar-container {
-            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
-            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
-            background-color: #333; cursor: pointer; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            flex-shrink: 0; /* Prevents avatar from shrinking */
-        }
-        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
-        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
-        
-        #main-screen-header { 
-            display: flex; justify-content: center; /* MODIFIED: Center the title */
-            align-items: center; width: 100%; 
-            padding: 0.5rem; margin-bottom: 1.5rem; /* MODIFIED: Increased margin bottom */
-            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-            background-color: #6e4a31;
-            border-radius: 12px;
-            border: 4px solid #4a2f20;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
-            position: relative;
-            z-index: 10;
-        }
-        
-        #main-title {
-            text-align: center;
-            flex-grow: 1;
-            font-size: 3rem;
-            color: var(--clash-gold);
-            text-shadow: 
-                -3px -3px 0 var(--clash-brown-dark),  
-                 3px -3px 0 var(--clash-brown-dark),
-                -3px  3px 0 var(--clash-brown-dark),
-                 3px  3px 0 var(--clash-brown-dark),
-                 -3px 0 0 var(--clash-brown-dark),
-                 3px 0 0 var(--clash-brown-dark),
-                 0 -3px 0 var(--clash-brown-dark),
-                 0 3px 0 var(--clash-brown-dark),
-                 6px 6px 8px rgba(0,0,0,0.7);
-        }
-        @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
-        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
-
-        /* Shared style for header icon buttons (No longer in use, kept for safety) */
-        .header-icon-btn {
-            background: var(--clash-blue-light); color: white; border: 2px solid var(--clash-panel-border-dark);
-            padding: 0.5rem; border-radius: 50%; font-weight: bold; transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); display: inline-flex;
-            align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;
-        }
-        .header-icon-btn:hover { background-color: #6c98d8; transform: scale(1.1); }
-        .header-icon-btn svg { width: 24px; height: 24px; pointer-events: none; } /* Slightly larger icon */
-        
-        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
-        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; width: 100%; padding-bottom: 5px; } /* MODIFIED: Increased gap */
-        #start-game-btn { order: 0; }
-        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; order: 3; } /* MODIFIED: order */
-        
-        #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message, #avatar-error-message {
-            color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
-        }
-        .hidden { display: none !important; }
-
-        /* Styles for Pop-up Panels */
-        #developers-panel-container, #leaderboard-panel-container { background-color: rgba(10, 10, 10, 0.85); }
-        #developers-panel, #leaderboard-panel {
-            background-color: var(--clash-panel-bg);
-            border: 4px solid var(--clash-panel-border-dark);
-            border-top-color: var(--clash-panel-border);
-            border-left-color: var(--clash-panel-border);
-        }
-        #close-developers-panel-btn, #close-leaderboard-panel-btn {
-            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
-            background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
-            border: 2px solid #7c2425;
-            box-shadow: 0 4px 0 #8f2a2b;
-            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
-            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
-        }
-        #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        #close-developers-panel-btn:active, #close-leaderboard-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
-
-        .developer-item {
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 1rem 1.2rem; border-radius: 12px;
-            border: 2px solid rgba(157, 194, 255, 0.4);
-        }
-        .dev-header { border-bottom: 2px solid rgba(157, 194, 255, 0.3); }
-        .dev-role-icon { font-size: 1.7em; color: var(--clash-gold); margin-left: 10px; }
-        .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
-        .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
-        .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
-
-        /* Styles for Leaderboard Panel */
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 0.75rem;
-            border-radius: 12px;
-            border: 2px solid rgba(157, 194, 255, 0.4);
-            gap: 1rem;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .leaderboard-item:hover {
-            background-color: rgba(60, 85, 122, 0.9);
-            transform: scale(1.02);
-        }
-        .leaderboard-rank {
-            font-family: 'Lilita One', cursive;
-            font-size: 1.75rem;
-            color: var(--clash-gold);
-            -webkit-text-stroke: 1.5px var(--clash-brown-dark);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            width: 40px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .leaderboard-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid var(--clash-gold-dark);
-            object-fit: cover;
-            background-color: #2a4166;
-            flex-shrink: 0;
-        }
-        .leaderboard-info {
-            flex-grow: 1;
-        }
-        .leaderboard-name {
-            font-family: 'Lilita One', cursive;
-            font-size: 1.2rem;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px #000;
-        }
-        .leaderboard-stage {
-            font-size: 0.9rem;
-            color: #d0e0ff;
-            font-weight: bold;
-        }
-        .leaderboard-stage-value {
-            color: var(--clash-gold);
-            font-family: 'Lilita One', cursive;
-            font-size: 1.1em;
-            margin-right: 4px;
-        }
-
-        /* --- NEW STYLES for Avatar URL Input --- */
-        #avatar-preview-container {
-            margin: 1rem auto;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--clash-gold);
-            overflow: hidden;
-            background-color: var(--clash-panel-border-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #avatar-preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
     </style>
 </head>
-<body>
-    <div id="user-profile-area" class="hidden">
-        <div id="avatar-container" class="hidden" title="تغییر آواتار">
-            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
-        </div>
-        <div id="user-info-box" class="hidden">
-            <div id="display-name-output-box" class="user-info-item">
-                <div class="label flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
-                    <span>بازیکن:</span>
-                </div>
-                <div id="display-name-output-container" class="flex items-center gap-2">
-                    <span id="edit-name-btn" title="تغییر نام">✏️</span>
-                    <div id="display-name-output" class="value clash-font"></div>
-                </div>
+<body class="bg-primary text-white min-h-screen">
+
+    <!-- Loading Spinner -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-primary bg-opacity-90 flex items-center justify-center z-50">
+        <div class="loader"></div>
+    </div>
+
+    <!-- صفحه ثبت‌نام / ورود -->
+    <div id="authPage" class="hidden min-h-screen flex items-center justify-center p-4 page-transition">
+        <div class="bg-secondary rounded-2xl p-8 w-full max-w-md shadow-2xl animate-bounce-in">
+            <div class="text-center mb-8 animate-fade-in-up">
+                <div class="text-4xl mb-4 animate-bounce-in" style="animation-delay: 0.2s;">💬</div>
+                <h1 class="text-2xl font-bold text-gold mb-2 animate-slide-in-top" style="animation-delay: 0.4s;">پیام‌رسان طلایی</h1>
+                <p id="authModeDescription" class="text-gray-300 animate-fade-in-up" style="animation-delay: 0.6s;">به جمع ما بپیوندید</p>
             </div>
-            <div id="public-user-id-output-box" class="user-info-item">
-                <div class="label flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
-                    <span>شناسه:</span>
+            
+            <!-- فرم ورود -->
+            <div id="loginForm" class="space-y-4">
+                <div class="animate-slide-in-left">
+                    <label class="block text-sm font-medium mb-2 text-gold">ایمیل</label>
+                    <input type="email" id="loginEmail" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus">
                 </div>
-                <div id="public-user-id-output" class="value"></div>
+                <div class="animate-slide-in-right">
+                    <label class="block text-sm font-medium mb-2 text-gold">رمز عبور</label>
+                    <input type="password" id="loginPassword" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus">
+                </div>
+                <button onclick="loginUser()" class="w-full bg-gold text-black font-bold py-3 rounded-lg hover-gold button-hover animate-pulse-hover">ورود</button>
+                <p class="text-center text-sm text-gray-400">حساب کاربری ندارید؟ <button onclick="toggleAuthMode()" class="text-gold font-semibold">ثبت‌نام کنید</button></p>
+            </div>
+
+            <!-- فرم ثبت‌نام (اصلاح شده) -->
+            <div id="registerForm" class="hidden space-y-4">
+                 <div class="animate-slide-in-left">
+                    <label class="block text-sm font-medium mb-2 text-gold">نام *</label>
+                    <input type="text" id="registerFirstName" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus" placeholder="نام شما">
+                </div>
+                 <div class="animate-slide-in-right">
+                    <label class="block text-sm font-medium mb-2 text-gold">آیدی (انگلیسی) *</label>
+                    <input type="text" id="registerUsername" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus" placeholder="example_user (غیرقابل تغییر)">
+                </div>
+                <div class="animate-slide-in-left">
+                    <label class="block text-sm font-medium mb-2 text-gold">شماره همراه *</label>
+                    <input type="tel" id="registerPhone" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus phone-input" placeholder="09123456789" maxlength="11">
+                </div>
+                <div class="animate-slide-in-right">
+                    <label class="block text-sm font-medium mb-2 text-gold">ایمیل *</label>
+                    <input type="email" id="registerEmail" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus" placeholder="example@email.com">
+                </div>
+                 <div class="animate-slide-in-left">
+                    <label class="block text-sm font-medium mb-2 text-gold">رمز عبور *</label>
+                    <input type="password" id="registerPassword" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus" placeholder="حداقل ۶ کاراکتر">
+                </div>
+                <button onclick="registerUser()" class="w-full bg-gold text-black font-bold py-3 rounded-lg hover-gold button-hover animate-pulse-hover">تکمیل ثبت‌نام</button>
+                <p class="text-center text-sm text-gray-400">قبلا ثبت‌نام کرده‌اید؟ <button onclick="toggleAuthMode()" class="text-gold font-semibold">وارد شوید</button></p>
             </div>
         </div>
     </div>
 
-    <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
-        <div class="screen-content-wrapper justify-center">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
-            <div class="loader mb-4"></div>
-            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
+    <!-- صفحه اصلی -->
+    <div id="mainPage" class="hidden min-h-screen page-transition">
+        <!-- هدر -->
+        <div class="bg-secondary p-4 flex items-center justify-between border-b border-gray-700 animate-slide-in-top">
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <button onclick="showSettings()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors animate-pulse-hover">
+                    <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold text-gold animate-fade-in-up">پیام‌رسان طلایی</h1>
+            </div>
+            <button onclick="showSearch()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors animate-pulse-hover">
+                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- لیست چت‌ها -->
+        <div id="chatListContainer" class="flex-1 animate-fade-in-up" style="animation-delay: 0.2s;">
+             <div id="chatList" class="p-4">
+                <!-- Chat items will be loaded here by JavaScript -->
+             </div>
         </div>
     </div>
 
-    <div id="main-screen" class="screen">
-        <div class="screen-content-wrapper">
-            <div>
-                <!-- === MODIFIED: Header only contains the title now === -->
-                <div id="main-screen-header">
-                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
+    <!-- صفحه جستجو -->
+    <div id="searchPage" class="hidden min-h-screen">
+        <div class="bg-secondary p-4 flex items-center border-b border-gray-700">
+            <button onclick="hideSearch()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors ml-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <input type="text" id="searchInput" class="flex-1 p-2 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none" placeholder="جستجوی کاربران بر اساس آیدی..." oninput="performSearch()">
+        </div>
+        <div id="searchResults" class="p-4">
+            <p class="text-gray-400 text-center">برای جستجو تایپ کنید...</p>
+        </div>
+    </div>
+    
+    <!-- صفحه چت -->
+    <div id="chatPage" class="hidden min-h-screen flex flex-col">
+        <!-- هدر چت -->
+        <div class="bg-secondary p-4 flex items-center border-b border-gray-700">
+            <button onclick="closeChatPage()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors ml-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <div class="flex items-center cursor-pointer flex-1">
+                <div id="chatAvatar" class="w-10 h-10 bg-gold rounded-full flex items-center justify-center text-black font-bold ml-3">
+                    <!-- Avatar Here -->
                 </div>
+                <div>
+                    <h3 id="chatName" class="font-semibold flex items-center">
+                        <!-- Name Here -->
+                    </h3>
+                    <p id="chatStatus" class="text-xs text-gray-400">آنلاین</p>
+                </div>
+            </div>
+            <button onclick="showChatOptions()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                </svg>
+            </button>
+        </div>
 
-                <div id="auth-panel" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <!-- Registration Form -->
-                    <div id="registration-form">
-                        <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام</h2>
-                        <!-- Android Fix: Using a label to improve tap target -->
-                        <label for="display-name-input" class="block mb-1">
-                            <span class="text-sm font-medium mb-1 inline-block">نام نمایشی (فقط انگلیسی):</span>
-                            <input type="text" id="display-name-input" placeholder="نام نمایشی خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
-                        </label>
-                        <p id="input-error-message" class="hidden"></p>
+        <!-- پیام‌ها -->
+        <div id="messagesContainer" class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- پیام‌ها اینجا اضافه می‌شوند -->
+        </div>
 
-                        <div class="mt-3 mb-2">
-                            <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
-                            <div class="flex items-center gap-2">
-                                <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
-                                <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
-                            </div>
-                            <p id="user-id-error-message" class="hidden"></p>
+        <!-- ورودی پیام -->
+        <div class="bg-secondary p-4 border-t border-gray-700">
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <input type="file" id="fileInput" accept="image/*,audio/*" class="hidden" onchange="handleFileUpload()">
+                <button onclick="document.getElementById('fileInput').click()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                    <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                    </svg>
+                </button>
+                <input type="text" id="messageInput" class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none" placeholder="پیام خود را بنویسید..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" class="p-3 bg-gold text-black rounded-lg hover-gold button-hover animate-pulse-hover">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- صفحه تنظیمات -->
+    <div id="settingsPage" class="hidden min-h-screen page-transition">
+        <div class="bg-secondary p-4 flex items-center border-b border-gray-700 animate-slide-in-top">
+            <button onclick="hideSettings()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors ml-3 animate-pulse-hover">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 class="text-xl font-bold text-gold animate-fade-in-up">تنظیمات</h1>
+        </div>
+
+        <div class="p-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <div class="bg-secondary rounded-lg p-6 animate-scale-in" style="animation-delay: 0.4s;">
+                <div class="text-center mb-6 animate-bounce-in" style="animation-delay: 0.6s;">
+                    <div class="relative inline-block">
+                        <div id="profileAvatar" class="w-20 h-20 bg-gold rounded-full flex items-center justify-center text-black font-bold text-2xl mx-auto animate-glow">
+                            <!-- Avatar in settings -->
                         </div>
+                        <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="changeAvatar()">
+                        <button onclick="document.getElementById('avatarInput').click()" class="absolute -bottom-1 -right-1 w-8 h-8 bg-gold rounded-full flex items-center justify-center text-black text-sm animate-pulse-hover">
+                            📷
+                        </button>
+                    </div>
+                    <h3 id="profileName" class="font-semibold text-xl mt-3 text-gold animate-fade-in-up" style="animation-delay: 0.8s;">کاربر جدید</h3>
+                    <p id="profileUsername" class="text-gray-400 animate-fade-in-up" style="animation-delay: 1s;">@username</p>
+                </div>
 
-                        <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
+                <div class="space-y-4">
+                    <div class="animate-slide-in-left" style="animation-delay: 1.2s;">
+                        <label class="block text-sm font-medium mb-2 text-gold">نام</label>
+                        <input type="text" id="editFirstName" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus">
                     </div>
-                </div>
-            </div>
-
-            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
-                 <!-- === MODIFIED: New buttons for Leaderboard and Developers are here === -->
-                <div id="top-action-buttons">
-                    <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
-                    <button id="leaderboard-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 1;">🏆 رتبه‌بندی</button>
-                    <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font" style="order: 2;">👥 سازندگان</button>
-                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font">دانستنی‌ها ✨</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start">
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
-                <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
-                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
-            </div>
-
-            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
-                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
-                <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
-            </div>
-
-            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
-            
-            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
-                <div class="loader inline-block"></div>
-                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
-        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
-            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
-            <div id="modal-content-dynamic">
-                <p id="modal-message" class="mb-3 text-base"></p>
-                <div id="change-name-input-container" class="hidden mb-2">
-                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
-                    <p id="change-name-error-message" class="hidden"></p>
-                </div>
-                <!-- === MODIFIED: AVATAR URL UI === -->
-                <div id="avatar-upload-ui-container" class="hidden">
-                    <div class="flex flex-col sm:flex-row items-stretch gap-2 my-4">
-                        <input type="url" id="avatar-url-input" placeholder="لینک مستقیم تصویر را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr; text-align: left;">
-                        <button id="preview-avatar-btn" class="btn-clash btn-clash-secondary clash-font whitespace-nowrap px-4">پیش‌نمایش</button>
+                    <div class="animate-slide-in-right" style="animation-delay: 1.4s;">
+                        <label class="block text-sm font-medium mb-2 text-gold">نام خانوادگی</label>
+                        <input type="text" id="editLastName" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus">
                     </div>
-
-                    <div id="avatar-preview-container" class="hidden">
-                        <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
+                    <div class="animate-slide-in-left" style="animation-delay: 1.6s;">
+                        <label class="block text-sm font-medium mb-2 text-gold">آیدی (غیرقابل تغییر)</label>
+                        <input type="text" id="editUsername" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-gold focus:outline-none input-focus" readonly>
                     </div>
-
-                    <p id="avatar-error-message" class="hidden"></p>
-                </div>
-                <!-- === END OF AVATAR URL UI === -->
-            </div>
-            <div id="modal-actions" class="flex justify-center gap-4 mt-5">
-                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
-                <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font">لغو</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Developers Panel -->
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
-            <button id="close-developers-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Developer items are now populated -->
-                <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">💻</span>
-                        <h4 class="dev-role">برنامه نویس ارشد</h4>
-                    </div>
-                    <p class="dev-username clash-font">abolfazl1401</p>
-                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
-                </div>
-                 <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">🎨</span>
-                        <h4 class="dev-role">طراح گرافیک</h4>
-                    </div>
-                    <p class="dev-username clash-font">Vahid</p>
-                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
-                </div>
-                <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">💡</span>
-                        <h4 class="dev-role">ایده پرداز</h4>
-                    </div>
-                    <p class="dev-username clash-font">Ali.k</p>
-                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
-                </div>
-                 <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">☁️</span>
-                        <h4 class="dev-role">توسعه دهنده سرور</h4>
-                    </div>
-                    <p class="dev-username clash-font">Neda_Tech</p>
-                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
-                </div>
-                <div class="developer-item">
-                     <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">⚙️</span>
-                        <h4 class="dev-role">توسعه دهنده سرور</h4>
-                    </div>
-                    <p class="dev-username clash-font">SinaCloud</p>
-                    <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
-                </div>
-                <div class="developer-item">
-                     <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">🚀</span>
-                        <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
-                    </div>
-                    <p class="dev-username clash-font">ParsaDevOps</p>
-                    <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
+                    <button onclick="saveProfile()" class="w-full bg-gold text-black font-bold py-3 rounded-lg hover-gold button-hover animate-pulse-hover mt-6 animate-bounce-in" style="animation-delay: 2.4s;">ذخیره تغییرات</button>
+                    <button onclick="logout()" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 button-hover animate-pulse-hover mt-3 animate-bounce-in" style="animation-delay: 2.6s;">🚪 خروج از حساب</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Leaderboard Panel -->
-    <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
-            <button id="close-leaderboard-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
-            <div id="leaderboard-list" class="space-y-2 max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <!-- Leaderboard items will be populated here -->
-                <div class="text-center py-8">
-                    <div class="loader mx-auto"></div>
-                    <p class="mt-3 font-bold">در حال بارگذاری لیست کاربران برتر...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Audio Elements -->
-    <div id="audio-container" class="hidden">
-        <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
-        <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
-        <audio id="sfx-panel-close" src="https://assets.mixkit.co/sfx/preview/mixkit-gate-latch-click-1929.mp3" preload="auto"></audio>
-        <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
-        <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
-        <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
-    </div>
 
-    <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH AVATAR URL INPUT) ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // --- REMOVED: Firebase Storage is no longer needed for this functionality ---
-        // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
-
-        // --- AUDIO MANAGER ---
-        const audioManager = {
-            sounds: {},
-            init() {
-                this.sounds.click = document.getElementById('sfx-click');
-                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
-                this.sounds.panelClose = document.getElementById('sfx-panel-close');
-                this.sounds.correct = document.getElementById('sfx-correct');
-                this.sounds.incorrect = document.getElementById('sfx-incorrect');
-                this.sounds.startGame = document.getElementById('sfx-start-game');
-
-                Object.values(this.sounds).forEach(sound => {
-                    if (sound) sound.volume = 0.4; // Adjust volume globally
-                });
-            },
-            play(soundName) {
-                const sound = this.sounds[soundName];
-                if (sound) {
-                    sound.currentTime = 0;
-                    sound.play().catch(e => console.warn("Audio play failed:", e));
-                }
-            }
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzPn97aWhJ8tjVdn133_6u1FcUmXGamFk",
+            authDomain: "payamresan-c4fa2.firebaseapp.com",
+            projectId: "payamresan-c4fa2",
+            storageBucket: "payamresan-c4fa2.firebasestorage.app",
+            messagingSenderId: "725565444638",
+            appId: "1:725565444638:web:fb81c1702b62c64c24d40f",
+            measurementId: "G-CHEN9CJDZT"
         };
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined'
-            ? JSON.parse(__firebase_config)
-            : {
-                apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-                authDomain: "city-mafia.firebaseapp.com",
-                projectId: "city-mafia",
-                storageBucket: "city-mafia.appspot.com", 
-                messagingSenderId: "66458127103",
-                appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-                measurementId: "G-8M0M6BJ0GG"
-              };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
-
-        let app;
-        let auth;
-        let db;
-        // let storage; // <-- REMOVED: No longer needed
-        let currentUserId = null;
-        let isAuthReady = false;
-
-        const gameState = {
-            displayName: '',
-            publicUserId: '',
-            currentStage: 1,
-            currentQuestionData: null,
-            isQuestionActive: false,
-            isLoadingNextQuestion: false,
-            avatarUrl: '',
-            seenQuestionHashes: new Set(),
-        };
+        // --- GLOBAL STATE ---
+        let currentUser = null; // Will hold user profile data from Firestore
+        let currentChatId = null; // Will hold the ID of the open chat
+        let unsubscribeMessages = null; // To stop listening for messages when chat closes
+        let unsubscribeChats = null; // To stop listening for chat list updates
         
-        // --- Variables ---
-        let loadingScreen, loadingMessage, mainScreen, gameScreen,
-            authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
-            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
-            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
-            publicUserIdOutput,
-            editNameBtn,
-            mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn,
-            stageDisplay, questionText,
-            optionsContainer, questionExplanation, backToMainBtn,
-            gameFeedback, aiThinkingIndicator,
-            modalContainer, modalTitle, modalContentDynamic, modalMessage,
-            changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
-            modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn,
-            leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
-        
-        // --- NEW/MODIFIED: Elements for avatar URL input ---
-        let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
-            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
-        
-        let modalConfirmCallback = null;
-        let modalCancelCallback = null;
-
-        function simpleHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash |= 0;
-            }
-            return `h${Math.abs(hash)}`;
-        }
-
-
-        function showScreen(screenElement) {
-            if (!screenElement) return;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            screenElement.classList.add('active');
-
-            const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
-            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
-            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
-            
-            screenElement.scrollTop = 0;
-            updateUI();
-        }
-        
-        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
-                console.error("[showModal] Modal elements not found, cannot show modal.");
-                return;
-            }
-
-            audioManager.play('panelOpen');
-
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); 
-            void modalContainer.offsetWidth; 
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); 
-            
-            modalTitle.textContent = title;
-
-            modalMessage.classList.add('hidden');
-            changeNameInputContainer.classList.add('hidden');
-            avatarUploadUiContainer.classList.add('hidden');
-            if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
-            if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
-            if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
-            if (avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
-
-
-            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-
-            if (modalType === "changeName") {
-                changeNameInputContainer.classList.remove('hidden');
-                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
-                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
-                if (message && message.trim() !== "") {
-                    modalMessage.innerHTML = message;
-                    modalMessage.classList.remove('hidden');
-                }
-            } else if (modalType === "avatar") {
-                avatarUploadUiContainer.classList.remove('hidden');
-                // Reset avatar URL UI
-                if(avatarUrlInput) avatarUrlInput.value = '';
-                if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
-                if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
-                
-                if (message && message.trim() !== "") {
-                    modalMessage.innerHTML = message;
-                    modalMessage.classList.remove('hidden');
-                }
-            } else {
-                modalMessage.innerHTML = message;
-                modalMessage.classList.remove('hidden');
-            }
-
-            modalConfirmBtn.textContent = confirmText;
-            // --- MODIFIED: Disable confirm button for avatar until a valid URL is previewed ---
-            modalConfirmBtn.disabled = (modalType === 'avatar');
-            modalConfirmCallback = onConfirm;
-            modalCancelCallback = onCancel;
-
-            if (cancelText || modalType === "changeName" || modalType === "avatar") {
-                modalCancelBtn.textContent = cancelText || "لغو";
-                modalCancelBtn.classList.remove('hidden');
-            } else {
-                modalCancelBtn.classList.add('hidden');
-            }
-        }
-
-        function hideModal() {
-            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer) {
-                return;
-            }
-            
-            audioManager.play('panelClose');
-            modalContainer.classList.add('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-
-            modalConfirmCallback = null;
-            modalCancelCallback = null;
-            changeNameInputContainer.classList.add('hidden');
-            avatarUploadUiContainer.classList.add('hidden');
-            modalMessage.classList.add('hidden');
-
-            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-            
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-
-        function handleModalConfirm() {
-            if (modalConfirmCallback) {
-                try {
-                    modalConfirmCallback();
-                } catch (e) {
-                    console.error("[handleModalConfirm] Error in modal confirm callback:", e);
-                    hideModal();
-                }
-            } else {
-                hideModal();
-            }
-        }
-
-        function handleModalCancel() {
-            if (modalCancelCallback) {
-                try {
-                    modalCancelCallback();
-                } catch (e) {
-                    console.error("[handleModalCancel] Error in modal cancel callback:", e);
-                }
-            }
-            hideModal();
-        }
-
-        function showDevelopersPanel() {
-            if (!developersPanelContainer) return;
-            audioManager.play('panelOpen');
-
-            developersPanelContainer.classList.remove('panel-hidden');
-            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void developersPanelContainer.offsetWidth;
-            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-        }
-
-        function hideDevelopersPanel() {
-            if (!developersPanelContainer) return;
-            audioManager.play('panelClose');
-
-            developersPanelContainer.classList.add('panel-hidden');
-            developersPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-
-             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-
-        function showLeaderboardPanel() {
-            if (!leaderboardPanelContainer) return;
-            audioManager.play('panelOpen');
-
-            leaderboardPanelContainer.classList.remove('panel-hidden');
-            leaderboardPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            void leaderboardPanelContainer.offsetWidth;
-            leaderboardPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-            fetchAndDisplayLeaderboard();
-        }
-
-        function hideLeaderboardPanel() {
-            if (!leaderboardPanelContainer) return;
-            audioManager.play('panelClose');
-
-            leaderboardPanelContainer.classList.add('panel-hidden');
-            leaderboardPanelContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-            
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
-
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-
-        function updateUI() {
-            if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
-            if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
-            if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
-
-            if(avatarImage && gameState.avatarUrl) {
-                avatarImage.src = gameState.avatarUrl;
-            } else if (avatarImage) {
-                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
-            }
-
-            let showAuthPanel = true;
-            let showActionButtons = false;
-            let showUserInfoAndAvatar = false;
-
-            if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                showAuthPanel = false;
-                showActionButtons = true;
-                if(startGameBtn) startGameBtn.classList.add('breathing');
-                if (mainScreen && mainScreen.classList.contains('active')) {
-                    showUserInfoAndAvatar = true;
-                }
-            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
-                showAuthPanel = true;
-                showActionButtons = false;
-                showUserInfoAndAvatar = false;
-                if(startGameBtn) startGameBtn.classList.remove('breathing');
-            } else {
-                showAuthPanel = true;
-                showActionButtons = false;
-                showUserInfoAndAvatar = false;
-                if(startGameBtn) startGameBtn.classList.remove('breathing');
-            }
-
-            if(authPanel){
-                if (showAuthPanel) {
-                    authPanel.classList.remove('panel-hidden');
-                    authPanel.classList.add('panel-visible');
+        // --- AUTHENTICATION ---
+        auth.onAuthStateChanged(async (user) => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            if (user) {
+                // User is signed in.
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    currentUser = { uid: user.uid, ...userDoc.data() };
+                    initializeAppUI();
                 } else {
-                    authPanel.classList.add('panel-hidden');
-                    authPanel.classList.remove('panel-visible');
+                    // This might happen if user is created but doc fails.
+                    // For simplicity, we log them out.
+                    logout();
                 }
-            }
-
-            if(mainScreenButtonsLayout){
-                if (showActionButtons) {
-                    mainScreenButtonsLayout.classList.remove('hidden');
-                } else {
-                    mainScreenButtonsLayout.classList.add('hidden');
-                }
-            }
-
-            if(userProfileArea){
-                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
-                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-                if (showUserInfoAndAvatar && !isAnyPanelVisible) {
-                    userProfileArea.classList.remove('profile-area-hidden');
-                    userProfileArea.classList.remove('hidden');
-                    if(avatarContainer){
-                        avatarContainer.classList.remove('hidden');
-                    }
-                    if(userInfoBox) userInfoBox.classList.remove('hidden');
-
-                } else if (!showUserInfoAndAvatar) {
-                    userProfileArea.classList.add('hidden');
-                    if(avatarContainer) avatarContainer.classList.add('hidden');
-                    if(userInfoBox) userInfoBox.classList.add('hidden');
-                } else if (isAnyPanelVisible) {
-                    userProfileArea.classList.add('profile-area-hidden');
-                }
-            }
-        }
-        
-        async function initFirebase() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                // storage = getStorage(app); // --- REMOVED: No longer needed
-                console.log("Firebase initialized (Auth, Firestore).");
-
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        console.log("User is signed in:", user.uid);
-                        currentUserId = user.uid;
-                        await loadUserData(user.uid);
-                    } else {
-                        console.log("User is signed out. Attempting to sign in.");
-                        await signInAnonymously(auth);
-                        gameState.displayName = '';
-                        gameState.publicUserId = '';
-                        gameState.avatarUrl = '';
-                        gameState.seenQuestionHashes.clear();
-                    }
-                    isAuthReady = true;
-                    updateUI();
-
-                    if (loadingScreen && loadingScreen.classList.contains('active')) {
-                        if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
-                        setTimeout(() => {
-                            if(mainScreen) showScreen(mainScreen);
-                        }, 500);
-                    }
-                });
-            } catch (error) {
-                console.error("Firebase initialization error:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
-                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
-            }
-        }
-        
-        async function loadUserData(userIdToLoad) {
-            if (!userIdToLoad || !db) {
-                console.log("Cannot load user data: no userIdToLoad or db connection.");
-                return;
-            }
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToLoad}/mafiaGameData/profile`);
-            try {
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    console.log("User data found, loading profile for", userIdToLoad);
-                    const data = docSnap.data();
-                    gameState.displayName = data.displayName || "";
-                    gameState.publicUserId = data.publicUserId || "";
-                    gameState.currentStage = data.currentStage || 1;
-                    gameState.avatarUrl = data.avatarUrl || '';
-                    gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
-                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
-                } else {
-                    console.log("No user profile found for", userIdToLoad);
-                    gameState.displayName = "";
-                    gameState.publicUserId = "";
-                    gameState.avatarUrl = '';
-                    gameState.seenQuestionHashes = new Set();
-                }
-            } catch (error) {
-                console.error("Error loading user data:", error);
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-            }
-        }
-
-        async function saveUserData() {
-            const userIdToSave = currentUserId;
-            if (!userIdToSave || !db) return;
-            
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToSave}/mafiaGameData/profile`);
-            const privateData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
-                lastUpdated: serverTimestamp()
-            };
-            
-            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${userIdToSave}`);
-            const publicData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                lastUpdated: serverTimestamp()
-            };
-
-            try {
-                await Promise.all([
-                    setDoc(userDocRef, privateData, { merge: true }),
-                    setDoc(leaderboardDocRef, publicData, { merge: true })
-                ]);
-                 console.log("User data and public leaderboard data saved successfully for", userIdToSave);
-            } catch (error) {
-                console.error("Error saving user data:", error);
-                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه", null, () => hideModal());
-            }
-        }
-        
-        const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
-
-        async function callGeminiAPI(prompt, isJsonOutput = false, schema = null) {
-            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-            const payload = { contents: chatHistory };
-
-            if (isJsonOutput) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                };
-                if (schema) {
-                    payload.generationConfig.responseSchema = schema;
-                }
-            }
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    const errorBody = await response.text();
-                    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
-                }
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    return isJsonOutput ? JSON.parse(text) : text;
-                } else {
-                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
-                         throw new Error(`پاسخ نامعتبر از سرویس هوش مصنوعی (دلیل: ${result.candidates[0].finishReason})`);
-                    }
-                    throw new Error("پاسخ نامعتبر از سرویس هوش مصنوعی دریافت شد.");
-                }
-            } catch (error) {
-                console.error("Error calling Gemini API:", error);
-                if (!prompt.includes("offensive, hateful, or contain profanity")) {
-                    showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><br><small>جزئیات خطا: ${error.message}</small>`, "باشه", null, () => hideModal());
-                }
-                return null;
-            } finally {
-                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden');
-            }
-        }
-
-        async function generateQuestion() {
-            if (gameState.isLoadingNextQuestion) return;
-            gameState.isLoadingNextQuestion = true;
-            if (questionText) questionText.textContent = "در حال تولید سوال جدید و غیرتکراری...";
-            if (optionsContainer) optionsContainer.innerHTML = "";
-            if (questionExplanation) questionExplanation.classList.add('hidden');
-            if (gameFeedback) gameFeedback.textContent = "";
-            
-            let attempts = 0;
-            const maxAttempts = 3;
-            let questionData = null;
-
-            while (attempts < maxAttempts) {
-                let difficulty = "آسان";
-                if (gameState.currentStage > 20) {
-                    difficulty = "بسیار سخت";
-                } else if (gameState.currentStage > 10) {
-                    difficulty = "سخت";
-                } else if (gameState.currentStage > 5) {
-                    difficulty = "متوسط";
-                }
-                
-                const prompt = `
-                شما یک طراح بازی حرفه‌ای و خلاق هستید که مسئول طراحی سوالات برای یک بازی مافیایی پیشرفته هستید. هدف شما ایجاد سوالاتی چالش‌برانگیز، متنوع و غیرتکراری است.
-                وظیفه: یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا ایجاد کن.
-                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
-                موضوعات پیشنهادی (برای تنوع):
-                - تاریخچه و ساختار مافیای سیسیل (Cosa Nostra)، کامورا یا اندرانگتا.
-                - شخصیت‌ها، وقایع و اصطلاحات دوران ممنوعیت الکل در آمریکا.
-                - سازمان‌های جنایی دیگر مانند یاکوزای ژاپن، کارتل‌های کلمبیا یا مکزیک.
-                - جزئیات دقیق از فیلم‌ها و سریال‌های معروف مانند "پدرخوانده"، "رفقای خوب"، "کازینو"، "سوپرانوها" یا "پیکی بلایندرز".
-                - اصطلاحات تخصصی و نقش‌های پیچیده در سناریوهای مختلف بازی "شهر مافیا".
-                - سناریوهای فرضی و چالش‌های تاکتیکی در بازی مافیا.
-                مهم: سوال نباید کلیشه‌ای یا تکراری باشد. خلاقیت به خرج بده.
-                خروجی: پاسخ شما باید فقط و فقط یک آبجکت JSON خام، بدون هیچ متن اضافی یا بک‌تیک (\`\`\`) باشد.
-                ساختار JSON باید دقیقا به این صورت باشد:
-                {
-                  "question": "متن سوال به فارسی",
-                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
-                  "correctAnswerIndex": 0,
-                  "explanation": "توضیح کوتاه و جالب در مورد پاسخ صحیح به زبان فارسی"
-                }
-                `;
-
-                const data = await callGeminiAPI(prompt, true);
-
-                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
-                    const questionHash = simpleHash(data.question);
-                    if (!gameState.seenQuestionHashes.has(questionHash)) {
-                        questionData = data;
-                        break;
-                    } else {
-                        console.warn(`Duplicate question received (hash: ${questionHash}), retrying... Attempt ${attempts + 1}`);
-                        attempts++;
-                    }
-                } else {
-                    console.error("Invalid question data structure received from AI:", data);
-                    attempts++;
-                }
-            }
-
-            if (questionData) {
-                gameState.currentQuestionData = questionData;
-                displayQuestion();
             } else {
-                console.error("Failed to generate a unique question after multiple attempts.");
-                if (questionText) questionText.textContent = "خطا در بارگذاری سوال غیرتکراری.";
-                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم یک سوال جدید و غیرتکراری برای شما بسازیم. این ممکن است به دلیل ترافیک بالا یا پاسخ ندادن سرور هوش مصنوعی باشد. آیا می‌خواهید دوباره تلاش کنید؟`, "تلاش مجدد", "صفحه اصلی",
-                    () => { hideModal(); generateQuestion(); },
-                    () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
-                );
+                // User is signed out.
+                currentUser = null;
+                showAuthPage();
             }
-            
-            gameState.isLoadingNextQuestion = false;
-            gameState.isQuestionActive = true;
-        }
+        });
 
-        function displayQuestion() {
-            if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
-            const { question, options } = gameState.currentQuestionData;
-            questionText.textContent = question;
-            optionsContainer.innerHTML = "";
-            options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right';
-                button.textContent = `${index + 1}. ${option}`;
-                button.dataset.index = index;
-                button.addEventListener('click', handleAnswerSelection);
-                optionsContainer.appendChild(button);
-            });
-            if(questionExplanation) questionExplanation.classList.add('hidden');
-            if(questionExplanation) questionExplanation.textContent = "";
-            if(gameFeedback) gameFeedback.textContent = "";
-            gameState.isQuestionActive = true;
+        function showAuthPage() {
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('settingsPage').classList.add('hidden');
+            document.getElementById('chatPage').classList.add('hidden');
+            if (unsubscribeChats) unsubscribeChats(); // Stop listening to old user's chats
         }
         
-        async function handleAnswerSelection(event) {
-            if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion || !optionsContainer || !gameFeedback) return;
-            gameState.isQuestionActive = false;
-
-            const selectedOptionButton = event.target.closest('.option-btn');
-            if (!selectedOptionButton) return;
-
-            const selectedIndex = parseInt(selectedOptionButton.dataset.index);
-            const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
-
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
-
-            if (selectedIndex === correctAnswerIndex) {
-                audioManager.play('correct');
-                selectedOptionButton.classList.add('correct');
-                gameFeedback.textContent = "پاسخ صحیح!";
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
-                
-                const questionHash = simpleHash(question);
-                gameState.seenQuestionHashes.add(questionHash);
-                gameState.currentStage++;
-                
-                await saveUserData();
-                setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
+        function toggleAuthMode() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const desc = document.getElementById('authModeDescription');
+            
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                desc.textContent = "به جمع ما بپیوندید";
             } else {
-                audioManager.play('incorrect');
-                selectedOptionButton.classList.add('incorrect');
-                const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-                if (correctButton) correctButton.classList.add('correct');
-
-                const selectedOptionText = options[selectedIndex];
-                const correctAnswerText = options[correctAnswerIndex];
-                const tauntPrompt = `شما یک رئیس مافیای شوخ طبع هستید. بازیکن به این سوال پاسخ اشتباه داده است:
-                سوال: "${question}"
-                پاسخ اشتباه بازیکن: "${selectedOptionText}"
-                پاسخ صحیح: "${correctAnswerText}"
-                یک طعنه کوتاه و بامزه (۱ تا ۲ جمله) به زبان فارسی در مورد اشتباه بازیکن یا موضوع سوال بگویید. طعنه باید مناسب فضای بازی و نه چندان توهین آمیز باشد.`;
-
-                const taunt = await callGeminiAPI(tauntPrompt);
-                if (taunt) {
-                    gameFeedback.innerHTML = taunt.replace(/\n/g, '<br>');
-                } else {
-                    gameFeedback.textContent = "پاسخ اشتباه!";
-                }
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-auto text-[#ffaaaa] clash-font';
-                
-                setTimeout(() => { generateQuestion(); updateUI(); }, 4000);
-            }
-            if (explanation && questionExplanation) {
-                questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                desc.textContent = "ایجاد حساب کاربری جدید";
             }
         }
         
-        // --- NEW: Function to check if a string is a valid image URL ---
-        function isValidImageUrl(url) {
-            if (!url) return false;
-            // A simple regex to check for http/https and common image extensions
-            const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
-            return imageRegex.test(url);
-        }
+        // تابع ثبت‌نام بازنویسی شده با قابلیت بررسی یکتا بودن آیدی
+        async function registerUser() {
+            const firstName = document.getElementById('registerFirstName').value.trim();
+            const username = document.getElementById('registerUsername').value.trim().toLowerCase();
+            const phone = document.getElementById('registerPhone').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
 
-        // --- NEW: Function to preview avatar from a URL ---
-        function previewAvatarFromUrl() {
-            if (!avatarUrlInput || !avatarPreviewImage || !avatarPreviewContainer || !avatarErrorMessage || !modalConfirmBtn) return;
-            
-            const url = avatarUrlInput.value.trim();
-            avatarErrorMessage.classList.add('hidden');
-            modalConfirmBtn.disabled = true; // Always disable confirm until image loads
-
-            if (!isValidImageUrl(url)) {
-                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست. لینک باید مستقیم و به یک فایل تصویری (jpg, png, gif) ختم شود.';
-                avatarErrorMessage.classList.remove('hidden');
-                avatarPreviewContainer.classList.add('hidden');
+            // Validation
+            if (!firstName || !username || !phone || !email || !password) {
+                alert('لطفاً تمام فیلدهای ستاره‌دار را پر کنید');
                 return;
             }
-
-            avatarPreviewImage.src = url;
-            avatarPreviewImage.onerror = () => {
-                avatarErrorMessage.textContent = 'خطا در بارگذاری تصویر. لینک را بررسی کنید یا از لینک دیگری استفاده نمایید.';
-                avatarErrorMessage.classList.remove('hidden');
-                avatarPreviewContainer.classList.add('hidden');
-            };
-            avatarPreviewImage.onload = () => {
-                avatarPreviewContainer.classList.remove('hidden');
-                modalConfirmBtn.disabled = false; // Enable confirm button on successful load
-            };
-        }
-
-        // --- MODIFIED: Function to save avatar URL directly to Firestore ---
-        async function saveAvatarFromUrl() {
-            const userIdToSave = currentUserId;
-            if (!avatarUrlInput || !userIdToSave) {
-                if(avatarErrorMessage) {
-                    avatarErrorMessage.textContent = 'خطا: فیلد ورودی URL یافت نشد.';
-                    avatarErrorMessage.classList.remove('hidden');
-                }
+            if (password.length < 6) {
+                alert('رمز عبور باید حداقل ۶ کاراکتر باشد.');
                 return;
             }
-            
-            const newUrl = avatarUrlInput.value.trim();
-            
-            if (!isValidImageUrl(newUrl)) {
-                if(avatarErrorMessage) {
-                    avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
-                    avatarErrorMessage.classList.remove('hidden');
-                }
+            // اعتبارسنجی فرمت آیدی
+            const usernameRegex = /^[a-z0-9_]{3,20}$/;
+            if (!usernameRegex.test(username)) {
+                alert('آیدی باید بین ۳ تا ۲۰ کاراکتر و فقط شامل حروف کوچک انگلیسی، اعداد و "_" باشد.');
                 return;
             }
-
-            modalConfirmBtn.disabled = true;
-            modalCancelBtn.disabled = true;
-
-            try {
-                gameState.avatarUrl = newUrl;
-                await saveUserData();
-                updateUI();
-                hideModal();
-                showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!", null, () => hideModal());
-            } catch(error) {
-                console.error("Error saving avatar URL:", error);
-                if(avatarErrorMessage) {
-                    avatarErrorMessage.textContent = 'خطا در ذخیره سازی آواتار. لطفاً دوباره تلاش کنید.';
-                    avatarErrorMessage.classList.remove('hidden');
-                }
-            } finally {
-                // Re-enable buttons in case of failure
-                if(modalConfirmBtn) modalConfirmBtn.disabled = false;
-                if(modalCancelBtn) modalCancelBtn.disabled = false;
-            }
-        }
-        
-        function validateAndSanitizeName(nameValue, errorElement, inputElement) {
-            if (!inputElement || !errorElement) return null;
-            const regex = /[^a-zA-Z0-9_.-]/g;
-            let sanitizedValue = nameValue.replace(regex, '');
-
-            if (nameValue !== sanitizedValue) {
-                inputElement.value = sanitizedValue;
-            }
-
-            const trimmedName = sanitizedValue.trim();
-
-            if (trimmedName === '') {
-                errorElement.textContent = "نام نمایشی نمی‌تواند خالی باشد.";
-                errorElement.classList.remove('hidden');
-                inputElement.classList.add('invalid');
-                return null;
-            }
-            if (trimmedName.length < 3) {
-                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
-                errorElement.classList.remove('hidden');
-                inputElement.classList.add('invalid');
-                return null;
-            }
-            if (trimmedName.length > 20) {
-                errorElement.textContent = "نام نمایشی نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.";
-                errorElement.classList.remove('hidden');
-                inputElement.classList.add('invalid');
-                return null;
-            }
-            errorElement.textContent = '';
-            errorElement.classList.add('hidden');
-            inputElement.classList.remove('invalid');
-            return trimmedName;
-        }
-
-        async function handleChangeDisplayName() {
-            if(!newDisplayNameInput || !changeNameErrorMessage) return;
-            const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
-            if (!newName) return;
-
-            if (newName === gameState.displayName) {
-                if(changeNameErrorMessage) {
-                   changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-                   changeNameErrorMessage.classList.remove('hidden');
-                }
-                if(newDisplayNameInput) newDisplayNameInput.classList.add('invalid');
-                return;
-            }
-
-            gameState.displayName = newName;
-            await saveUserData();
-            updateUI();
-            hideModal();
-            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!", null, () => hideModal());
-        }
-
-        async function generateMafiaFact() {
-            const prompt = "یک حقیقت جالب، نکته تاریخی کمتر شنیده شده، یا یک داستانک کوتاه و غافلگیرکننده (حدود ۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌های معروف، یا اصطلاحات رایج) به زبان فارسی برای من تعریف کن. سعی کن هر بار یک مطلب جدید ارائه دهی.";
-            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div><p>در حال جستجو در آرشیوهای مخفی...</p>", "باشه", null, () => hideModal());
-
-            const fact = await callGeminiAPI(prompt);
-            if (fact) {
-                showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!", null, () => hideModal());
-            } else {
-                showModal("خطا", "متاسفانه در حال حاضر نکته‌ای برای گفتن نیست. لطفاً بعداً تلاش کنید.", "باشه", null, () => hideModal());
-            }
-        }
-        
-        function generateAlphanumericPublicUserId(length = 5) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            const charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
-
-        async function fetchAndDisplayLeaderboard() {
-            if (!db || !leaderboardList) return;
-
-            leaderboardList.innerHTML = `<div class="text-center py-8">
-                <div class="loader mx-auto"></div>
-                <p class="mt-3 font-bold">در حال بارگذاری لیست کاربران برتر...</p>
-            </div>`;
             
             try {
-                const leaderboardCol = collection(db, `artifacts/${appId}/publicLeaderboard`);
-                const q = query(leaderboardCol, orderBy("currentStage", "desc"), limit(50));
-                
-                const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-gray-300">هنوز هیچ کاربری در لیست برترین‌ها ثبت نشده است. اولین نفر باشید!</p>`;
+                // مرحله ۱: بررسی یکتا بودن آیدی در دیتابیس
+                const usernameQuery = await db.collection('users').where('username', '==', username).limit(1).get();
+                if (!usernameQuery.empty) {
+                    alert('این آیدی قبلاً توسط شخص دیگری گرفته شده است. لطفاً یک آیدی دیگر انتخاب کنید.');
                     return;
                 }
+
+                // مرحله ۲: اگر آیدی یکتا بود، کاربر را در سرویس احراز هویت ثبت‌نام کن
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // مرحله ۳: پروفایل کاربر را در دیتابیس Firestore بساز
+                await db.collection('users').doc(user.uid).set({
+                    firstName: firstName,
+                    lastName: '', // کاربر بعدا می‌تواند در تنظیمات وارد کند
+                    phone: phone,
+                    email: email,
+                    username: username, // استفاده از آیدی انتخاب شده، اعتبارسنجی شده و یکتا
+                    avatarUrl: '', 
+                    isCreator: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // The onAuthStateChanged listener will handle the UI transition
                 
-                const users = [];
-                querySnapshot.forEach(doc => {
-                    users.push(doc.data());
-                });
-
-                renderLeaderboardList(users);
-
             } catch (error) {
-                console.error("Error fetching leaderboard:", error);
-                leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-red-300">خطا در دریافت اطلاعات کاربران. لطفاً لحظاتی بعد دوباره تلاش کنید.</p>`;
-            }
-        }
-
-        function renderLeaderboardList(users) {
-            if (!leaderboardList) return;
-            leaderboardList.innerHTML = ''; 
-
-            const listHtml = users.map((user, index) => {
-                const rank = index + 1;
-                const avatarSrc = user.avatarUrl || 'https://placehold.co/50x50/2a4166/ffffff?text=?';
-                return `
-                    <div class="leaderboard-item">
-                        <span class="leaderboard-rank">${rank}</span>
-                        <img src="${avatarSrc}" alt="Avatar for ${user.displayName}" class="leaderboard-avatar" onerror="this.src='https://placehold.co/50x50/2a4166/ffffff?text=?'">
-                        <div class="leaderboard-info">
-                            <div class="leaderboard-name">${user.displayName || "بازیکن بی‌نام"}</div>
-                            <div class="leaderboard-stage">
-                                <span>مرحله:</span>
-                                <span class="leaderboard-stage-value">${user.currentStage || 1}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            leaderboardList.innerHTML = listHtml;
-        }
-        
-        function setupEventListeners() {
-            document.body.addEventListener('click', (event) => {
-                if (event.target.closest('.btn-clash:not(:disabled)')) {
-                    audioManager.play('click');
+                // مدیریت خطاهای احتمالی از سمت فایربیس
+                if (error.code === 'auth/email-already-in-use') {
+                     alert('این ایمیل قبلاً ثبت‌نام شده است. لطفاً وارد شوید یا از ایمیل دیگری استفاده کنید.');
+                } else {
+                     alert(`خطا در ثبت‌نام: ${error.message}`);
                 }
-            });
-
-            if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
-            if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
-
-            if (displayNameInput) {
-                displayNameInput.addEventListener('input', () => {
-                    validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                });
-                displayNameInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        if(registerBtn) registerBtn.click();
-                    }
-                });
             }
-
-            if (generateUserIdBtn) {
-                generateUserIdBtn.addEventListener('click', () => {
-                    const newPublicId = generateAlphanumericPublicUserId();
-                    if (userIdDisplayInput) userIdDisplayInput.value = newPublicId;
-                    gameState.publicUserId = newPublicId;
-                    if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
-                });
-            }
-            
-            if (newDisplayNameInput) {
-                newDisplayNameInput.addEventListener('input', () => {
-                    validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
-                });
-                newDisplayNameInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                         if (modalConfirmCallback === handleChangeDisplayName) {
-                            if(modalConfirmBtn) modalConfirmBtn.click();
-                        }
-                    }
-                });
-            }
-
-            if (registerBtn) {
-                registerBtn.addEventListener('click', async () => {
-                    const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-
-                    let isPublicIdValid = false;
-                    if (!gameState.publicUserId) {
-                        if(userIdErrorMessage) {
-                            userIdErrorMessage.textContent = "لطفاً ابتدا یک شناسه کاربری بسازید.";
-                            userIdErrorMessage.classList.remove('hidden');
-                        }
-                        isPublicIdValid = false;
-                    } else {
-                        if(userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
-                        isPublicIdValid = true;
-                    }
-
-                    if (!validatedName || !isPublicIdValid) return;
-
-                    gameState.displayName = validatedName;
-                    
-                    await saveUserData();
-                    updateUI();
-                });
-            }
-
-            if (editNameBtn) {
-                editNameBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return;
-                    showModal( "تغییر نام", "تغییر نام در این بازی رایگان است.", "تغییر", "لغو",
-                        handleChangeDisplayName, hideModal, "changeName"
-                    );
-                });
-            }
-
-            if (avatarContainer) {
-                avatarContainer.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName) return;
-                    // --- MODIFIED: Show avatar URL modal ---
-                    showModal(
-                        "تغییر آواتار",
-                        "لینک مستقیم یک تصویر را وارد کرده و دکمه پیش‌نمایش را بزنید.",
-                        "ذخیره", "لغو",
-                        saveAvatarFromUrl,  // onConfirm
-                        hideModal,          // onCancel
-                        "avatar"
-                    );
-                });
-            }
-            
-            // --- NEW: Event listeners for avatar URL UI ---
-            if(previewAvatarBtn) {
-                previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
-            }
-            if(avatarUrlInput) {
-                avatarUrlInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        previewAvatarFromUrl();
-                    }
-                });
-            }
-
-            const allActionButtons = [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].filter(btn => btn !== null); // MODIFIED: Added new buttons
-            allActionButtons.forEach(button => {
-                button.addEventListener('click', (event) => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) {
-                        event.stopPropagation();
-                        showModal( "ثبت نام لازم است", "برای دسترسی به این بخش، ابتدا باید ثبت نام خود را کامل کنید.",
-                            "باشه", null, () => hideModal()
-                        );
-                    }
-                }, true);
-            });
-
-            if (startGameBtn) {
-                startGameBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    audioManager.play('startGame');
-                    showModal(
-                        "شروع بازی",
-                        "پیشنهاد می‌شود برای بهترین تجربه بازی از یک اتصال اینترنت پایدار استفاده کنید.",
-                        "ادامه", null,
-                        () => {
-                            hideModal();
-                            if(gameScreen) showScreen(gameScreen);
-                            generateQuestion();
-                        }
-                    );
-                });
-            }
-
-            if (mafiaFactBtn) {
-                mafiaFactBtn.addEventListener('click', () => {
-                    if (!isAuthReady || !gameState.displayName || !gameState.publicUserId) return;
-                    generateMafiaFact();
-                });
-            }
-            
-            if (developersBtn) {
-                developersBtn.addEventListener('click', showDevelopersPanel);
-            }
-
-            if (closeDevelopersPanelBtn) {
-                closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
-            }
-
-            if (leaderboardBtn) {
-                leaderboardBtn.addEventListener('click', showLeaderboardPanel);
-            }
-            
-            if (closeLeaderboardPanelBtn) {
-                closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
-            }
-
-            if(backToMainBtn) {
-                backToMainBtn.addEventListener('click', async () => {
-                    await saveUserData();
-                    gameState.currentQuestionData = null;
-                    if(mainScreen) showScreen(mainScreen);
-                });
-            }
-
-            window.addEventListener('resize', () => {
-                updateUI();
-            });
         }
-        
-        async function initializeGame() {
-            loadingScreen = document.getElementById('loading-screen');
-            loadingMessage = document.getElementById('loading-message');
-            mainScreen = document.getElementById('main-screen');
-            gameScreen = document.getElementById('game-screen');
-            
-            authPanel = document.getElementById('auth-panel');
-            registrationForm = document.getElementById('registration-form');
-            displayNameInput = document.getElementById('display-name-input');
-            registerBtn = document.getElementById('register-btn');
-            inputErrorMessage = document.getElementById('input-error-message');
-            userIdDisplayInput = document.getElementById('user-id-display');
-            generateUserIdBtn = document.getElementById('generate-user-id-btn');
-            userIdErrorMessage = document.getElementById('user-id-error-message');
 
-            userProfileArea = document.getElementById('user-profile-area');
-            avatarContainer = document.getElementById('avatar-container');
-            avatarImage = document.getElementById('avatar-image');
-            userInfoBox = document.getElementById('user-info-box');
-            displayNameOutput = document.getElementById('display-name-output');
-            publicUserIdOutput = document.getElementById('public-user-id-output');
-            editNameBtn = document.getElementById('edit-name-btn');
-            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
-            startGameBtn = document.getElementById('start-game-btn');
-            mafiaFactBtn = document.getElementById('mafia-fact-btn');
-            developersBtn = document.getElementById('developers-btn');
-            leaderboardBtn = document.getElementById('leaderboard-btn');
-            stageDisplay = document.getElementById('stage-display');
-            questionText = document.getElementById('question-text');
-            optionsContainer = document.getElementById('options-container');
-            questionExplanation = document.getElementById('question-explanation');
-            backToMainBtn = document.getElementById('back-to-main-btn');
-            gameFeedback = document.getElementById('game-feedback');
-            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
-            modalContainer = document.getElementById('modal-container');
-            modalTitle = document.getElementById('modal-title');
-            modalContentDynamic = document.getElementById('modal-content-dynamic');
-            modalMessage = document.getElementById('modal-message');
-            changeNameInputContainer = document.getElementById('change-name-input-container');
-            newDisplayNameInput = document.getElementById('new-display-name-input');
-            changeNameErrorMessage = document.getElementById('change-name-error-message');
-            
-            // --- NEW/MODIFIED: Avatar URL UI element initialization ---
-            avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
-            avatarUrlInput = document.getElementById('avatar-url-input');
-            previewAvatarBtn = document.getElementById('preview-avatar-btn');
-            avatarPreviewContainer = document.getElementById('avatar-preview-container');
-            avatarPreviewImage = document.getElementById('avatar-preview-image');
-            avatarErrorMessage = document.getElementById('avatar-error-message');
-
-            modalConfirmBtn = document.getElementById('modal-confirm-btn');
-            modalCancelBtn = document.getElementById('modal-cancel-btn');
-            developersPanelContainer = document.getElementById('developers-panel-container');
-            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
-
-            leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
-            leaderboardList = document.getElementById('leaderboard-list');
-            closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
-
-
-            audioManager.init();
-
-            if(userProfileArea) userProfileArea.classList.add('hidden');
-
-            if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
-            if (!navigator.onLine) {
-                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => {
-                    hideModal();
-                    if (navigator.onLine) initializeGame(); else showModal("عدم اتصال", "همچنان به اینترنت متصل نیستید.", "باشه", null, () => hideModal());
-                });
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) {
+                alert('لطفا ایمیل و رمز عبور را وارد کنید.');
                 return;
             }
-            if(loadingMessage) loadingMessage.textContent = "آماده سازی برای ورود...";
-
             try {
-                setupEventListeners();
-                await initFirebase();
+                await auth.signInWithEmailAndPassword(email, password);
+                // The onAuthStateChanged listener will handle the UI transition
             } catch (error) {
-                console.error("Error during initializeGame:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
+                alert(`خطا در ورود: ${error.message}`);
             }
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeGame);
-        } else {
-            initializeGame();
+        function logout() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟')) {
+                auth.signOut();
+            }
+        }
+        
+        // --- UI INITIALIZATION ---
+        function initializeAppUI() {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+            updateProfileDisplay();
+            loadChatList();
         }
 
+        // --- CHAT LIST ---
+        function loadChatList() {
+            const chatListDiv = document.getElementById('chatList');
+            
+            // Listen for real-time updates to chats
+            unsubscribeChats = db.collection('chats')
+                .where('participants', 'array-contains', currentUser.uid)
+                .orderBy('lastMessage.timestamp', 'desc')
+                .onSnapshot(async (querySnapshot) => {
+                    chatListDiv.innerHTML = ''; // Clear old list
+                    if (querySnapshot.empty) {
+                        chatListDiv.innerHTML = `<p class="text-gray-400 text-center mt-8">هنوز چتی نداری. یک کاربر را جستجو کن و گفتگو را شروع کن!</p>`;
+                        return;
+                    }
+                    
+                    for (const doc of querySnapshot.docs) {
+                        const chat = { id: doc.id, ...doc.data() };
+                        const otherUserId = chat.participants.find(id => id !== currentUser.uid);
+
+                        if (otherUserId) {
+                            const userDoc = await db.collection('users').doc(otherUserId).get();
+                            const otherUser = { uid: userDoc.id, ...userDoc.data() };
+                            
+                            const chatItem = document.createElement('div');
+                            chatItem.className = 'chat-item flex items-center p-3 rounded-lg cursor-pointer mb-2 animate-fade-in-up animate-pulse-hover';
+                            chatItem.onclick = () => openChat(chat.id, otherUser);
+                            
+                            const lastMessageText = chat.lastMessage ? chat.lastMessage.text.substring(0, 30) + '...' : 'شروع گفتگو...';
+                            const lastMessageTime = chat.lastMessage ? new Date(chat.lastMessage.timestamp?.toDate()).toLocaleTimeString('fa-IR', {hour: '2-digit', minute: '2-digit'}) : '';
+
+                            chatItem.innerHTML = `
+                                <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center text-black font-bold ml-3 overflow-hidden">
+                                    ${otherUser.avatarUrl ? `<img src="${otherUser.avatarUrl}" class="w-full h-full object-cover">` : otherUser.firstName.charAt(0)}
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold flex items-center">
+                                        ${otherUser.firstName} ${otherUser.lastName}
+                                        ${otherUser.isCreator ? '<span class="verified-badge mr-2">✓</span>' : ''}
+                                    </h3>
+                                    <p class="text-gray-400 text-sm">${lastMessageText}</p>
+                                </div>
+                                <div class="text-xs text-gray-500">${lastMessageTime}</div>
+                            `;
+                            chatListDiv.appendChild(chatItem);
+                        }
+                    }
+                });
+        }
+        
+        // --- SEARCH ---
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '<p class="text-gray-400 text-center">برای جستجو تایپ کنید...</p>';
+                return;
+            }
+            
+            const usersRef = db.collection('users');
+            // Firestore doesn't support case-insensitive or partial text search natively.
+            // This is a common workaround for "starts-with" search.
+            const snapshot = await usersRef
+                .where('username', '>=', query)
+                .where('username', '<=', query + '\uf8ff')
+                .get();
+
+            if (snapshot.empty) {
+                resultsDiv.innerHTML = '<p class="text-gray-400 text-center">کاربری با این آیدی یافت نشد</p>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = '';
+            snapshot.forEach(doc => {
+                const user = { uid: doc.id, ...doc.data() };
+                // Don't show the current user in search results
+                if (user.uid === currentUser.uid) return;
+
+                const userDiv = document.createElement('div');
+                userDiv.className = 'flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer transition-colors mb-2';
+                userDiv.onclick = () => openChatFromSearch(user);
+
+                userDiv.innerHTML = `
+                    <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center text-black font-bold ml-3 overflow-hidden">
+                        ${user.avatarUrl ? `<img src="${user.avatarUrl}" class="w-full h-full object-cover">` : user.firstName.charAt(0)}
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold flex items-center">
+                            ${user.firstName} ${user.lastName}
+                            ${user.isCreator ? '<span class="verified-badge mr-2">✓</span>' : ''}
+                        </h3>
+                        <p class="text-gray-400 text-sm">@${user.username}</p>
+                    </div>
+                    <button class="bg-gold text-black px-3 py-1 rounded-lg text-sm font-bold">پیام</button>
+                `;
+                resultsDiv.appendChild(userDiv);
+            });
+        }
+
+        // --- CHAT PAGE ---
+        function openChat(chatId, otherUser) {
+            currentChatId = chatId;
+            
+            // Populate chat header
+            document.getElementById('chatName').innerHTML = `${otherUser.firstName} ${otherUser.lastName} ${otherUser.isCreator ? '<span class="verified-badge mr-2">✓</span>' : ''}`;
+            document.getElementById('chatAvatar').innerHTML = otherUser.avatarUrl ? `<img src="${otherUser.avatarUrl}" class="w-full h-full object-cover rounded-full">` : otherUser.firstName.charAt(0);
+            
+            // Show chat page
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('chatPage').classList.remove('hidden');
+
+            loadMessages(chatId);
+        }
+        
+        async function openChatFromSearch(otherUser) {
+            // Generate a consistent chat ID for 1-on-1 chats
+            const chatId = currentUser.uid > otherUser.uid 
+                ? `${currentUser.uid}_${otherUser.uid}` 
+                : `${otherUser.uid}_${currentUser.uid}`;
+
+            const chatRef = db.collection('chats').doc(chatId);
+            const chatDoc = await chatRef.get();
+
+            if (!chatDoc.exists) {
+                // Create a new chat if it doesn't exist
+                await chatRef.set({
+                    participants: [currentUser.uid, otherUser.uid],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            hideSearch();
+            openChat(chatId, otherUser);
+        }
+
+        function closeChatPage() {
+            if (unsubscribeMessages) unsubscribeMessages(); // Stop listening
+            currentChatId = null;
+            document.getElementById('chatPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        function loadMessages(chatId) {
+            const container = document.getElementById('messagesContainer');
+            
+            unsubscribeMessages = db.collection('chats').doc(chatId).collection('messages')
+                .orderBy('timestamp', 'asc')
+                .onSnapshot(snapshot => {
+                    container.innerHTML = ''; // Clear old messages
+                    snapshot.forEach(doc => {
+                        const msg = { id: doc.id, ...doc.data() };
+                        const isSent = msg.senderId === currentUser.uid;
+                        const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString('fa-IR', {hour: '2-digit', minute: '2-digit'}) : '...';
+                        
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = `flex ${isSent ? 'justify-end' : 'justify-start'} animate-fade-in-up`;
+                        
+                        let contentHtml = `<p class="whitespace-pre-wrap">${msg.text}</p>`;
+                        if (msg.type === 'image') {
+                            contentHtml = `<img src="${msg.contentUrl}" class="rounded-lg mb-2 max-w-full cursor-pointer" onclick="window.open('${msg.contentUrl}', '_blank')"><p class="whitespace-pre-wrap">${msg.text}</p>`;
+                        } else if (msg.type === 'audio') {
+                            contentHtml = `<audio controls class="w-full mb-2"><source src="${msg.contentUrl}"></audio><p class="whitespace-pre-wrap">${msg.text}</p>`;
+                        }
+
+                        msgDiv.innerHTML = `
+                            <div class="max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${isSent ? 'chat-bubble-sent' : 'chat-bubble-received'}">
+                                ${contentHtml}
+                                <p class="text-xs opacity-70 mt-1 text-right">${time}</p>
+                            </div>
+                        `;
+                        container.appendChild(msgDiv);
+                    });
+                    container.scrollTop = container.scrollHeight; // Scroll to bottom
+                });
+        }
+        
+        async function sendMessage(fileInfo = null) {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text && !fileInfo) return;
+
+            const messageData = {
+                text: text,
+                senderId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                type: 'text'
+            };
+            
+            if (fileInfo) {
+                messageData.type = fileInfo.type;
+                messageData.contentUrl = fileInfo.url;
+            }
+
+            // Add message to subcollection
+            await db.collection('chats').doc(currentChatId).collection('messages').add(messageData);
+            
+            // Update the last message on the chat document for the chat list
+            await db.collection('chats').doc(currentChatId).update({
+                lastMessage: {
+                    text: fileInfo ? (fileInfo.type === 'image' ? 'عکس' : 'فایل صوتی') : text,
+                    senderId: currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }
+            });
+            
+            input.value = '';
+
+            // Check for the "creator" code
+            if (text === 'alpppopppirt' && !currentUser.isCreator) {
+                await db.collection('users').doc(currentUser.uid).update({ isCreator: true });
+                currentUser.isCreator = true; // Update local state
+                updateProfileDisplay();
+                alert('🎉 تبریک! شما اکنون سازنده شدید و تیک آبی دریافت کردید!');
+            }
+        }
+
+        async function handleFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            alert('در حال آپلود فایل... لطفاً صبر کنید.');
+
+            const filePath = `chat_files/${currentChatId}/${Date.now()}_${file.name}`;
+            const fileRef = storage.ref(filePath);
+
+            try {
+                const uploadTask = await fileRef.put(file);
+                const downloadURL = await uploadTask.ref.getDownloadURL();
+                
+                const fileInfo = {
+                    url: downloadURL,
+                    type: file.type.startsWith('image/') ? 'image' : 'audio'
+                };
+
+                // Now send the message with the file info
+                sendMessage(fileInfo);
+            } catch (error) {
+                console.error("Error uploading file: ", error);
+                alert("خطا در آپلود فایل.");
+            }
+        }
+
+
+        // --- SETTINGS & PROFILE ---
+        function showSettings() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('settingsPage').classList.remove('hidden');
+            
+            // Populate fields with current user data
+            document.getElementById('editFirstName').value = currentUser.firstName;
+            document.getElementById('editLastName').value = currentUser.lastName || '';
+            document.getElementById('editUsername').value = currentUser.username;
+            updateProfileDisplay(); // Ensure avatar is correct
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        function updateProfileDisplay() {
+            if (!currentUser) return;
+            const fullName = `${currentUser.firstName} ${currentUser.lastName || ''}`.trim();
+            document.getElementById('profileName').textContent = fullName;
+            document.getElementById('profileUsername').textContent = `@${currentUser.username}`;
+            
+            const avatarDiv = document.getElementById('profileAvatar');
+            if (currentUser.avatarUrl) {
+                avatarDiv.innerHTML = `<img src="${currentUser.avatarUrl}" class="w-full h-full rounded-full object-cover">`;
+            } else {
+                avatarDiv.innerHTML = `<span>${currentUser.firstName.charAt(0)}</span>`;
+            }
+
+            if(currentUser.isCreator) {
+                const verifiedBadge = `<span class="verified-badge absolute -mt-16 mr-16">✓</span>`;
+                 if (!avatarDiv.nextElementSibling?.classList.contains('verified-badge')) {
+                    // This is a simplistic way, might need better logic if structure changes
+                 }
+            }
+        }
+        
+        async function changeAvatar() {
+            const input = document.getElementById('avatarInput');
+            const file = input.files[0];
+            if (!file) return;
+
+            alert('در حال آپلود آواتار...');
+            const filePath = `avatars/${currentUser.uid}/${file.name}`;
+            const fileRef = storage.ref(filePath);
+            
+            try {
+                const uploadTask = await fileRef.put(file);
+                const downloadURL = await uploadTask.ref.getDownloadURL();
+                
+                // Update user doc in Firestore
+                await db.collection('users').doc(currentUser.uid).update({
+                    avatarUrl: downloadURL
+                });
+
+                // Update local state and UI
+                currentUser.avatarUrl = downloadURL;
+                updateProfileDisplay();
+                alert('آواتار با موفقیت تغییر کرد!');
+            } catch(error) {
+                 console.error("Error changing avatar: ", error);
+                alert("خطا در تغییر آواتار.");
+            }
+        }
+
+        async function saveProfile() {
+            const firstName = document.getElementById('editFirstName').value.trim();
+            const lastName = document.getElementById('editLastName').value.trim();
+            
+            if (!firstName) {
+                alert('نام نمی‌تواند خالی باشد');
+                return;
+            }
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).update({
+                    firstName: firstName,
+                    lastName: lastName
+                });
+                
+                // Update local state
+                currentUser.firstName = firstName;
+                currentUser.lastName = lastName;
+
+                updateProfileDisplay();
+                alert('تغییرات با موفقیت ذخیره شد!');
+            } catch (error) {
+                console.error("Error saving profile: ", error);
+                alert('خطا در ذخیره تغییرات.');
+            }
+        }
+
+        // --- UTILITY ---
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function showSearch() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('searchPage').classList.remove('hidden');
+            document.getElementById('searchInput').focus();
+        }
+
+        function hideSearch() {
+            document.getElementById('searchPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+        
+        // --- Modals (unchanged as they are simple UI toggles) ---
+        function showChatOptions() { alert("این قابلیت هنوز پیاده سازی نشده است.")}
     </script>
 </body>
 </html>
