@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جستجوی بازیکنان - شهر مافیا</title>
+    <title>در دست ساخت - شهر مافیا</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,6 @@
             --clash-brown-dark: #5b3a29;
             --clash-text-light: #ffffff;
             --clash-text-dark: #333333;
-            --clash-green: #59a845;
-            --clash-red: #c74243;
             --clash-panel-bg: #4468a0;
             --clash-panel-border: #9dc2ff;
             --clاش-panel-border-dark: #2a4166;
@@ -27,7 +25,7 @@
         @keyframes clash-panel-intro { 0% { opacity: 0; transform: scale(0.8) translateY(-30px); } 70% { opacity: 1; transform: scale(1.05) translateY(0); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes subtle-pan { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-light { 0%, 100% { box-shadow: 0 0 15px rgba(157, 194, 255, 0.4); } 50% { box-shadow: 0 0 25px rgba(157, 194, 255, 0.8); } }
+        @keyframes pulse-light { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -38,418 +36,163 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
             -webkit-user-select: none; user-select: none;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        body.exiting {
+            opacity: 0;
+            transform: scale(0.95);
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 200%; height: 200%; background-image: url('https://www.transparenttextures.com/patterns/dust.png'); opacity: 0.15; z-index: 0; animation: subtle-pan 120s linear infinite; }
         .clash-font { font-family: 'Lilita One', cursive; letter-spacing: 1px; }
         .panel-clash { background-color: var(--clash-panel-bg); border: 4px solid var(--clash-panel-border-dark); border-top-color: var(--clash-panel-border); border-left-color: var(--clash-panel-border); border-radius: 16px; box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2); transition: all 0.3s ease-in-out; position: relative; }
         .panel-clash::before, .panel-clash::after { content: ''; position: absolute; width: 12px; height: 12px; background: var(--clash-gold); border-radius: 50%; border: 2px solid var(--clash-brown-dark); box-shadow: 0 0 3px #000; top: 10px; }
         .panel-clash::before { left: 10px; } .panel-clash::after { right: 10px; }
-        .panel-hidden { opacity: 0; transform: scale(0.9) translateY(-20px); pointer-events: none; visibility: hidden; }
-        .panel-visible { opacity: 1; transform: scale(1) translateY(0); visibility: visible; animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .panel-visible { opacity: 1; transform: scale(1) translateY(0); visibility: visible; animation: clash-panel-intro 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .btn-clash { border-radius: 12px; font-weight: bold; transition: all 0.1s ease-out; cursor: pointer; position: relative; display: inline-flex; align-items: center; justify-content: center; color: var(--clash-text-dark); text-shadow: 1px 1px 1px rgba(255,255,255,0.4); }
-        .btn-clash:disabled { filter: grayscale(80%); cursor: not-allowed; box-shadow: 0 4px 0 #555 !important; transform: translateY(0) !important; }
         .btn-clash-primary { background: linear-gradient(to bottom, #ffe47a, var(--clash-gold)); border: 2px solid var(--clash-brown-dark); box-shadow: 0 6px 0 #a07200; padding: 12px 30px; font-size: 1.25rem; }
         .btn-clash-primary:hover { background: linear-gradient(to bottom, #fff0a0, #ffda5a); transform: translateY(-2px); box-shadow: 0 8px 0 #a07200; }
         .btn-clash-primary:active { transform: translateY(4px) !important; box-shadow: 0 2px 0 #a07200 !important; }
-        .btn-clash-secondary { background: linear-gradient(to bottom, #e87b7c, var(--clash-red)); border: 2px solid #7c2425; box-shadow: 0 5px 0 #8f2a2b; padding: 10px 22px; font-size: 1rem; color: var(--clash-text-light); text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-        .btn-clash-secondary:hover { background: linear-gradient(to bottom, #ff9a9b, #d85a5b); transform: translateY(-2px); box-shadow: 0 7px 0 #8f2a2b; }
-        .btn-clash-secondary:active { transform: translateY(3px) !important; box-shadow: 0 2px 0 #8f2a2b !important; }
-        .loader { border: 8px solid #3a5b8a; border-top: 8px solid var(--clash-gold); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; padding: 10px; box-sizing: border-box; opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out, visibility 0.5s; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
-        .screen.active { opacity: 1; visibility: visible; position: relative; }
-        .hidden { display: none !important; }
-
-        /* --- NEW STYLES FOR LOBBY --- */
-        #lobby-panel { width: 100%; max-width: 700px; padding: 2rem; }
-        #player-slots-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0; }
-        @media (min-width: 640px) { #player-slots-container { grid-template-columns: repeat(4, 1fr); } }
-        .player-slot { background-color: rgba(42, 65, 102, 0.9); padding: 1rem; border-radius: 12px; border: 3px solid rgba(157, 194, 255, 0.4); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; transition: all 0.3s ease; }
-        .player-slot.empty { animation: pulse-light 2s infinite ease-in-out; }
-        .player-avatar { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--clash-gold-dark); object-fit: cover; background-color: #2a4166; margin-bottom: 0.75rem; box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
-        .player-name { font-family: 'Lilita One', cursive; font-size: 1.2rem; color: #ffffff; text-shadow: 1px 1px 2px #000; margin-bottom: 0.25rem; }
-        .player-name.is-self { color: var(--clash-gold); }
-        .player-stage { font-size: 0.9rem; color: #d0e0ff; font-weight: bold; }
-        .player-stage-value { color: var(--clash-gold); font-family: 'Lilita One', cursive; font-size: 1.1em; margin-right: 4px; }
-        .empty-slot-text { font-size: 1rem; color: #a0b8d8; font-weight: bold; }
         
-        /* User Profile Area (Copied) */
-        #user-profile-area { position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px; transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); top: 20px; right: 20px; }
-        #user-info-box { background-color: rgba(91, 58, 41, 0.85); border: 4px solid #4a2f20; border-top-color: #c89673; border-left-color: #c89673; border-radius: 12px; padding: 12px 15px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 10px; min-width: 180px; }
-        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; border: 1px solid #4a2f20; }
-        #display-name-output { color: var(--clash-gold); font-size: 1.2em; }
-        #user-stage-output { color: #eee; font-family: 'Vazirmatn'; font-size: 1.1em; }
-        #avatar-container { width: 80px; height: 80px; border-radius: 50%; border: 5px solid; border-image: linear-gradient(to bottom, #ffd700, #c89820) 1; background-color: #333; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); flex-shrink: 0; }
-        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
+        /* --- NEW STYLES FOR "COMING SOON" PAGE --- */
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #coming-soon-panel {
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .construction-icon {
+            color: var(--clash-gold);
+            filter: drop-shadow(0 0 10px var(--clash-gold-dark));
+            animation: spin 10s linear infinite, pulse-light 2s infinite ease-in-out;
+            margin-bottom: 1.5rem;
+        }
+
+        .shimmer-text {
+            background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* --- Floating Sparks Animation --- */
+        .spark {
+            position: fixed;
+            bottom: -50px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--clash-gold);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 0 10px var(--clash-gold), 0 0 20px var(--clash-gold);
+            animation: float-up 10s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-120vh) translateX(50px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- User Profile Display -->
-    <div id="user-profile-area" class="hidden">
-        <div id="user-info-box">
-            <div class="user-info-item">
-                <div id="display-name-output" class="clash-font">...</div>
-            </div>
-            <div class="user-info-item">
-                <div id="user-stage-output">مرحله: <span class="clash-font text-[var(--clash-gold)]">...</span></div>
-            </div>
-        </div>
-        <div id="avatar-container">
-            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر">
-        </div>
-    </div>
 
-    <!-- Main Lobby Screen -->
-    <div id="lobby-screen" class="screen active">
-        <div id="lobby-panel" class="panel-clash panel-visible">
-            <h1 class="text-4xl font-bold text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">جستجوی بازیکنان</h1>
-            <p id="lobby-status" class="text-center text-lg mt-2 mb-6">در حال اتصال به سرور...</p>
+    <div class="main-container">
+        <div id="coming-soon-panel" class="panel-clash panel-visible">
             
-            <div id="player-slots-container">
-                <!-- Player slots will be generated by JS -->
-            </div>
+            <!-- Animated Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="construction-icon mx-auto bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.284-.08c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.08.284c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.187-1.187l-.284.08c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.187l-.08-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434zM12.973 8.5H8.25l-2.884 4.994a.96.96 0 0 0 1.707.986L8.25 9.48l2.884 4.994a.96.96 0 1 0 1.707-.986l-2.884-4.994z"/>
+            </svg>
+
+            <h1 class="text-4xl lg:text-5xl font-bold text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 4px #000;">
+                در دست ساخت
+            </h1>
             
-            <div class="text-center mt-8">
-                <button id="cancel-search-btn" class="btn-clash btn-clash-secondary clash-font">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg ml-2" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
-                انصراف و بازگشت
+            <p class="text-center text-lg mt-4 mb-6 leading-relaxed">
+                این بخش از بازی توسط تیم
+                <span class="clash-font text-2xl shimmer-text">Escort Game Team</span>
+                در حال توسعه و آماده‌سازی است.
+            </p>
+            <p class="text-center text-md text-slate-300 mb-8">
+                ما سخت مشغول کاریم تا یک قابلیت شگفت‌انگیز و هیجان‌انگیز را برای شما فراهم کنیم. به زودی با خبرهای عالی باز خواهیم گشت!
+            </p>
+            
+            <div class="text-center mt-10">
+                <button id="back-button" class="btn-clash btn-clash-primary clash-font">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-short ml-2" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/></svg>
+                    بازگشت به صفحه اصلی
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="screen">
-        <div class="loader"></div>
-        <p class="mt-4 text-lg font-bold">در حال بارگذاری اطلاعات...</p>
-    </div>
-    
-    <!-- Modal Panel -->
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
-        <div class="panel-clash p-8 rounded-lg max-w-md w-full text-center">
-            <h3 id="modal-title" class="text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
-            <p id="modal-message" class="mb-6 text-base"></p>
-            <div id="modal-actions" class="flex justify-center gap-4 mt-5">
-                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">باشه</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backButton = document.getElementById('back-button');
+            const body = document.body;
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, limit, runTransaction, onSnapshot, writeBatch, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+            // --- Function to create floating sparks ---
+            function createSparks(numberOfSparks) {
+                for (let i = 0; i < numberOfSparks; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    
+                    // Randomize properties for a natural look
+                    spark.style.left = `${Math.random() * 100}%`;
+                    spark.style.animationDelay = `${Math.random() * 10}s`;
+                    spark.style.animationDuration = `${5 + Math.random() * 8}s`;
+                    const size = 5 + Math.random() * 8;
+                    spark.style.width = `${size}px`;
+                    spark.style.height = `${size}px`;
 
-        // --- CONFIG (Same as your main file) ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-            authDomain: "city-mafia.firebaseapp.com",
-            projectId: "city-mafia",
-            storageBucket: "city-mafia.appspot.com", 
-            messagingSenderId: "66458127103",
-            appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-            measurementId: "G-8M0M6BJ0GG"
-        };
-        const appId = 'mafia-game-default';
-
-        // --- Firebase Services ---
-        let app, auth, db;
-        let currentUser = null;
-        let userProfile = {};
-        
-        // --- Lobby State ---
-        let currentLobbyId = null;
-        let lobbyUnsubscribe = null;
-        let isLeaving = false;
-
-        // --- DOM Elements ---
-        const userProfileArea = document.getElementById('user-profile-area');
-        const avatarContainer = document.getElementById('avatar-container');
-        const avatarImage = document.getElementById('avatar-image');
-        const displayNameOutput = document.getElementById('display-name-output');
-        const userStageOutput = document.getElementById('user-stage-output');
-        const lobbyStatus = document.getElementById('lobby-status');
-        const playerSlotsContainer = document.getElementById('player-slots-container');
-        const cancelSearchBtn = document.getElementById('cancel-search-btn');
-        const modalContainer = document.getElementById('modal-container');
-        const modalTitle = document.getElementById('modal-title');
-        const modalMessage = document.getElementById('modal-message');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
-
-        // --- UI Functions ---
-        function showModal(title, message) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible');
-        }
-
-        function hideModal() {
-            modalContainer.classList.add('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-        }
-
-        function updateProfileUI() {
-            if (!userProfile.displayName) return;
-            userProfileArea.classList.remove('hidden');
-            displayNameOutput.textContent = userProfile.displayName;
-            userStageOutput.innerHTML = `مرحله: <span class="clash-font text-[var(--clash-gold)]">${userProfile.currentStage || 1}</span>`;
-            avatarImage.src = userProfile.avatarUrl || 'https://placehold.co/80x80/333333/777777?text=?';
-            avatarImage.onerror = () => { avatarImage.src = 'https://placehold.co/80x80/333333/777777?text=?'; };
-        }
-
-        function renderLobbyUI(lobbyData) {
-            if (!lobbyData || !playerSlotsContainer) return;
-
-            const players = lobbyData.players || [];
-            lobbyStatus.textContent = `در انتظار بازیکنان... (${players.length}/4)`;
-            playerSlotsContainer.innerHTML = '';
-
-            for (let i = 0; i < 4; i++) {
-                const player = players[i];
-                const slot = document.createElement('div');
-                slot.className = 'player-slot';
-
-                if (player) {
-                    const isSelf = player.uid === currentUser.uid;
-                    slot.innerHTML = `
-                        <img src="${player.avatarUrl || 'https://placehold.co/80x80/2a4166/ffffff?text=?'}" alt="آواتار" class="player-avatar" onerror="this.src='https://placehold.co/80x80/2a4166/ffffff?text=?'">
-                        <div class="player-name ${isSelf ? 'is-self' : ''}">${player.displayName}${isSelf ? ' (شما)' : ''}</div>
-                        <div class="player-stage">مرحله: <span class="player-stage-value">${player.currentStage || 1}</span></div>
-                    `;
-                } else {
-                    slot.classList.add('empty');
-                    slot.innerHTML = `
-                        <img src="https://placehold.co/80x80/2a4166/ffffff?text=?" alt="جای خالی" class="player-avatar opacity-40">
-                        <div class="empty-slot-text">در حال جستجو...</div>
-                    `;
+                    body.appendChild(spark);
                 }
-                playerSlotsContainer.appendChild(slot);
             }
 
-            if (players.length === 4) {
-                lobbyStatus.textContent = 'لابی پر شد! آماده سازی بازی...';
-                if (lobbyUnsubscribe) lobbyUnsubscribe(); // Stop listening
-                lobbyUnsubscribe = null;
+            // --- Function for animated page transition ---
+            function navigateBack() {
+                // 1. Add the 'exiting' class to trigger the CSS animation
+                body.classList.add('exiting');
+                
+                // 2. Disable button to prevent multiple clicks
+                backButton.disabled = true;
+
+                // 3. Wait for the animation to finish, then redirect
                 setTimeout(() => {
-                    showModal('بازی کامل شد!', 'این بخش از بازی (چند نفره) در حال ساخت است. از اینکه در تست اولیه شرکت کردید متشکریم!');
-                }, 1500);
-            }
-        }
-
-        // --- Firebase Core Logic ---
-        async function loadUserData(uid) {
-            const userDocRef = doc(db, `artifacts/${appId}/users/${uid}/mafiaGameData/profile`);
-            try {
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    userProfile = docSnap.data();
-                    updateProfileUI();
-                    return true;
-                } else {
-                    console.error("User profile not found. Redirecting...");
-                    alert("اطلاعات پروفایل شما یافت نشد. لطفاً ابتدا در بازی ثبت نام کنید.");
-                    window.location.href = 'index.html'; // Or your main game file name
-                    return false;
-                }
-            } catch (error) {
-                console.error("Error loading user data:", error);
-                alert("خطا در بارگذاری اطلاعات شما.");
-                window.location.href = 'index.html';
-                return false;
-            }
-        }
-
-        function listenToLobbyChanges(lobbyId) {
-            currentLobbyId = lobbyId;
-            const lobbyDocRef = doc(db, `artifacts/${appId}/multiplayerLobbies`, lobbyId);
-            
-            if (lobbyUnsubscribe) lobbyUnsubscribe();
-
-            lobbyUnsubscribe = onSnapshot(lobbyDocRef, (doc) => {
-                if (doc.exists()) {
-                    console.log("Lobby data updated:", doc.data());
-                    renderLobbyUI(doc.data());
-                } else {
-                    console.log("Lobby was deleted. Searching for a new one.");
-                    lobbyStatus.textContent = 'لابی منحل شد! در جستجوی لابی جدید...';
-                    currentLobbyId = null;
-                    if (lobbyUnsubscribe) lobbyUnsubscribe();
-                    lobbyUnsubscribe = null;
-                    if (!isLeaving) {
-                       setTimeout(findOrCreateLobby, 2000);
-                    }
-                }
-            }, (error) => {
-                console.error("Error listening to lobby:", error);
-                lobbyStatus.textContent = 'خطا در اتصال به لابی.';
-            });
-        }
-        
-        async function findOrCreateLobby() {
-            if (!currentUser || !userProfile.displayName) {
-                console.error("User not ready for lobby search.");
-                return;
+                    window.location.href = 'index.html';
+                }, 600); // This duration should match the transition duration in CSS
             }
 
-            lobbyStatus.textContent = "در حال جستجوی لابی خالی...";
-            console.log("Searching for an open lobby...");
+            // --- Event Listeners ---
+            backButton.addEventListener('click', navigateBack);
 
-            const lobbiesRef = collection(db, `artifacts/${appId}/multiplayerLobbies`);
-            const q = query(lobbiesRef, where("status", "==", "waiting"), where("playerCount", "<", 4), limit(1));
-
-            try {
-                await runTransaction(db, async (transaction) => {
-                    const lobbySnapshot = await transaction.get(q);
-
-                    if (!lobbySnapshot.empty) {
-                        // --- JOIN EXISTING LOBBY ---
-                        const lobbyDoc = lobbySnapshot.docs[0];
-                        const lobbyData = lobbyDoc.data();
-                        
-                        // Prevent re-joining if already in
-                        if (lobbyData.players.some(p => p.uid === currentUser.uid)) {
-                           console.log("Already in this lobby. Just listening.");
-                           listenToLobbyChanges(lobbyDoc.id);
-                           return;
-                        }
-
-                        console.log(`Found lobby ${lobbyDoc.id}, attempting to join.`);
-                        const newPlayer = {
-                            uid: currentUser.uid,
-                            displayName: userProfile.displayName,
-                            avatarUrl: userProfile.avatarUrl || '',
-                            currentStage: userProfile.currentStage || 1
-                        };
-
-                        const newPlayers = [...lobbyData.players, newPlayer];
-                        const newPlayerCount = newPlayers.length;
-                        const newStatus = newPlayerCount === 4 ? 'full' : 'waiting';
-
-                        transaction.update(lobbyDoc.ref, {
-                            players: newPlayers,
-                            playerCount: newPlayerCount,
-                            status: newStatus
-                        });
-                        
-                        listenToLobbyChanges(lobbyDoc.id);
-
-                    } else {
-                        // --- CREATE NEW LOBBY ---
-                        console.log("No open lobbies found. Creating a new one.");
-                        lobbyStatus.textContent = "لابی خالی یافت نشد، در حال ساخت لابی جدید...";
-
-                        const newLobbyRef = doc(collection(db, `artifacts/${appId}/multiplayerLobbies`));
-                        const newPlayer = {
-                            uid: currentUser.uid,
-                            displayName: userProfile.displayName,
-                            avatarUrl: userProfile.avatarUrl || '',
-                            currentStage: userProfile.currentStage || 1
-                        };
-
-                        transaction.set(newLobbyRef, {
-                            createdAt: serverTimestamp(),
-                            players: [newPlayer],
-                            playerCount: 1,
-                            status: 'waiting'
-                        });
-
-                        listenToLobbyChanges(newLobbyRef.id);
-                    }
-                });
-            } catch (error) {
-                console.error("Lobby transaction failed: ", error);
-                lobbyStatus.textContent = "خطا در ورود به لابی. تلاش مجدد...";
-                setTimeout(findOrCreateLobby, 3000);
-            }
-        }
-        
-        async function leaveLobby() {
-            if (!currentLobbyId || isLeaving) return;
-            isLeaving = true;
-            cancelSearchBtn.disabled = true;
-            lobbyStatus.textContent = "در حال خروج از لابی...";
-            
-            if (lobbyUnsubscribe) lobbyUnsubscribe();
-            lobbyUnsubscribe = null;
-            
-            const lobbyDocRef = doc(db, `artifacts/${appId}/multiplayerLobbies`, currentLobbyId);
-
-            try {
-                await runTransaction(db, async (transaction) => {
-                    const lobbyDoc = await transaction.get(lobbyDocRef);
-                    if (!lobbyDoc.exists()) {
-                        console.log("Lobby already gone.");
-                        return; 
-                    }
-
-                    const lobbyData = lobbyDoc.data();
-                    const newPlayers = lobbyData.players.filter(p => p.uid !== currentUser.uid);
-
-                    if (newPlayers.length === 0) {
-                        // If lobby becomes empty, delete it
-                        console.log("Lobby is empty after leaving. Deleting it.");
-                        transaction.delete(lobbyDocRef);
-                    } else {
-                        // Otherwise, just update the player list
-                        console.log("Leaving lobby, updating player list.");
-                        transaction.update(lobbyDocRef, {
-                            players: newPlayers,
-                            playerCount: newPlayers.length,
-                            status: 'waiting' // It must be 'waiting' if not full
-                        });
-                    }
-                });
-                console.log("Successfully left the lobby.");
-            } catch (error) {
-                console.error("Error leaving lobby:", error);
-            } finally {
-                // Redirect regardless of server success to not trap the user
-                window.location.href = 'index.html'; // MAKE SURE THIS IS YOUR MAIN FILE NAME
-            }
-        }
-        
-        async function initializePage() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-            } catch (error) {
-                console.error("Firebase init failed:", error);
-                lobbyStatus.textContent = "خطا در اتصال به سرور فایربیس.";
-                return;
-            }
-
-            modalConfirmBtn.addEventListener('click', hideModal);
-            cancelSearchBtn.addEventListener('click', leaveLobby);
-            window.addEventListener('beforeunload', () => {
-                // Attempt to leave gracefully if user closes tab
-                if (currentLobbyId && !isLeaving) {
-                   leaveLobby();
-                }
-            });
-
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    currentUser = user;
-                    const profileLoaded = await loadUserData(user.uid);
-                    if (profileLoaded) {
-                        findOrCreateLobby();
-                    }
-                } else {
-                    console.log("User not signed in, attempting anonymous sign in...");
-                    try {
-                        await signInAnonymously(auth);
-                    } catch(e) {
-                        console.error("Anonymous sign in failed:", e);
-                        lobbyStatus.textContent = "احراز هویت با سرور ممکن نیست.";
-                    }
-                }
-            });
-        }
-
-        // --- Start the process ---
-        initializePage();
-
+            // --- Initialize cool effects ---
+            createSparks(20); // Create 20 floating sparks
+        });
     </script>
 </body>
 </html>
