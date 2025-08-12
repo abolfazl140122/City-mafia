@@ -49,14 +49,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        /* --- NEW: LOADING SPLASH SCREEN ANIMATION --- */
-        @keyframes logo-splash {
-            0% { opacity: 0; transform: scale(0.9); }
-            20% { opacity: 1; transform: scale(1.02); }
-            80% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.95); }
-        }
 
 
         body {
@@ -313,13 +305,6 @@
             flex-grow: 1;
         }
         @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
-        
-        /* Modified for new loading screen layout */
-        #loading-screen .screen-content-wrapper {
-            justify-content: space-between;
-            min-height: calc(100vh - 20px);
-        }
-        
         #main-screen .screen-content-wrapper {
             justify-content: space-between;
             min-height: calc(100vh - 20px);
@@ -327,27 +312,6 @@
         }
         @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
         @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
-        
-        /* --- NEW/MODIFIED STYLES FOR LOADING SCREEN --- */
-        #loading-details {
-            padding-top: 20vh; /* Push it down a bit from the top */
-            transition: opacity 1.2s ease-in;
-        }
-        
-        #splash-logo-container {
-            flex-shrink: 0; /* Prevents it from shrinking */
-            padding-bottom: 2rem;
-            pointer-events: none;
-        }
-
-        #splash-logo {
-            max-width: 90%;
-            width: 280px;
-            height: auto;
-            animation: logo-splash 4.5s ease-in-out forwards;
-            /* This is the magic trick to remove the black background! */
-            mix-blend-mode: screen; 
-        }
 
         /* User Profile Area Styling */
         #user-profile-area {
@@ -589,24 +553,13 @@
         </div>
     </div>
 
-    <!-- ===== MODIFIED LOADING SCREEN ===== -->
     <div id="loading-screen" class="screen active flex flex-col items-center justify-center text-center">
-        <div class="screen-content-wrapper">
-            <!-- This part will fade in after the logo animation starts -->
-            <div id="loading-details" class="text-center opacity-0">
-                <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
-                <div class="loader mx-auto mb-4"></div>
-                <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
-            </div>
-            
-            <!-- Your Team Logo Splash -->
-            <div id="splash-logo-container" class="w-full text-center">
-                <img id="splash-logo" src="https://up.20script.ir/file/001c-IMG-20250812-101853-745.jpg" alt="Team Logo">
-            </div>
+        <div class="screen-content-wrapper justify-center">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">بارگذاری بازی...</h1>
+            <div class="loader mb-4"></div>
+            <p id="loading-message" class="text-lg sm:text-xl font-bold">در حال بررسی اتصال...</p>
         </div>
     </div>
-    <!-- ===== END OF MODIFIED LOADING SCREEN ===== -->
-
 
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
@@ -881,9 +834,6 @@
             developersPanelContainer, closeDevelopersPanelBtn,
             leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
         
-        // --- NEW: Elements for new loading screen ---
-        let loadingDetails;
-
         // --- NEW/MODIFIED: Elements for avatar URL input ---
         let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
@@ -1231,7 +1181,7 @@
                         if(loadingMessage) loadingMessage.textContent = "خوش آمدید!";
                         setTimeout(() => {
                             if(mainScreen) showScreen(mainScreen);
-                        }, 1000); // Short delay after loading text appears
+                        }, 500);
                     }
                 });
             } catch (error) {
@@ -1949,8 +1899,6 @@
             // --- Query DOM elements ---
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
-            loadingDetails = document.getElementById('loading-details'); // NEW
-
             mainScreen = document.getElementById('main-screen');
             gameScreen = document.getElementById('game-screen');
             
@@ -2015,14 +1963,6 @@
             // --- Initialize game logic ---
             audioManager.init();
             if(userProfileArea) userProfileArea.classList.add('hidden');
-
-            // --- NEW: Loading sequence orchestration ---
-            setTimeout(() => {
-                if (loadingDetails) {
-                    loadingDetails.classList.remove('opacity-0');
-                    loadingDetails.classList.add('opacity-100');
-                }
-            }, 2000); // Fade in loading text after 2 seconds
 
             if(loadingMessage) loadingMessage.textContent = "در حال بررسی اتصال...";
             if (!navigator.onLine) {
