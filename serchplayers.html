@@ -4,40 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جستجوی بازیکنان - شهر مافیا</title>
+    <!-- کپی کامل استایل‌های بازی اصلی برای یکپارچگی -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CLASH OF CLANS / CLASH ROYALE THEME (Copied from main file for consistency) --- */
+        /* --- CLASH OF CLANS / CLASH ROYALE THEME (کپی شده از فایل اصلی) --- */
         :root {
-            --clash-blue-dark: #3a5b8a;
-            --clash-blue-light: #5c88c8;
-            --clash-gold: #ffc83a;
-            --clash-gold-dark: #e5a500;
-            --clash-brown-dark: #5b3a29;
-            --clash-text-light: #ffffff;
-            --clash-text-dark: #333333;
-            --clash-green: #59a845;
-            --clash-red: #c74243;
-            --clash-panel-bg: #4468a0;
-            --clash-panel-border: #9dc2ff;
-            --clاش-panel-border-dark: #2a4166;
+            --clash-blue-dark: #3a5b8a; --clash-blue-light: #5c88c8; --clash-gold: #ffc83a;
+            --clash-gold-dark: #e5a500; --clash-brown-dark: #5b3a29; --clash-text-light: #ffffff;
+            --clash-text-dark: #333333; --clash-green: #59a845; --clash-green-dark: #3a752b;
+            --clash-red: #c74243; --clash-red-dark: #8f2a2b; --clash-panel-bg: #4468a0;
+            --clash-panel-border: #9dc2ff; --clاش-panel-border-dark: #2a4166;
         }
         @keyframes clash-panel-intro { 0% { opacity: 0; transform: scale(0.8) translateY(-30px); } 70% { opacity: 1; transform: scale(1.05) translateY(0); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        @keyframes subtle-pan { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-dot { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
-
+        @keyframes subtle-pan { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
+        
         body {
-            font-family: 'Vazirmatn', sans-serif;
-            color: var(--clash-text-light);
+            font-family: 'Vazirmatn', sans-serif; color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow-y: auto;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            position: relative;
-            -webkit-user-select: none; user-select: none;
+            overflow: hidden; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); position: relative;
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
         }
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 200%; height: 200%;
@@ -45,207 +35,173 @@
             opacity: 0.15; z-index: 0; animation: subtle-pan 120s linear infinite;
         }
         .clash-font { font-family: 'Lilita One', cursive; letter-spacing: 1px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        .panel-clash { background-color: var(--clash-panel-bg); border: 4px solid var(--clash-panel-border-dark); border-top-color: var(--clash-panel-border); border-left-color: var(--clash-panel-border); border-radius: 16px; box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2); transition: all 0.3s ease-in-out; position: relative; }
+        .panel-clash {
+            background-color: var(--clash-panel-bg); border: 4px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border); border-left-color: var(--clash-panel-border);
+            border-radius: 16px; box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; position: relative;
+        }
         .panel-clash::before, .panel-clash::after {
             content: ''; position: absolute; width: 12px; height: 12px;
-            background: var(--clash-gold); border-radius: 50%; border: 2px solid var(--clash-brown-dark); box-shadow: 0 0 3px #000;
+            background: var(--clash-gold); border-radius: 50%; border: 2px solid var(--clash-brown-dark);
+            box-shadow: 0 0 3px #000; top: 10px;
         }
-        .panel-clash::before { top: 10px; left: 10px; }
-        .panel-clash::after { top: 10px; right: 10px; }
-        
+        .panel-clash::before { left: 10px; } .panel-clash::after { right: 10px; }
         .panel-hidden { opacity: 0; transform: scale(0.9) translateY(-20px); pointer-events: none; visibility: hidden; }
         .panel-visible { opacity: 1; transform: scale(1) translateY(0); visibility: visible; animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-        .btn-clash { border-radius: 12px; font-weight: bold; text-transform: uppercase; transition: all 0.1s ease-out; cursor: pointer; position: relative; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; color: var(--clash-text-dark); text-shadow: 1px 1px 1px rgba(255,255,255,0.4); }
-        .btn-clash:disabled { filter: grayscale(80%); cursor: not-allowed; box-shadow: 0 4px 0 #555 !important; transform: translateY(0) !important; }
-        .btn-clash-primary { background: linear-gradient(to bottom, #ffe47a, var(--clash-gold)); border: 2px solid var(--clash-brown-dark); box-shadow: 0 6px 0 #a07200; padding: 12px 30px; font-size: 1.25rem; }
-        .btn-clash-primary:hover { background: linear-gradient(to bottom, #fff0a0, #ffda5a); transform: translateY(-2px); box-shadow: 0 8px 0 #a07200; }
-        .btn-clash-primary:active { transform: translateY(4px) !important; box-shadow: 0 2px 0 #a07200 !important; transition-duration: 0.05s; }
-        .btn-clash-secondary { background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light)); border: 2px solid var(--clash-panel-border-dark); box-shadow: 0 5px 0 #2e5185; padding: 10px 22px; font-size: 1rem; color: var(--clash-text-light); text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
+        .btn-clash {
+            border-radius: 12px; font-weight: bold; text-transform: uppercase;
+            transition: all 0.1s ease-out; cursor: pointer; position: relative; white-space: nowrap;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--clash-text-dark); text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+        }
+        .btn-clash-secondary {
+            background: linear-gradient(to bottom, #7da8e8, var(--clash-blue-light));
+            border: 2px solid var(--clash-panel-border-dark); box-shadow: 0 5px 0 #2e5185; padding: 10px 22px;
+            font-size: 1rem; color: var(--clash-text-light); text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
         .btn-clash-secondary:hover { background: linear-gradient(to bottom, #9dc2ff, #6c98d8); transform: translateY(-2px); box-shadow: 0 7px 0 #2e5185; }
         .btn-clash-secondary:active { transform: translateY(3px) !important; box-shadow: 0 2px 0 #2e5185 !important; transition-duration: 0.05s; }
-
+        .btn-clash-primary { background: linear-gradient(to bottom, #ffe47a, var(--clash-gold)); border: 2px solid var(--clash-brown-dark); box-shadow: 0 6px 0 #a07200; padding: 12px 30px; font-size: 1.25rem; }
         .loader { border: 8px solid #3a5b8a; border-top: 8px solid var(--clash-gold); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
-        .screen { position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; padding: 20px; box-sizing: border-box; opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out, visibility 0.5s; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
-        .screen.active { opacity: 1; visibility: visible; position: relative; }
-        .screen-content-wrapper { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; padding-bottom: 20px; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; flex-grow: 1; }
+        .hidden { display: none !important; }
 
-        /* User Profile Area (Copied) */
-        #user-profile-area { position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px; transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
-        @media (max-width: 767px) { #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); } #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); } }
-        @media (min-width: 768px) { #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); } #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); } }
-        #user-info-box { background-color: rgba(91, 58, 41, 0.85); border: 4px solid #4a2f20; border-top-color: #c89673; border-left-color: #c89673; border-radius: 12px; padding: 12px 15px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 10px; min-width: 180px; max-width: 200px; }
+        /* --- استایل‌های اختصاصی صفحه جستجو --- */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh; padding: 20px;
+            box-sizing: border-box; opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .screen.active { opacity: 1; visibility: visible; }
+        .screen-content-wrapper { width: 100%; max-width: 900px; margin: auto; }
+
+        /* استایل پروفایل کاربر (بالا-راست) - کپی شده از فایل اصلی */
+        #user-profile-area { position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px; top: 20px; right: 20px; }
+        #user-info-box { background-color: rgba(91, 58, 41, 0.85); border: 4px solid #4a2f20; border-top-color: #c89673; border-left-color: #c89673; border-radius: 12px; padding: 12px 15px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 10px; min-width: 180px; }
         .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; border: 1px solid #4a2f20; }
         .user-info-item .label { font-size: 0.9em; color: #f0d5bf; }
         .user-info-item .value { font-size: 1.1em; font-weight: bold; }
         #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
         #avatar-container { width: 80px; height: 80px; border-radius: 50%; border: 5px solid; border-image: linear-gradient(to bottom, #ffd700, #c89820) 1; background-color: #333; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); flex-shrink: 0; }
         #avatar-image { width: 100%; height: 100%; object-fit: cover; }
-        .hidden { display: none !important; }
         
-        /* --- NEW: Matchmaking Player Slot Styles --- */
+        /* استایل اسلات‌های بازیکنان */
         #player-slots-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            width: 100%;
-            margin: 2rem 0;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem; margin: 2.5rem 0;
         }
         @media (min-width: 768px) { #player-slots-container { grid-template-columns: repeat(4, 1fr); } }
-
+        
         .player-slot {
-            background-color: rgba(42, 65, 102, 0.7);
-            border: 3px dashed rgba(157, 194, 255, 0.4);
-            border-radius: 16px;
-            padding: 1.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 240px;
-            transition: all 0.3s ease;
-            position: relative;
+            background-color: rgba(42, 65, 102, 0.6); border: 3px solid var(--clash-panel-border-dark);
+            border-radius: 12px; padding: 1rem; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 220px; position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: scale(0.9); opacity: 0;
         }
+        .player-slot.visible { transform: scale(1); opacity: 1; }
         
-        .player-slot.occupied {
-            background-color: rgba(60, 85, 122, 0.9);
-            border: 3px solid var(--clash-panel-border);
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .player-slot.empty {
+            border-style: dashed; background-color: rgba(42, 65, 102, 0.3);
         }
-        
         .player-avatar {
             width: 80px; height: 80px; border-radius: 50%;
-            border: 4px solid var(--clash-gold-dark);
-            object-fit: cover;
-            background-color: #2a4166;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            border: 4px solid var(--clash-gold-dark); object-fit: cover;
+            background-color: #2a4166; margin-bottom: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
-        
         .player-name {
-            font-family: 'Lilita One', cursive;
-            font-size: 1.3rem;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px #000;
-            text-align: center;
+            font-family: 'Lilita One', cursive; font-size: 1.3rem;
+            color: #ffffff; text-shadow: 2px 2px 2px #000;
             word-break: break-all;
         }
+        .player-stage { font-size: 0.9rem; color: #d0e0ff; font-weight: bold; }
+        .player-stage-value { color: var(--clash-gold); font-size: 1.1em; margin-right: 4px; }
         
-        .player-stage {
-            font-size: 0.9rem;
-            color: #d0e0ff;
-            font-weight: bold;
-            margin-top: 0.25rem;
-        }
+        .searching-text { animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         
-        .player-stage-value {
-            color: var(--clash-gold);
-            font-family: 'Lilita One', cursive;
-            font-size: 1.1em;
-            margin-right: 4px;
-        }
-        
-        .searching-text {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .searching-dots span {
-            display: inline-block;
-            animation: pulse-dot 1.4s infinite;
-        }
-        .searching-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .searching-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-        .player-rank-badge {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(to bottom, #7da8e8, #5c88c8);
-            border: 2px solid #2a4166;
-            box-shadow: 0 4px 0 #2e5185;
-            color: white;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        .rank-badge {
+            position: absolute; top: -10px; right: -10px;
+            background: linear-gradient(to bottom, var(--clash-red), #a02a2b);
+            color: white; padding: 4px 10px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: bold; border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transform: rotate(15deg);
         }
     </style>
 </head>
 <body>
 
-    <!-- User Profile Area (Positioned top-right on desktop, top-center on mobile) -->
+    <!-- نمایش اطلاعات کاربر فعلی (کپی شده از فایل اصلی) -->
     <div id="user-profile-area" class="hidden">
         <div id="avatar-container">
-            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر">
+            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
         </div>
         <div id="user-info-box">
             <div id="display-name-output-box" class="user-info-item">
                 <div class="label">بازیکن:</div>
-                <div id="display-name-output" class="value clash-font">...</div>
+                <div id="display-name-output" class="value clash-font"></div>
             </div>
-            <div id="stage-output-box" class="user-info-item">
+            <div class="user-info-item">
                 <div class="label">مرحله:</div>
-                <div id="stage-output" class="value clash-font text-[var(--clash-gold)]">...</div>
+                <div id="stage-output" class="value clash-font"></div>
             </div>
         </div>
     </div>
-    
-    <!-- Matchmaking Screen -->
-    <div id="multiplayer-screen" class="screen active">
+
+    <!-- صفحه جستجوی بازیکنان -->
+    <div id="search-screen" class="screen active">
         <div class="screen-content-wrapper">
-            <div id="matchmaking-panel" class="panel-clash panel-visible p-6 sm:p-8 rounded-lg w-full">
-                <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">
+            <div id="search-panel" class="panel-clash panel-hidden p-6 sm:p-8">
+                <h1 class="text-3xl sm:text-5xl font-bold text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 3px 3px 4px #000;">
                     جستجوی بازیکنان
                 </h1>
-                <p id="status-text" class="text-center text-gray-200 mb-6">در حال یافتن حریفان برای یک بازی حماسی... ( <span id="player-count">0</span> / 4 )</p>
-            
+                <p id="status-text" class="text-center text-lg mt-2 mb-4">
+                    در حال یافتن حریفان برای یک بازی حماسی... 
+                    <span id="player-count-display">(0/4)</span>
+                </p>
+
+                <!-- اسلات‌های بازیکنان -->
                 <div id="player-slots-container">
-                    <!-- Player slots will be generated by JS -->
+                    <!-- اسلات‌ها به صورت داینامیک توسط جاوااسکریپت پر می‌شوند -->
                 </div>
-            
+
                 <div class="text-center mt-8">
-                    <button id="leave-queue-btn" class="btn-clash btn-clash-secondary clash-font">
-                        <span class="mx-2">✖️</span>
+                    <button id="cancel-search-btn" class="btn-clash btn-clash-secondary clash-font text-lg px-8 py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg ml-2" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg>
                         انصراف و بازگشت
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal for "Game Ready" (currently "Under Construction") -->
+    
+    <!-- مودال (کپی شده از فایل اصلی برای نمایش پیام‌ها) -->
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
         <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md w-full text-center">
-            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">
-                تیم کامل شد!
-            </h3>
-            <p id="modal-message" class="mb-6 text-base">
-                چهار بازیکن آماده هستند! در حال حاضر، بخش چندنفره در دست ساخت است. از اینکه در تست این بخش به ما کمک کردید سپاسگزاریم!
-                <br><br>
-                به زودی با قابلیت‌های هیجان‌انگیز باز خواهیم گشت.
-            </p>
+            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
+            <p id="modal-message" class="mb-6 text-base"></p>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
-                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">بازگشت به منو</button>
+                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
             </div>
         </div>
     </div>
 
-    <!-- Audio Elements -->
+    <!-- صداها (کپی شده از فایل اصلی) -->
     <div id="audio-container" class="hidden">
         <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
         <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
         <audio id="sfx-player-join" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" preload="auto"></audio>
     </div>
 
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, onSnapshot, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, limit, getDocs, runTransaction, onSnapshot, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -258,252 +214,308 @@
             },
             play(soundName) {
                 const sound = this.sounds[soundName];
-                if (sound) { sound.currentTime = 0; sound.play().catch(e => console.warn("Audio play failed:", e)); }
+                if (sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
             }
         };
 
+        // --- FIREBASE CONFIG (کپی شده از فایل اصلی) ---
         const firebaseConfig = {
             apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
             authDomain: "city-mafia.firebaseapp.com",
             projectId: "city-mafia",
-            storageBucket: "city-mafia.appspot.com", 
+            storageBucket: "city-mafia.appspot.com",
             messagingSenderId: "66458127103",
             appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
             measurementId: "G-8M0M6BJ0GG"
         };
         const appId = 'mafia-game-default';
+        const mainGamePage = 'شهر مافیا رفع باگ.txt'; // <-- نام فایل اصلی بازی را اینجا وارد کنید
 
-        let app, auth, db, currentUserId = null;
-        let queueListenerUnsubscribe = null; // To stop listening when we leave
+        let app, auth, db;
+        let currentUserId = null;
+        let currentUserProfile = null;
+        let currentLobbyId = null;
+        let lobbyUnsubscribe = null;
 
-        const gameState = {
-            displayName: '',
-            currentStage: 1,
-            avatarUrl: '',
-        };
-        
         // --- DOM Elements ---
-        let userProfileArea, avatarContainer, avatarImage, displayNameOutput, stageOutput;
-        let playerSlotsContainer, playerCountSpan, statusText, leaveQueueBtn;
-        let modalContainer, modalConfirmBtn;
+        const searchPanel = document.getElementById('search-panel');
+        const userProfileArea = document.getElementById('user-profile-area');
+        const avatarImage = document.getElementById('avatar-image');
+        const displayNameOutput = document.getElementById('display-name-output');
+        const stageOutput = document.getElementById('stage-output');
+        const statusText = document.getElementById('status-text');
+        const playerCountDisplay = document.getElementById('player-count-display');
+        const playerSlotsContainer = document.getElementById('player-slots-container');
+        const cancelSearchBtn = document.getElementById('cancel-search-btn');
+        const modalContainer = document.getElementById('modal-container');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
 
+        // --- Functions ---
+        
         function showModal(title, message) {
-            if (!modalContainer) return;
             audioManager.play('panelOpen');
             modalContainer.classList.remove('panel-hidden');
             modalContainer.querySelector('.panel-clash').classList.add('panel-visible');
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
         }
 
         function hideModal() {
-            if (!modalContainer) return;
             modalContainer.classList.add('panel-hidden');
             modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
         }
 
-        function updateProfileUI() {
-            if (!userProfileArea) return;
+        function updateMyProfileUI(profile) {
+            if (!profile) return;
             userProfileArea.classList.remove('hidden');
-            if (displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
-            if (stageOutput) stageOutput.textContent = gameState.currentStage || 1;
-            if (avatarImage) avatarImage.src = gameState.avatarUrl || 'https://placehold.co/80x80/333333/777777?text=?';
-        }
-        
-        async function loadUserData(userIdToLoad) {
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToLoad}/mafiaGameData/profile`);
-            try {
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    gameState.displayName = data.displayName || "";
-                    gameState.currentStage = data.currentStage || 1;
-                    gameState.avatarUrl = data.avatarUrl || '';
-                    updateProfileUI();
-                    return true;
-                } else {
-                    console.warn("User profile not found, redirecting.");
-                    window.location.href = 'شهر مافیا رفع باگ.txt'; // Redirect if no profile exists
-                    return false;
-                }
-            } catch (error) {
-                console.error("Error loading user data:", error);
-                alert("خطا در بارگذاری اطلاعات کاربر. بازگشت به صفحه اصلی.");
-                window.location.href = 'شهر مافیا رفع باگ.txt';
-                return false;
-            }
+            displayNameOutput.textContent = profile.displayName || "مهمان";
+            stageOutput.textContent = profile.currentStage || 1;
+            avatarImage.src = profile.avatarUrl || `https://placehold.co/80x80/333333/777777?text=?`;
         }
 
-        // --- Matchmaking Logic ---
-        const queueCollectionRef = collection(db, `artifacts/${appId}/matchmakingQueue`);
+        function updateLobbyUI(lobbyData) {
+            const players = lobbyData.players || [];
+            playerCountDisplay.textContent = `(${players.length}/4)`;
+            playerSlotsContainer.innerHTML = ''; // پاک کردن اسلات‌های قبلی
 
-        async function addUserToQueue() {
-            if (!currentUserId || !gameState.displayName) return;
-            const playerDocRef = doc(queueCollectionRef, currentUserId);
-            
-            try {
-                await setDoc(playerDocRef, {
-                    displayName: gameState.displayName,
-                    avatarUrl: gameState.avatarUrl,
-                    currentStage: gameState.currentStage,
-                    joinedAt: serverTimestamp()
-                });
-                console.log('Player added to queue:', currentUserId);
-                setupQueueListener();
-            } catch (error) {
-                console.error("Error adding user to queue:", error);
-                alert("خطا در ورود به صف جستجو.");
-            }
-        }
-
-        async function removeUserFromQueue() {
-            if (!currentUserId) return;
-            if (queueListenerUnsubscribe) {
-                queueListenerUnsubscribe(); // Stop listening to changes
-                queueListenerUnsubscribe = null;
-            }
-            const playerDocRef = doc(queueCollectionRef, currentUserId);
-            try {
-                await deleteDoc(playerDocRef);
-                console.log('Player removed from queue:', currentUserId);
-            } catch (error) {
-                console.error("Error removing user from queue:", error);
-            }
-        }
-        
-        function setupQueueListener() {
-            const q = query(queueCollectionRef, orderBy("joinedAt"), limit(4));
-            
-            let initialLoad = true;
-            queueListenerUnsubscribe = onSnapshot(q, (snapshot) => {
-                const players = [];
-                snapshot.forEach(doc => {
-                    players.push({ id: doc.id, ...doc.data() });
-                });
-                
-                renderPlayerSlots(players);
-                
-                if (!initialLoad && players.length > 1) {
-                    audioManager.play('playerJoin');
-                }
-                initialLoad = false;
-
-                if (players.length === 4) {
-                    showModal('تیم کامل شد!', '...');
-                }
-
-            }, (error) => {
-                console.error("Error listening to queue:", error);
-                alert("ارتباط با سرور جستجو قطع شد.");
-            });
-        }
-        
-        function renderPlayerSlots(players) {
-            if (!playerSlotsContainer || !playerCountSpan) return;
-            
-            playerSlotsContainer.innerHTML = '';
-            playerCountSpan.textContent = players.length;
-
-            const rankLabels = ["نفر اول", "نفر دوم", "نفر سوم", "نفر چهارم"];
-
+            // ایجاد هر 4 اسلات
             for (let i = 0; i < 4; i++) {
                 const slot = document.createElement('div');
-                slot.className = 'player-slot';
-                
-                if (players[i]) {
-                    const player = players[i];
-                    slot.classList.add('occupied');
+                const player = players[i];
+
+                if (player) {
+                    // اسلات پر
+                    slot.className = 'player-slot';
+                    const isMe = player.userId === currentUserId;
+                    const rank = players.findIndex(p => p.userId === player.userId) + 1;
+
                     slot.innerHTML = `
-                        <div class="player-rank-badge">${rankLabels[i]}</div>
+                        ${rank === 1 ? '<div class="rank-badge">نفر اول</div>' : ''}
                         <img src="${player.avatarUrl || 'https://placehold.co/80x80/2a4166/ffffff?text=?'}" alt="Avatar" class="player-avatar" onerror="this.src='https://placehold.co/80x80/2a4166/ffffff?text=?'">
                         <div class="player-name">${player.displayName}</div>
                         <div class="player-stage">
-                            <span>مرحله:</span>
-                            <span class="player-stage-value">${player.currentStage}</span>
+                            مرحله: <span class="player-stage-value">${player.currentStage}</span>
                         </div>
                     `;
                 } else {
+                    // اسلات خالی
+                    slot.className = 'player-slot empty';
                     slot.innerHTML = `
-                        <div class="searching-text">
-                            در جستجو
-                            <div class="searching-dots"><span>.</span><span>.</span><span>.</span></div>
-                        </div>
+                        <div class="searching-text text-xl clash-font text-gray-400">جستجو...</div>
                     `;
                 }
                 playerSlotsContainer.appendChild(slot);
+                // انیمیشن ورود
+                setTimeout(() => slot.classList.add('visible'), i * 100);
+            }
+            
+            // اگر لابی پر شد
+            if (players.length === 4) {
+                 if(lobbyUnsubscribe) lobbyUnsubscribe(); // قطع شنود
+                 showModal("لابی پر شد!", "بازی چندنفره در حال حاضر در دست ساخت است و به زودی در دسترس قرار خواهد گرفت. از صبوری شما سپاسگزاریم!");
+                 cancelSearchBtn.textContent = "بازگشت به منوی اصلی";
             }
         }
         
-        async function handleLeaveQueue() {
-            leaveQueueBtn.disabled = true;
-            await removeUserFromQueue();
-            window.location.href = 'شهر مافیا رفع باگ.txt'; // Go back to the main game file
-        }
-
-        async function initFirebase() {
+        async function loadUserData(userId) {
+            if (!userId || !db) return null;
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/mafiaGameData/profile`);
             try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentUserId = user.uid;
-                        const profileLoaded = await loadUserData(user.uid);
-                        if (profileLoaded) {
-                           await addUserToQueue();
-                        }
-                    } else {
-                        console.log("User not signed in, signing in anonymously.");
-                        await signInAnonymously(auth);
-                    }
-                });
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    return { id: userId, ...docSnap.data() };
+                } else {
+                    console.warn("User profile not found for ID:", userId);
+                    return null;
+                }
             } catch (error) {
-                console.error("Firebase initialization error:", error);
-                document.body.innerHTML = `<div class="w-full h-screen flex items-center justify-center text-white text-2xl font-bold">خطا در اتصال به سرور بازی.</div>`;
+                console.error("Error loading user data:", error);
+                return null;
             }
         }
 
-        function setupEventListeners() {
-            document.body.addEventListener('click', (event) => {
-                if (event.target.closest('.btn-clash:not(:disabled)')) {
-                    audioManager.play('click');
-                }
-            });
+        async function findOrCreateLobby() {
+            statusText.textContent = "در حال جستجوی یک لابی خالی...";
+            const lobbiesRef = collection(db, `artifacts/${appId}/gameLobbies`);
+            const q = query(lobbiesRef, where("status", "==", "waiting"), limit(1));
+            const querySnapshot = await getDocs(q);
 
-            if (leaveQueueBtn) leaveQueueBtn.addEventListener('click', handleLeaveQueue);
-            if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleLeaveQueue); // Modal button also leaves
+            let lobbyId;
 
-            // IMPORTANT: Remove user from queue if they close the tab
-            window.addEventListener('beforeunload', (event) => {
-                // This runs synchronously, so we can't use async/await
-                // The browser might not wait for the Firestore operation to complete, but it's the best we can do.
-                if (currentUserId) {
-                    removeUserFromQueue();
+            if (querySnapshot.empty) {
+                // ساخت لابی جدید
+                statusText.textContent = "هیچ لابی خالی یافت نشد، در حال ساخت لابی جدید...";
+                const newLobbyRef = doc(collection(db, `artifacts/${appId}/gameLobbies`));
+                await setDoc(newLobbyRef, {
+                    createdAt: serverTimestamp(),
+                    status: 'waiting',
+                    players: [
+                        { 
+                            userId: currentUserId,
+                            displayName: currentUserProfile.displayName,
+                            avatarUrl: currentUserProfile.avatarUrl,
+                            currentStage: currentUserProfile.currentStage
+                        }
+                    ]
+                });
+                lobbyId = newLobbyRef.id;
+            } else {
+                // پیوستن به لابی موجود
+                statusText.textContent = "لابی یافت شد، در حال پیوستن...";
+                const lobbyDoc = querySnapshot.docs[0];
+                lobbyId = lobbyDoc.id;
+                
+                try {
+                     await runTransaction(db, async (transaction) => {
+                        const sfDoc = await transaction.get(lobbyDoc.ref);
+                        if (!sfDoc.exists()) { throw "Document does not exist!"; }
+                        
+                        const players = sfDoc.data().players || [];
+                        if (players.length >= 4) {
+                           // اگر لابی در همین لحظه پر شده بود، وضعیتش را عوض کن
+                           transaction.update(lobbyDoc.ref, { status: 'full' });
+                           throw "Lobby is full, try again";
+                        }
+                        
+                        // اضافه کردن بازیکن جدید
+                        transaction.update(lobbyDoc.ref, {
+                            players: arrayUnion({
+                                userId: currentUserId,
+                                displayName: currentUserProfile.displayName,
+                                avatarUrl: currentUserProfile.avatarUrl,
+                                currentStage: currentUserProfile.currentStage
+                            })
+                        });
+                    });
+
+                } catch (e) {
+                    console.error("Transaction failed: ", e);
+                    // اگر تراکنش ناموفق بود (مثلا لابی پر شد)، دوباره جستجو کن
+                    await findOrCreateLobby();
+                    return;
                 }
+            }
+            
+            currentLobbyId = lobbyId;
+            listenToLobbyChanges(lobbyId);
+        }
+
+        function listenToLobbyChanges(lobbyId) {
+            statusText.textContent = "شما به لابی متصل شدید! منتظر سایر بازیکنان...";
+            const lobbyDocRef = doc(db, `artifacts/${appId}/gameLobbies`, lobbyId);
+            
+            let initialLoad = true;
+            lobbyUnsubscribe = onSnapshot(lobbyDocRef, (doc) => {
+                if (doc.exists()) {
+                    const lobbyData = doc.data();
+                    if (!initialLoad && lobbyData.players.length > 1) {
+                         audioManager.play('playerJoin');
+                    }
+                    initialLoad = false;
+                    updateLobbyUI(lobbyData);
+                } else {
+                    // لابی حذف شده است (احتمالا توسط آخرین نفر)
+                    console.log("Lobby has been removed.");
+                    leaveLobby(false); // بدون آپدیت در دیتابیس، فقط صفحه را برگردان
+                }
+            }, (error) => {
+                console.error("Error listening to lobby:", error);
+                showModal("خطای اتصال", "ارتباط با لابی قطع شد. لطفاً دوباره تلاش کنید.");
+                leaveLobby(false);
             });
         }
 
-        function initializePage() {
-            // --- Query DOM elements ---
-            userProfileArea = document.getElementById('user-profile-area');
-            avatarContainer = document.getElementById('avatar-container');
-            avatarImage = document.getElementById('avatar-image');
-            displayNameOutput = document.getElementById('display-name-output');
-            stageOutput = document.getElementById('stage-output');
-            playerSlotsContainer = document.getElementById('player-slots-container');
-            playerCountSpan = document.getElementById('player-count');
-            statusText = document.getElementById('status-text');
-            leaveQueueBtn = document.getElementById('leave-queue-btn');
-            modalContainer = document.getElementById('modal-container');
-            modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        async function leaveLobby(updateDb = true) {
+            if (lobbyUnsubscribe) {
+                lobbyUnsubscribe();
+                lobbyUnsubscribe = null;
+            }
 
-            // --- Initialize game logic ---
+            if (currentLobbyId && updateDb) {
+                 const lobbyDocRef = doc(db, `artifacts/${appId}/gameLobbies`, currentLobbyId);
+                 try {
+                     await runTransaction(db, async (transaction) => {
+                         const lobbyDoc = await transaction.get(lobbyDocRef);
+                         if (!lobbyDoc.exists()) return;
+
+                         const players = lobbyDoc.data().players || [];
+                         if (players.length === 1 && players[0].userId === currentUserId) {
+                             // اگر من تنها نفر بودم، لابی را حذف کن
+                             transaction.delete(lobbyDocRef);
+                         } else {
+                            // در غیر این صورت، فقط خودم را حذف کن
+                             transaction.update(lobbyDocRef, {
+                                players: arrayRemove({
+                                    userId: currentUserId,
+                                    displayName: currentUserProfile.displayName,
+                                    avatarUrl: currentUserProfile.avatarUrl,
+                                    currentStage: currentUserProfile.currentStage
+                                })
+                             });
+                         }
+                     });
+                 } catch (error) {
+                     console.error("Error leaving lobby:", error);
+                 }
+            }
+
+            // بازگشت به صفحه اصلی
+            window.location.href = mainGamePage.replace('.txt', '.html');
+        }
+
+        async function initializePage() {
             audioManager.init();
-            renderPlayerSlots([]); // Render empty slots initially
-            setupEventListeners();
-            initFirebase();
-        }
+            searchPanel.classList.add('panel-visible');
 
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUserId = user.uid;
+                    currentUserProfile = await loadUserData(user.uid);
+                    if (currentUserProfile) {
+                        updateMyProfileUI(currentUserProfile);
+                        await findOrCreateLobby();
+                    } else {
+                        showModal("خطا", "اطلاعات پروفایل شما یافت نشد. لطفاً ابتدا در بازی ثبت نام کنید.");
+                        cancelSearchBtn.textContent = "بازگشت به منوی اصلی";
+                    }
+                } else {
+                    console.log("Signing in anonymously...");
+                    try {
+                        await signInAnonymously(auth);
+                    } catch(e) {
+                         showModal("خطای احراز هویت", "امکان اتصال به سرور برای احراز هویت وجود ندارد.");
+                    }
+                }
+            });
+        }
+        
+        // --- Event Listeners ---
+        cancelSearchBtn.addEventListener('click', () => {
+             audioManager.play('click');
+             leaveLobby();
+        });
+        
+        window.addEventListener('beforeunload', () => {
+            // اطمینان از خروج از لابی هنگام بستن صفحه
+            if (currentLobbyId) {
+                leaveLobby();
+            }
+        });
+        
+        modalConfirmBtn.addEventListener('click', () => {
+            hideModal();
+            leaveLobby(); // بعد از دیدن پیام، از لابی خارج شو
+        });
+
+        // --- Start ---
         document.addEventListener('DOMContentLoaded', initializePage);
+
     </script>
 </body>
 </html>
