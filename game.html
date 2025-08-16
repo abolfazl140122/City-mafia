@@ -1,1 +1,58 @@
-.
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی مافیا - مرحله بازی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <!--  لینک به فایل استایل مشترک -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- کامپوننت‌های مشترک باید در تمام صفحات باشند -->
+    <div id="user-profile-area" class="hidden">
+        <!-- محتوای پروفایل کاربر مثل قبل -->
+    </div>
+    
+    <!-- صفحه بازی -->
+    <div id="game-screen" class="screen active"> <!-- active است چون تنها صفحه محتواست -->
+        <div class="screen-content-wrapper justify-start">
+            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
+                <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت به منو</button>
+                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
+            </div>
+
+            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
+                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
+                <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
+            </div>
+
+            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
+            
+            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
+                <div class="loader inline-block"></div>
+                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- مدال‌ها و پنل‌های مشترک -->
+    <!-- Modal Container -->
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
+        <!-- محتوای مدال مثل قبل -->
+    </div>
+    <!-- Developers Panel, Leaderboard, etc. can also be here if you want them accessible from the game screen -->
+    
+    <!-- Audio Elements -->
+    <div id="audio-container" class="hidden">
+       <!-- تگ‌های صوتی مثل قبل -->
+    </div>
+
+    <!--  لینک به فایل‌های جاوا اسکریپت -->
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
