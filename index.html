@@ -23,10 +23,8 @@
             --clash-green-dark: #3a752b;
             --clash-red: #c74243;
             --clash-red-dark: #8f2a2b;
-            --clash-orange: #f57b14;
-            --clash-orange-dark: #c15b00;
             --clash-panel-bg: #4468a0;
-            --clاش-panel-border: #9dc2ff;
+            --clash-panel-border: #9dc2ff;
             --clash-panel-border-dark: #2a4166;
         }
 
@@ -50,12 +48,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* --- NEW: Timer Danger Animation --- */
-        @keyframes pulse-danger {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
         }
         
         /* --- NEW LOADING SCREEN ANIMATIONS --- */
@@ -576,49 +568,6 @@
             font-size: 1.1em;
             margin-right: 4px;
         }
-        
-        /* --- NEW: Timer Styles --- */
-        #timer-container {
-            width: 100%;
-            height: 30px;
-            background-color: var(--clash-panel-border-dark);
-            border: 3px solid #2a4166;
-            border-radius: 15px;
-            padding: 4px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        #timer-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%; /* Starts at 100% */
-            background: linear-gradient(to right, var(--clash-green-dark), var(--clash-green));
-            border-radius: 10px;
-            transition: width 1s linear, background 0.5s ease-in-out;
-        }
-        #timer-bar.warning {
-             background: linear-gradient(to right, var(--clash-orange-dark), var(--clash-orange));
-        }
-        #timer-bar.danger {
-             background: linear-gradient(to right, var(--clash-red-dark), var(--clash-red));
-             animation: pulse-danger 1s infinite;
-        }
-        #timer-text {
-            position: relative;
-            z-index: 1;
-            font-family: 'Lilita One', cursive;
-            font-size: 1.2rem;
-            color: #fff;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.8);
-        }
-
 
         /* --- NEW STYLES for Avatar URL Input --- */
         #avatar-preview-container {
@@ -649,6 +598,58 @@
         #game-mode-panel .btn-clash-primary .icon {
             font-size: 2rem;
             margin-left: 12px;
+        }
+        
+        /* --- NEW STYLES for Question Timer --- */
+        #game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+        #stage-info, #timer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-label {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        #stage-display {
+            font-family: 'Lilita One', cursive;
+            color: var(--clash-gold);
+            font-size: 1.75rem;
+        }
+        #timer-container {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #timer-progress {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--clash-gold) 360deg, var(--clash-blue-dark) 0deg);
+            transition: background 0.3s linear;
+        }
+        #timer-container.warning #timer-progress {
+            background: conic-gradient(var(--clash-red) 360deg, var(--clash-blue-dark) 0deg);
+        }
+        #timer-text {
+            position: relative;
+            font-family: 'Lilita One', cursive;
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 3px #000;
         }
 
     </style>
@@ -739,20 +740,23 @@
 
     <div id="game-screen" class="screen">
         <div class="screen-content-wrapper justify-start">
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
+            <!-- NEW: Game Header with Timer -->
+            <div id="game-header">
                 <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
-                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
+                <div id="stage-info">
+                    <span class="info-label">مرحله:</span>
+                    <span id="stage-display">1</span>
+                </div>
+                <div id="timer-info">
+                    <div id="timer-container">
+                        <div id="timer-progress"></div>
+                        <span id="timer-text">20</span>
+                    </div>
+                </div>
             </div>
 
             <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
                 <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
-                
-                <!-- NEW: Timer Elements -->
-                <div id="timer-container" class="hidden">
-                    <div id="timer-bar"></div>
-                    <span id="timer-text">20</span>
-                </div>
-                
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
                 <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
             </div>
@@ -949,6 +953,12 @@
         // --- NEW: Variables for local questions ---
         let localQuestions = [];
         let areLocalQuestionsLoaded = false;
+        
+        // --- NEW: Timer variables ---
+        const TIMER_DURATION = 20; // seconds
+        let timerInterval = null;
+        let timeLeft = TIMER_DURATION;
+
 
         const gameState = {
             displayName: '',
@@ -984,14 +994,12 @@
         
         let gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn, multiplayerBtn;
 
-        // --- NEW: Timer Elements & Variables ---
-        let timerContainer, timerBar, timerText;
-        let questionTimerInterval = null;
-        const TIMER_DURATION_SECONDS = 20;
-
-
         let loadingProgressBarFill, loadingTip;
         let tipInterval;
+        
+        // --- NEW: Timer UI Elements ---
+        let timerContainer, timerProgress, timerText;
+
         
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
@@ -1491,11 +1499,9 @@
             if (optionsContainer) optionsContainer.innerHTML = "";
             if (questionExplanation) questionExplanation.classList.add('hidden');
             if (gameFeedback) gameFeedback.textContent = "";
-            if (timerContainer) timerContainer.classList.add('hidden');
             
             let questionData = null;
 
-            // --- NEW LOGIC: Prioritize local questions ---
             if (areLocalQuestionsLoaded && localQuestions.length > 0) {
                 const unseenQuestions = localQuestions.filter(q => !gameState.seenQuestionHashes.has(simpleHash(q.question)));
                 
@@ -1505,17 +1511,14 @@
                     questionData = unseenQuestions[randomIndex];
                 } else {
                     console.log("All local questions have been answered. Switching to AI generator.");
-                    // Fall through to AI logic
                 }
             }
 
-            // --- FALLBACK LOGIC: Use AI if no local questions are available ---
             if (!questionData) {
                 if(questionText) questionText.textContent = "بانک سوالات تمام شد! در حال تولید سوال جدید توسط هوش مصنوعی...";
                 questionData = await generateQuestionFromAI();
             }
 
-            // --- Final outcome ---
             if (questionData) {
                 gameState.currentQuestionData = questionData;
                 displayQuestion();
@@ -1547,79 +1550,14 @@
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
-            startQuestionTimer(); // --- NEW: Start timer when question is displayed
+            startTimer(); // --- NEW: Start timer with the question
         }
         
-        // --- NEW: Timer Functions ---
-        function stopQuestionTimer() {
-            if (questionTimerInterval) {
-                clearInterval(questionTimerInterval);
-                questionTimerInterval = null;
-            }
-        }
-
-        function handleTimeUp() {
-            stopQuestionTimer();
-            if (!gameState.isQuestionActive) return; // Avoid double triggers
-            gameState.isQuestionActive = false;
-
-            audioManager.play('incorrect');
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
-
-            gameFeedback.textContent = "زمان تمام شد!";
-            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
-
-            setTimeout(() => {
-                showModal("زمان تمام شد!", `متاسفانه زمان شما برای پاسخ به پایان رسید. شما تا مرحله ${gameState.currentStage} پیش رفتید. آیا می‌خواهید دوباره از اول شروع کنید؟`, "شروع مجدد", "صفحه اصلی", 
-                () => {
-                    hideModal();
-                    gameState.currentStage = 1;
-                    gameState.seenQuestionHashes.clear();
-                    saveUserData();
-                    generateQuestion();
-                    updateUI();
-                }, 
-                () => {
-                    hideModal();
-                    if(mainScreen) showScreen(mainScreen);
-                });
-            }, 1500);
-        }
-
-        function startQuestionTimer() {
-            stopQuestionTimer(); // Ensure no multiple timers are running
-            if (!timerContainer || !timerBar || !timerText) return;
-
-            timerContainer.classList.remove('hidden');
-            timerBar.classList.remove('warning', 'danger');
-            timerBar.style.width = '100%';
-            
-            let timeLeft = TIMER_DURATION_SECONDS;
-            timerText.textContent = timeLeft;
-
-            questionTimerInterval = setInterval(() => {
-                timeLeft--;
-                const percentage = (timeLeft / TIMER_DURATION_SECONDS) * 100;
-                timerBar.style.width = `${percentage}%`;
-                timerText.textContent = timeLeft;
-
-                if (timeLeft <= 5) {
-                    timerBar.classList.add('danger');
-                    timerBar.classList.remove('warning');
-                } else if (timeLeft <= 10) {
-                    timerBar.classList.add('warning');
-                }
-
-                if (timeLeft <= 0) {
-                    handleTimeUp();
-                }
-            }, 1000);
-        }
-
         async function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion) return;
             
-            stopQuestionTimer(); // --- NEW: Stop timer immediately on answer
+            stopTimer(); // --- NEW: Stop timer on selection
+            
             gameState.isQuestionActive = false;
 
             const selectedOptionButton = event.target.closest('.option-btn');
@@ -1642,29 +1580,10 @@
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
-                audioManager.play('incorrect');
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
-                
-                gameFeedback.textContent = "پاسخ اشتباه!";
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
-                
-                setTimeout(() => {
-                    showModal("پایان بازی", `متاسفانه پاسخ شما اشتباه بود. شما تا مرحله ${gameState.currentStage} پیش رفتید. آیا می‌خواهید دوباره از اول شروع کنید؟`, "شروع مجدد", "صفحه اصلی", 
-                    () => {
-                        hideModal();
-                        gameState.currentStage = 1; // Reset stage
-                        gameState.seenQuestionHashes.clear(); // Optional: clear seen questions on reset
-                        saveUserData();
-                        generateQuestion();
-                        updateUI();
-                    }, 
-                    () => {
-                        hideModal();
-                        if(mainScreen) showScreen(mainScreen);
-                    });
-                }, 2500);
+                handleIncorrectAnswer("پاسخ اشتباه!");
             }
             if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
@@ -1672,6 +1591,82 @@
             }
         }
         
+        function handleIncorrectAnswer(feedbackText) {
+            audioManager.play('incorrect');
+            gameFeedback.textContent = feedbackText;
+            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
+
+            setTimeout(() => {
+                showModal("پایان بازی", `متاسفانه ${feedbackText.toLowerCase()} شما تا مرحله ${gameState.currentStage} پیش رفتید. آیا می‌خواهید دوباره از اول شروع کنید؟`, "شروع مجدد", "صفحه اصلی",
+                () => { // onConfirm
+                    hideModal();
+                    gameState.currentStage = 1;
+                    gameState.seenQuestionHashes.clear();
+                    
+                    // --- BUG FIX: Removed saveUserData() from here. ---
+                    // The game state is reset locally. It will be saved on the next *correct* answer.
+                    // This prevents the "Error saving data" bug on restart.
+                    
+                    generateQuestion();
+                    updateUI();
+                },
+                () => { // onCancel
+                    hideModal();
+                    if(mainScreen) showScreen(mainScreen);
+                });
+            }, 2500);
+        }
+        
+        // --- NEW: Timer functions ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = TIMER_DURATION;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            if (!timerText || !timerProgress || !timerContainer) return;
+            
+            timerText.textContent = timeLeft;
+            const degrees = (timeLeft / TIMER_DURATION) * 360;
+            timerProgress.style.background = `conic-gradient(var(--clash-gold) ${degrees}deg, var(--clash-blue-dark) 0deg)`;
+
+            if (timeLeft <= 5) {
+                timerContainer.classList.add('warning');
+                 timerProgress.style.background = `conic-gradient(var(--clash-red) ${degrees}deg, var(--clash-blue-dark) 0deg)`;
+            } else {
+                timerContainer.classList.remove('warning');
+            }
+        }
+
+        function handleTimeUp() {
+            if (!gameState.isQuestionActive) return;
+            stopTimer();
+            gameState.isQuestionActive = false;
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+            const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
+            const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+            if (correctButton) correctButton.classList.add('correct');
+
+            if (explanation && questionExplanation) {
+                questionExplanation.textContent = `توضیح: ${explanation}`;
+                questionExplanation.classList.remove('hidden');
+            }
+            handleIncorrectAnswer("وقت تمام شد!");
+        }
+
         function isValidImageUrl(url) {
             if (!url) return false;
             const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
@@ -1839,7 +1834,6 @@
             }).join('');
         }
 
-        // --- NEW FUNCTION to load questions from JSON file ---
         async function loadLocalQuestions() {
             try {
                 const response = await fetch('Questions.json');
@@ -1855,7 +1849,6 @@
                 }
             } catch (error) {
                 console.error("Could not load local questions from Questions.json:", error);
-                // Game will proceed using AI only, which is a graceful fallback.
             }
         }
         
@@ -1924,12 +1917,7 @@
             if (closeDevelopersPanelBtn) closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
             if (leaderboardBtn) leaderboardBtn.addEventListener('click', showLeaderboardPanel);
             if (closeLeaderboardPanelBtn) closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
-            if(backToMainBtn) backToMainBtn.addEventListener('click', async () => { 
-                stopQuestionTimer(); // --- NEW: Stop timer on back button
-                await saveUserData(); 
-                gameState.currentQuestionData = null; 
-                if(mainScreen) showScreen(mainScreen); 
-            });
+            if(backToMainBtn) backToMainBtn.addEventListener('click', async () => { stopTimer(); await saveUserData(); gameState.currentQuestionData = null; if(mainScreen) showScreen(mainScreen); });
 
         }
         
@@ -1993,7 +1981,7 @@
             
             // --- NEW: Query Timer Elements ---
             timerContainer = document.getElementById('timer-container');
-            timerBar = document.getElementById('timer-bar');
+            timerProgress = document.getElementById('timer-progress');
             timerText = document.getElementById('timer-text');
 
 
@@ -2008,7 +1996,6 @@
             }
 
             try {
-                // --- MODIFIED: Load local questions first ---
                 await loadLocalQuestions();
                 setupEventListeners();
                 await initFirebase();
