@@ -1,1 +1,447 @@
-..
+<!-- START OF ADMIN PANEL CODE -->
+<style>
+    /*
+        این استایل‌ها به صورت داخلی تعریف شده‌اند تا به راحتی قابل حمل باشند.
+        آنها از استایل‌های اصلی فایل main.txt شما الهام گرفته‌اند.
+    */
+
+    /* فونت وزیرمتن - اگر در صفحه اصلی لود شده، نیازی به این بخش نیست */
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap');
+
+    .admin-panel-container {
+        font-family: 'Vazirmatn', sans-serif;
+        direction: rtl;
+        background: linear-gradient(145deg, #2a2118, #1a140e);
+        color: #f0e6d2;
+        border: 2px solid #5c4a3a;
+        border-radius: 18px;
+        width: 95%;
+        max-width: 800px;
+        padding: 20px 25px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        /* برای قرارگیری در مرکز صفحه (در صورت استفاده مستقل) */
+        /* margin: 40px auto; */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .admin-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #4a3c2f;
+        padding-bottom: 15px;
+    }
+
+    .admin-panel-header h1 {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: #ffc947;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+        margin: 0;
+    }
+    
+    .admin-close-btn {
+        background: transparent;
+        border: none;
+        color: #c5a687;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+    }
+    .admin-close-btn:hover {
+        color: #ffc947;
+        transform: scale(1.1);
+    }
+    
+    /* --- استایل تب‌ها --- */
+    .admin-tabs {
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid #3a2e23;
+        padding-bottom: 5px;
+    }
+
+    .tab-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        background: transparent;
+        color: #c5a687;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 8px 8px 0 0;
+    }
+    .tab-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #f0e6d2;
+    }
+    .tab-btn.active {
+        color: #ffc947;
+        background-color: rgba(80, 50, 48, 0.5);
+        border-bottom: 3px solid #ffc947;
+    }
+    
+    /* --- استایل محتوای تب‌ها --- */
+    .admin-tab-content {
+        display: none; /* در حالت عادی مخفی */
+        animation: fadeIn 0.5s ease;
+    }
+    .admin-tab-content.active {
+        display: block; /* تب فعال نمایش داده می‌شود */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* --- استایل‌های مشترک برای اجزای داخلی --- */
+    .content-section {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #4a3c2f;
+        margin-bottom: 20px;
+    }
+    
+    .content-section h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #e0dacc;
+        margin-top: 0;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #5c4a3a;
+    }
+
+    /* --- داشبورد --- */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    .stat-card {
+        background: linear-gradient(145deg, rgba(80, 50, 48, 0.3), rgba(56, 33, 32, 0.4));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #5c4a3a;
+        text-align: center;
+    }
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #ffc947;
+    }
+    .stat-label {
+        font-size: 0.9rem;
+        color: #c5a687;
+        margin-top: 5px;
+    }
+
+    /* --- مدیریت کاربران --- */
+    .search-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .admin-input {
+        flex-grow: 1;
+        padding: 10px 15px;
+        font-size: 1rem;
+        font-family: 'Vazirmatn', sans-serif;
+        background-color: rgba(0, 0, 0, 0.4);
+        border: 1px solid #5c4a3a;
+        border-radius: 8px;
+        color: #f0e6d2;
+        transition: all 0.2s ease;
+    }
+    .admin-input:focus {
+        outline: none;
+        border-color: #ffc947;
+        box-shadow: 0 0 8px rgba(255, 201, 71, 0.3);
+    }
+    .admin-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: linear-gradient(145deg, #8c4843, #5a2c2a);
+        border: 1px solid #ffc947;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .admin-button:hover {
+        background: linear-gradient(145deg, #a1534d, #6b3431);
+        transform: translateY(-2px);
+    }
+    .user-table-wrapper {
+        overflow-x: auto; /* برای نمایش بهتر در موبایل */
+    }
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: right;
+    }
+    .user-table th, .user-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #4a3c2f;
+    }
+    .user-table th {
+        color: #ffc947;
+        font-weight: 700;
+    }
+    .user-table tbody tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.15);
+    }
+    .user-table tbody tr:hover {
+        background-color: rgba(255, 201, 71, 0.08);
+    }
+    .status-active { color: #8bc34a; }
+    .status-banned { color: #f44336; }
+    .action-button {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        margin-left: 5px;
+        border-radius: 5px;
+        background: linear-gradient(145deg, #555, #333);
+        border: 1px solid #777;
+        color: #ddd;
+    }
+    .action-button.ban { background: #8c4843; border-color: #c5a687; }
+
+    /* --- تنظیمات سرور --- */
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #4a3c2f;
+    }
+    .setting-item:last-child {
+        border-bottom: none;
+    }
+    .setting-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    .admin-textarea {
+        width: 100%;
+        height: 100px;
+        resize: vertical;
+        margin-top: 10px;
+    }
+    .save-button-container {
+        text-align: left;
+        margin-top: 20px;
+    }
+
+    /* --- سوییچ Toggle زیبا --- */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #3a2e23;
+        transition: .4s;
+        border-radius: 34px;
+        border: 1px solid #5c4a3a;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 3px;
+        background-color: #c5a687;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #8c4843;
+    }
+    input:checked + .slider:before {
+        transform: translateX(26px);
+        background-color: #ffc947;
+    }
+</style>
+
+<div class="admin-panel-container">
+    <div class="admin-panel-header">
+        <h1>پنل مدیریت</h1>
+        <button class="admin-close-btn">&times;</button>
+    </div>
+
+    <!-- تب‌های ناوبری -->
+    <div class="admin-tabs">
+        <button class="tab-btn active">داشبورد</button>
+        <button class="tab-btn">مدیریت کاربران</button>
+        <button class="tab-btn">تنظیمات سرور</button>
+    </div>
+
+    <!-- محتوای تب‌ها -->
+    <div class="admin-panel-content">
+        <!-- ۱. محتوای داشبورد -->
+        <div id="dashboard-tab" class="admin-tab-content active">
+            <div class="content-section">
+                <h2>آمار کلی</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">1,245</div>
+                        <div class="stat-label">کل کاربران</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">87</div>
+                        <div class="stat-label">کاربران آنلاین</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">بازی‌های فعال</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #8bc34a;">آنلاین</div>
+                        <div class="stat-label">وضعیت سرور</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ۲. محتوای مدیریت کاربران -->
+        <div id="users-tab" class="admin-tab-content">
+            <div class="content-section">
+                <h2>لیست کاربران</h2>
+                <div class="search-bar">
+                    <input type="text" class="admin-input" placeholder="جستجوی کاربر بر اساس نام کاربری...">
+                    <button class="admin-button">جستجو</button>
+                </div>
+                <div class="user-table-wrapper">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>نام کاربری</th>
+                                <th>سطح</th>
+                                <th>وضعیت</th>
+                                <th>آخرین بازدید</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Abolfazl</td>
+                                <td>50</td>
+                                <td class="status-active">فعال</td>
+                                <td>۵ دقیقه پیش</td>
+                                <td>
+                                    <button class="action-button">ویرایش</button>
+                                    <button class="action-button ban">بن</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NightWolf</td>
+                                <td>32</td>
+                                <td class="status-active">فعال</td>
+                                <td>۲ ساعت پیش</td>
+                                <td>
+                                    <button class="action-button">ویرایش</button>
+                                    <button class="action-button ban">بن</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BannedUser</td>
+                                <td>10</td>
+                                <td class="status-banned">بن شده</td>
+                                <td>۱ روز پیش</td>
+                                <td>
+                                    <button class="action-button">ویرایش</button>
+                                    <button class="action-button">رفع بن</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ۳. محتوای تنظیمات سرور -->
+        <div id="settings-tab" class="admin-tab-content">
+             <div class="content-section">
+                <h2>تنظیمات اصلی</h2>
+                <div class="setting-item">
+                    <span class="setting-label">فعال‌سازی حالت تعمیرات</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">فعال‌سازی ثبت‌نام کاربران جدید</span>
+                     <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+             </div>
+             <div class="content-section">
+                <h2>پیام همگانی</h2>
+                <p style="color: #c5a687; font-size: 0.9rem;">این پیام برای تمام کاربران آنلاین نمایش داده خواهد شد.</p>
+                <textarea class="admin-input admin-textarea" placeholder="پیام خود را اینجا بنویسید..."></textarea>
+                <div class="save-button-container">
+                    <button class="admin-button">ارسال پیام</button>
+                </div>
+             </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+    جاوا اسکریپت ساده برای فعال/غیرفعال کردن تب‌ها
+    این بخش برای عملکرد نمایشی تب‌ها لازم است. 
+    اگر این پنل را در صفحه‌ای قرار می‌دهید که جاوا اسکریپت دارد، این کد را به آن اضافه کنید.
+-->
+<script>
+    // این اسکریپت فقط برای کارکردن تب‌ها به صورت نمایشی است
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.admin-tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // غیرفعال کردن همه تب‌ها و محتواها
+                tabs.forEach(item => item.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // فعال کردن تب و محتوای کلیک شده
+                tab.classList.add('active');
+                // پیدا کردن محتوای مرتبط با تب. فرض بر این است که نام محتوا مشابه متن تب است.
+                // این روش ساده است و در این مثال کار می‌کند.
+                const targetId = tab.textContent.trim() === 'داشبورد' ? 'dashboard-tab' :
+                               tab.textContent.trim() === 'مدیریت کاربران' ? 'users-tab' : 'settings-tab';
+                const targetContent = document.getElementById(targetId);
+                if(targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+<!-- END OF ADMIN PANEL CODE -->
