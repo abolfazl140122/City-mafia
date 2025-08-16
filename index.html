@@ -24,7 +24,7 @@
             --clash-red: #c74243;
             --clash-red-dark: #8f2a2b;
             --clash-panel-bg: #4468a0;
-            --clash-panel-border: #9dc2ff;
+            --clاش-panel-border: #9dc2ff;
             --clash-panel-border-dark: #2a4166;
         }
 
@@ -601,55 +601,35 @@
         }
         
         /* --- NEW STYLES for Question Timer --- */
-        #game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-        }
-        #stage-info, #timer-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .info-label {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        #stage-display {
-            font-family: 'Lilita One', cursive;
-            color: var(--clash-gold);
-            font-size: 1.75rem;
-        }
         #timer-container {
             position: relative;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 60px;
+            height: 60px;
         }
-        #timer-progress {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(var(--clash-gold) 360deg, var(--clash-blue-dark) 0deg);
-            transition: background 0.3s linear;
+        #timer-svg {
+            transform: rotate(-90deg); /* Start from the top */
         }
-        #timer-container.warning #timer-progress {
-            background: conic-gradient(var(--clash-red) 360deg, var(--clash-blue-dark) 0deg);
+        .timer-circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        .timer-bg {
+            stroke: var(--clash-panel-border-dark);
+        }
+        .timer-progress {
+            stroke: var(--clash-gold);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
         }
         #timer-text {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-family: 'Lilita One', cursive;
-            font-size: 1.5rem;
-            color: #fff;
-            text-shadow: 2px 2px 3px #000;
+            font-size: 1.8rem;
+            color: var(--clash-gold);
+            text-shadow: 2px 2px 2px #000;
         }
 
     </style>
@@ -740,18 +720,16 @@
 
     <div id="game-screen" class="screen">
         <div class="screen-content-wrapper justify-start">
-            <!-- NEW: Game Header with Timer -->
-            <div id="game-header">
+            <!-- MODIFIED: Added Timer -->
+            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
                 <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
-                <div id="stage-info">
-                    <span class="info-label">مرحله:</span>
-                    <span id="stage-display">1</span>
-                </div>
-                <div id="timer-info">
-                    <div id="timer-container">
-                        <div id="timer-progress"></div>
-                        <span id="timer-text">20</span>
-                    </div>
+                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
+                <div id="timer-container">
+                    <svg id="timer-svg" width="60" height="60" viewBox="0 0 60 60">
+                        <circle class="timer-circle timer-bg" cx="30" cy="30" r="26"></circle>
+                        <circle id="timer-progress-circle" class="timer-circle timer-progress" cx="30" cy="30" r="26"></circle>
+                    </svg>
+                    <span id="timer-text">20</span>
                 </div>
             </div>
 
@@ -882,7 +860,8 @@
                     <span class="icon">👤</span>
                     <span>بازی تک‌نفره</span>
                 </button>
-                <button id="multiplayer-btn" class="btn-clash btn-clash-primary clash-font">
+                <!-- MODIFIED: Disabled multiplayer button -->
+                <button id="multiplayer-btn" class="btn-clash btn-clash-primary clash-font" disabled title="این قابلیت به زودی اضافه می‌شود!">
                     <span class="icon">👥</span>
                     <span>بازی چندنفره</span>
                 </button>
@@ -898,6 +877,7 @@
         <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
         <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
         <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
+        <audio id="sfx-time-tick" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-emergency-alarm-1000.mp3" preload="auto"></audio>
     </div>
 
     <script type="module">
@@ -916,10 +896,12 @@
                 this.sounds.correct = document.getElementById('sfx-correct');
                 this.sounds.incorrect = document.getElementById('sfx-incorrect');
                 this.sounds.startGame = document.getElementById('sfx-start-game');
+                this.sounds.timeTick = document.getElementById('sfx-time-tick');
 
                 Object.values(this.sounds).forEach(sound => {
                     if (sound) sound.volume = 0.4; // Adjust volume globally
                 });
+                if (this.sounds.timeTick) this.sounds.timeTick.volume = 0.2;
             },
             play(soundName) {
                 const sound = this.sounds[soundName];
@@ -953,12 +935,6 @@
         // --- NEW: Variables for local questions ---
         let localQuestions = [];
         let areLocalQuestionsLoaded = false;
-        
-        // --- NEW: Timer variables ---
-        const TIMER_DURATION = 20; // seconds
-        let timerInterval = null;
-        let timeLeft = TIMER_DURATION;
-
 
         const gameState = {
             displayName: '',
@@ -993,13 +969,16 @@
             avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
         
         let gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn, multiplayerBtn;
+        
+        // --- NEW: Timer variables ---
+        let timerText, timerProgressCircle, timerInterval;
+        const TOTAL_TIME_PER_QUESTION = 20; // seconds
+        let timeRemaining;
+        const TIMER_CIRCLE_RADIUS = 26;
+        const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_CIRCLE_RADIUS;
 
         let loadingProgressBarFill, loadingTip;
         let tipInterval;
-        
-        // --- NEW: Timer UI Elements ---
-        let timerContainer, timerProgress, timerText;
-
         
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
@@ -1015,6 +994,76 @@
             return `h${Math.abs(hash)}`;
         }
 
+        // --- NEW: Timer Functions ---
+        function stopTimer() {
+            clearInterval(timerInterval);
+            if(audioManager.sounds.timeTick) audioManager.sounds.timeTick.pause();
+        }
+
+        function updateTimerVisuals() {
+            if (!timerText || !timerProgressCircle) return;
+            timerText.textContent = timeRemaining;
+            const progress = timeRemaining / TOTAL_TIME_PER_QUESTION;
+            const offset = TIMER_CIRCUMFERENCE * (1 - progress);
+            timerProgressCircle.style.strokeDashoffset = offset;
+            
+            // Change color when time is low
+            if (timeRemaining <= 5) {
+                timerProgressCircle.style.stroke = 'var(--clash-red)';
+                timerText.style.color = 'var(--clash-red)';
+                if(timeRemaining > 0) audioManager.play('timeTick');
+            } else {
+                timerProgressCircle.style.stroke = 'var(--clash-gold)';
+                timerText.style.color = 'var(--clash-gold)';
+            }
+        }
+        
+        function handleTimeUp() {
+            stopTimer();
+            if (!gameState.isQuestionActive) return;
+            gameState.isQuestionActive = false;
+
+            const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
+
+            const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
+            if (correctButton) correctButton.classList.add('correct');
+
+            gameFeedback.textContent = "زمان تمام شد!";
+            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
+            audioManager.play('incorrect');
+            
+            if (explanation && questionExplanation) {
+                questionExplanation.textContent = `توضیح: ${explanation}`;
+                questionExplanation.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                generateQuestion(); // Go to next question without increasing stage
+            }, 3000);
+        }
+
+        function startTimer() {
+            stopTimer(); // Ensure no previous timer is running
+            timeRemaining = TOTAL_TIME_PER_QUESTION;
+            if (timerProgressCircle) {
+                timerProgressCircle.style.transition = 'none'; // Reset transition for instant update
+                timerProgressCircle.style.strokeDasharray = TIMER_CIRCUMFERENCE;
+                timerProgressCircle.style.strokeDashoffset = 0;
+                void timerProgressCircle.offsetWidth; // Trigger reflow
+                timerProgressCircle.style.transition = 'stroke-dashoffset 1s linear';
+            }
+            
+            updateTimerVisuals();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerVisuals();
+                if (timeRemaining <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
 
         function showScreen(screenElement) {
             if (!screenElement) return;
@@ -1550,21 +1599,20 @@
             if(questionExplanation) questionExplanation.classList.add('hidden');
             if(gameFeedback) gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
-            startTimer(); // --- NEW: Start timer with the question
+            startTimer(); // Start the timer for the new question
         }
         
         async function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion) return;
             
-            stopTimer(); // --- NEW: Stop timer on selection
-            
+            stopTimer(); // Stop the timer as soon as an answer is selected
             gameState.isQuestionActive = false;
 
             const selectedOptionButton = event.target.closest('.option-btn');
             if (!selectedOptionButton) return;
 
             const selectedIndex = parseInt(selectedOptionButton.dataset.index);
-            const { question, options, correctAnswerIndex, explanation } = gameState.currentQuestionData;
+            const { question, correctAnswerIndex, explanation } = gameState.currentQuestionData;
 
             optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
 
@@ -1580,93 +1628,27 @@
                 await saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
+                // --- MODIFIED LOGIC for incorrect answer ---
+                audioManager.play('incorrect');
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
                 if (correctButton) correctButton.classList.add('correct');
-                handleIncorrectAnswer("پاسخ اشتباه!");
-            }
-            if (explanation && questionExplanation) {
-                questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden');
-            }
-        }
-        
-        function handleIncorrectAnswer(feedbackText) {
-            audioManager.play('incorrect');
-            gameFeedback.textContent = feedbackText;
-            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
-
-            setTimeout(() => {
-                showModal("پایان بازی", `متاسفانه ${feedbackText.toLowerCase()} شما تا مرحله ${gameState.currentStage} پیش رفتید. آیا می‌خواهید دوباره از اول شروع کنید؟`, "شروع مجدد", "صفحه اصلی",
-                () => { // onConfirm
-                    hideModal();
-                    gameState.currentStage = 1;
-                    gameState.seenQuestionHashes.clear();
-                    
-                    // --- BUG FIX: Removed saveUserData() from here. ---
-                    // The game state is reset locally. It will be saved on the next *correct* answer.
-                    // This prevents the "Error saving data" bug on restart.
-                    
+                
+                gameFeedback.textContent = "پاسخ اشتباه!";
+                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
+                
+                // No modal, just wait and load the next question for the same stage
+                setTimeout(() => {
                     generateQuestion();
-                    updateUI();
-                },
-                () => { // onCancel
-                    hideModal();
-                    if(mainScreen) showScreen(mainScreen);
-                });
-            }, 2500);
-        }
-        
-        // --- NEW: Timer functions ---
-        function startTimer() {
-            clearInterval(timerInterval);
-            timeLeft = TIMER_DURATION;
-            updateTimerDisplay();
-
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) {
-                    handleTimeUp();
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-
-        function updateTimerDisplay() {
-            if (!timerText || !timerProgress || !timerContainer) return;
-            
-            timerText.textContent = timeLeft;
-            const degrees = (timeLeft / TIMER_DURATION) * 360;
-            timerProgress.style.background = `conic-gradient(var(--clash-gold) ${degrees}deg, var(--clash-blue-dark) 0deg)`;
-
-            if (timeLeft <= 5) {
-                timerContainer.classList.add('warning');
-                 timerProgress.style.background = `conic-gradient(var(--clash-red) ${degrees}deg, var(--clash-blue-dark) 0deg)`;
-            } else {
-                timerContainer.classList.remove('warning');
+                    updateUI(); // Keep UI updated
+                }, 3000);
             }
-        }
-
-        function handleTimeUp() {
-            if (!gameState.isQuestionActive) return;
-            stopTimer();
-            gameState.isQuestionActive = false;
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
-            const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
-            const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-            if (correctButton) correctButton.classList.add('correct');
-
             if (explanation && questionExplanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
-            handleIncorrectAnswer("وقت تمام شد!");
         }
-
+        
         function isValidImageUrl(url) {
             if (!url) return false;
             const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
@@ -1910,7 +1892,7 @@
             if (startGameBtn) startGameBtn.addEventListener('click', () => { if(isAuthReady && gameState.displayName) showGameModePanel(); });
             if (closeGameModePanelBtn) closeGameModePanelBtn.addEventListener('click', hideGameModePanel);
             if (singlePlayerBtn) singlePlayerBtn.addEventListener('click', () => { hideGameModePanel(); if(gameScreen) showScreen(gameScreen); generateQuestion(); });
-            if (multiplayerBtn) multiplayerBtn.addEventListener('click', () => { window.location.href = 'serchplayers.html'; });
+            if (multiplayerBtn) multiplayerBtn.addEventListener('click', () => { /* Now disabled */ });
 
             if (mafiaFactBtn) mafiaFactBtn.addEventListener('click', () => { if(isAuthReady && gameState.displayName) generateMafiaFact(); });
             if (developersBtn) developersBtn.addEventListener('click', showDevelopersPanel);
@@ -1979,11 +1961,9 @@
             loadingProgressBarFill = document.getElementById('loading-progress-bar-fill');
             loadingTip = document.getElementById('loading-tip');
             
-            // --- NEW: Query Timer Elements ---
-            timerContainer = document.getElementById('timer-container');
-            timerProgress = document.getElementById('timer-progress');
+            // --- NEW: Query Timer elements ---
             timerText = document.getElementById('timer-text');
-
+            timerProgressCircle = document.getElementById('timer-progress-circle');
 
             // Initialize game logic
             audioManager.init();
