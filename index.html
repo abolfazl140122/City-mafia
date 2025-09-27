@@ -72,7 +72,7 @@
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow: hidden; /* Changed to hidden for better control with screens */
+            overflow: hidden; /* IMPORTANT: Keep this hidden for SPA layout */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
             /* Android Fix: Improve touch responsiveness */
@@ -410,24 +410,37 @@
             border-radius: 12px;
             padding: 10px 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: column; /* MODIFIED: Always column */
-            align-items: stretch; gap: 10px;
-            width: max-content;
-            min-width: 180px;
-            max-width: 200px;
+            display: flex; flex-direction: row; align-items: center; gap: 8px;
+            width: max-content; min-width: 0;
+        }
+        @media (min-width: 768px) {
+            #user-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
         }
         #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
         
-        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; border: 1px solid #4a2f20; }
-        .user-info-item .label { font-size: 0.9em; color: #f0d5bf; font-family: 'Vazirmatn'; }
-        .user-info-item .value { font-size: 1.1em; font-weight: bold; }
-
+        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
+        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
+        .user-info-item .value { font-size: 0.9em; font-weight: bold; }
+        @media (min-width: 768px) {
+            .user-info-item { display: block; }
+            .user-info-item .label { font-size: 0.9em; }
+            .user-info-item .value { font-size: 1.1em; }
+        }
         #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
         #public-user-id-output-box .value { color: #eee; font-family: monospace; }
         #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
         #edit-name-btn:hover { color: #fff8a8; }
 
-        /* DELETED AVATAR STYLES */
+        #avatar-container {
+            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
+            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
+            background-color: #333; cursor: pointer; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            flex-shrink: 0; /* Prevents avatar from shrinking */
+        }
+        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
+        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
         
         #main-screen-header { 
             display: flex; justify-content: center; /* MODIFIED: Center the title */
@@ -464,7 +477,7 @@
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; width: 100%; padding-bottom: 5px; }
         
-        #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message {
+        #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
         .hidden { display: none !important; }
@@ -498,6 +511,25 @@
         .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
+
+        /* --- NEW STYLES for Avatar URL Input --- */
+        #avatar-preview-container {
+            margin: 1rem auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--clash-gold);
+            overflow: hidden;
+            background-color: var(--clash-panel-border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #avatar-preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         /* --- NEW STYLES for Game Mode Panel --- */
         #game-mode-panel .btn-clash-primary {
@@ -547,7 +579,9 @@
 </head>
 <body>
     <div id="user-profile-area" class="hidden">
-        <!-- DELETED AVATAR CONTAINER -->
+        <div id="avatar-container" class="hidden" title="تغییر آواتار">
+            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
+        </div>
         <div id="user-info-box" class="hidden">
             <div id="display-name-output-box" class="user-info-item">
                 <div class="label flex items-center gap-1">
@@ -659,7 +693,18 @@
                     <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
                     <p id="change-name-error-message" class="hidden"></p>
                 </div>
-                <!-- DELETED AVATAR UPLOAD UI -->
+                <div id="avatar-upload-ui-container" class="hidden">
+                    <div class="flex flex-col sm:flex-row items-stretch gap-2 my-4">
+                        <input type="url" id="avatar-url-input" placeholder="لینک مستقیم تصویر را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr; text-align: left;">
+                        <button id="preview-avatar-btn" class="btn-clash btn-clash-secondary clash-font whitespace-nowrap px-4">پیش‌نمایش</button>
+                    </div>
+
+                    <div id="avatar-preview-container" class="hidden">
+                        <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
+                    </div>
+
+                    <p id="avatar-error-message" class="hidden"></p>
+                </div>
             </div>
             <div id="modal-actions" class="flex justify-center gap-4 mt-5">
                 <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
@@ -839,14 +884,14 @@
             currentQuestionData: null,
             isQuestionActive: false,
             isLoadingNextQuestion: false,
-            // DELETED: avatarUrl property removed
+            avatarUrl: '',
             seenQuestionHashes: new Set(),
         };
         
         let loadingScreen, mainScreen, gameScreen,
             authPanel, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
-            userProfileArea, userInfoBox, displayNameOutput,
+            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
             publicUserIdOutput, editNameBtn, mainScreenButtonsLayout,
             startGameBtn, developersBtn,
             stageDisplay, questionText,
@@ -856,9 +901,9 @@
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn,
+            avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
+            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage,
             gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn;
-        
-        // DELETED: All avatar-related variables
         
         let timerText, timerProgressCircle, timerInterval;
         const TOTAL_TIME_PER_QUESTION = 20;
@@ -866,7 +911,7 @@
         const TIMER_CIRCLE_RADIUS = 26;
         const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_CIRCLE_RADIUS;
 
-        let loadingProgressBarFill, loadingTip;
+        let loadingProgressBarFill, loadingMessage, loadingTip;
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
 
@@ -883,7 +928,10 @@
 
         function stopTimer() {
             clearInterval(timerInterval);
-            if(audioManager.sounds.timeTick) audioManager.sounds.timeTick.pause();
+            if(audioManager.sounds.timeTick) {
+                audioManager.sounds.timeTick.pause();
+                audioManager.sounds.timeTick.currentTime = 0;
+            }
         }
 
         function updateTimerVisuals() {
@@ -952,13 +1000,9 @@
             if (!screenElement) return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
-
-            const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
-            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
-            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
             
+            // Scroll to top of the new screen
             screenElement.scrollTop = 0;
-            updateUI();
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
@@ -975,11 +1019,12 @@
 
             modalMessage.classList.add('hidden');
             changeNameInputContainer.classList.add('hidden');
-            // DELETED: Avatar UI handling
+            avatarUploadUiContainer.classList.add('hidden');
             if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
             if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
-            
+            if (avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
+
             const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || 
                                       (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
 
@@ -996,18 +1041,28 @@
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
+            } else if (modalType === "avatar") {
+                avatarUploadUiContainer.classList.remove('hidden');
+                avatarUrlInput.value = '';
+                avatarPreviewContainer.classList.add('hidden');
+                avatarErrorMessage.classList.add('hidden');
+                
+                if (message && message.trim() !== "") {
+                    modalMessage.innerHTML = message;
+                    modalMessage.classList.remove('hidden');
+                }
             } else {
                 modalMessage.innerHTML = message;
                 modalMessage.classList.remove('hidden');
             }
 
             modalConfirmBtn.textContent = confirmText;
-            modalConfirmBtn.disabled = false;
+            modalConfirmBtn.disabled = (modalType === 'avatar');
             modalCancelBtn.disabled = false;
             modalConfirmCallback = onConfirm;
             modalCancelCallback = onCancel;
 
-            if (cancelText || modalType === "changeName") {
+            if (cancelText || modalType === "changeName" || modalType === "avatar") {
                 modalCancelBtn.textContent = cancelText || "لغو";
                 modalCancelBtn.classList.remove('hidden');
             } else {
@@ -1025,6 +1080,7 @@
             modalConfirmCallback = null;
             modalCancelCallback = null;
             changeNameInputContainer.classList.add('hidden');
+            avatarUploadUiContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
 
             const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
@@ -1106,11 +1162,15 @@
             publicUserIdOutput.textContent = gameState.publicUserId || "---";
             stageDisplay.textContent = gameState.currentStage;
 
-            // DELETED: Avatar update logic
-            
+            if(avatarImage && gameState.avatarUrl) {
+                avatarImage.src = gameState.avatarUrl;
+            } else if (avatarImage) {
+                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
+            }
+
             let showAuthPanel = !gameState.displayName || !gameState.publicUserId;
             let showActionButtons = !showAuthPanel;
-            let showUserInfo = showActionButtons && mainScreen.classList.contains('active');
+            let showUserInfoAndAvatar = showActionButtons && mainScreen.classList.contains('active');
 
             if (showActionButtons) {
                 startGameBtn.classList.add('breathing');
@@ -1125,17 +1185,18 @@
             const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
                                     (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
                                     (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-            if (showUserInfo && !isAnyPanelVisible) {
+            if (showUserInfoAndAvatar && !isAnyPanelVisible) {
                 userProfileArea.classList.remove('profile-area-hidden', 'hidden');
+                avatarContainer.classList.remove('hidden');
                 userInfoBox.classList.remove('hidden');
-            } else if (!showUserInfo) {
+            } else if (!showUserInfoAndAvatar) {
                 userProfileArea.classList.add('hidden');
             } else if (isAnyPanelVisible) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
         }
         
-        function simulateLoading() {
+        function runLoadingSequence() {
             setTimeout(() => {
                 loadingProgressBarFill.style.width = '30%';
                 loadingMessage.textContent = 'بارگذاری منابع بازی...';
@@ -1150,6 +1211,7 @@
             }, 1800);
             setTimeout(() => {
                 showScreen(mainScreen);
+                updateUI(); // IMPORTANT: Update UI after showing the main screen
             }, 2300);
         }
 
@@ -1172,10 +1234,7 @@
                 const savedData = localStorage.getItem('mafiaGameUserData');
                 if (savedData) {
                     const parsedData = JSON.parse(savedData);
-                    // Ensure we don't load the avatarUrl if it exists in old data
-                    const { avatarUrl, ...restOfData } = parsedData; 
-                    Object.assign(gameState, restOfData);
-                    
+                    Object.assign(gameState, parsedData);
                     // Convert Array back to Set
                     gameState.seenQuestionHashes = new Set(parsedData.seenQuestionHashes || []);
                     console.log("User data loaded from localStorage.");
@@ -1280,7 +1339,54 @@
             }
         }
         
-        // DELETED: All avatar-related functions
+        function isValidImageUrl(url) {
+            if (!url) return false;
+            const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
+            return imageRegex.test(url);
+        }
+
+        function previewAvatarFromUrl() {
+            const url = avatarUrlInput.value.trim();
+            avatarErrorMessage.classList.add('hidden');
+            modalConfirmBtn.disabled = true;
+
+            if (!isValidImageUrl(url)) {
+                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
+                avatarErrorMessage.classList.remove('hidden');
+                avatarPreviewContainer.classList.add('hidden');
+                return;
+            }
+
+            avatarPreviewImage.src = url;
+            avatarPreviewImage.onerror = () => {
+                avatarErrorMessage.textContent = 'خطا در بارگذاری تصویر.';
+                avatarErrorMessage.classList.remove('hidden');
+                avatarPreviewContainer.classList.add('hidden');
+            };
+            avatarPreviewImage.onload = () => {
+                avatarPreviewContainer.classList.remove('hidden');
+                modalConfirmBtn.disabled = false;
+            };
+        }
+
+        function saveAvatarFromUrl() {
+            const newUrl = avatarUrlInput.value.trim();
+            if (!isValidImageUrl(newUrl)) {
+                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
+                return;
+            }
+
+            modalConfirmBtn.disabled = true;
+            modalCancelBtn.disabled = true;
+
+            gameState.avatarUrl = newUrl;
+            saveUserData();
+            updateUI();
+            hideModal();
+            showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!");
+            modalConfirmBtn.disabled = false;
+            modalCancelBtn.disabled = false;
+        }
         
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
             const regex = /[^a-zA-Z0-9_.-]/g;
@@ -1353,8 +1459,8 @@
             });
 
             editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", handleChangeDisplayName, hideModal, "changeName"));
-            
-            // DELETED: avatarContainer event listener
+            avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "لینک مستقیم تصویر را وارد کنید.", "ذخیره", "لغو", saveAvatarFromUrl, hideModal, "avatar"));
+            previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
             
             startGameBtn.addEventListener('click', showGameModePanel);
             closeGameModePanelBtn.addEventListener('click', hideGameModePanel);
@@ -1365,7 +1471,7 @@
             backToMainBtn.addEventListener('click', () => { stopTimer(); saveUserData(); gameState.currentQuestionData = null; showScreen(mainScreen); });
         }
         
-        function initializeGame() {
+        function initializeApp() {
             // Query DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
@@ -1379,6 +1485,8 @@
             generateUserIdBtn = document.getElementById('generate-user-id-btn');
             userIdErrorMessage = document.getElementById('user-id-error-message');
             userProfileArea = document.getElementById('user-profile-area');
+            avatarContainer = document.getElementById('avatar-container');
+            avatarImage = document.getElementById('avatar-image');
             userInfoBox = document.getElementById('user-info-box');
             displayNameOutput = document.getElementById('display-name-output');
             publicUserIdOutput = document.getElementById('public-user-id-output');
@@ -1398,6 +1506,12 @@
             changeNameInputContainer = document.getElementById('change-name-input-container');
             newDisplayNameInput = document.getElementById('new-display-name-input');
             changeNameErrorMessage = document.getElementById('change-name-error-message');
+            avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
+            avatarUrlInput = document.getElementById('avatar-url-input');
+            previewAvatarBtn = document.getElementById('preview-avatar-btn');
+            avatarPreviewContainer = document.getElementById('avatar-preview-container');
+            avatarPreviewImage = document.getElementById('avatar-preview-image');
+            avatarErrorMessage = document.getElementById('avatar-error-message');
             modalConfirmBtn = document.getElementById('modal-confirm-btn');
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
@@ -1413,16 +1527,22 @@
             // Initialize game logic
             audioManager.init();
             userProfileArea.classList.add('hidden');
-            
-            // --- MODIFIED: Offline initialization flow ---
             loadUserData(); // Load from localStorage first
             setupEventListeners();
-            simulateLoading(); // Then show loading animation
         }
 
-        // --- MODIFIED: Start the game when the DOM is fully ready (More robust for mobile) ---
-        document.addEventListener('DOMContentLoaded', initializeGame);
+        // --- New robust startup flow ---
+        function main() {
+            initializeApp();      // 1. Setup everything in the background
+            runLoadingSequence(); // 2. Run the visual loading animation and then transition
+        }
 
+        // --- Start the game when the DOM is ready ---
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', main);
+        } else {
+            main();
+        }
     </script>
 </body>
 </html>
