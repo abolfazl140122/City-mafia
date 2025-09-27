@@ -72,7 +72,7 @@
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow: hidden; /* IMPORTANT: Keep this hidden for SPA layout */
+            overflow: hidden; /* Changed to hidden for better control with screens */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
             /* Android Fix: Improve touch responsiveness */
@@ -911,7 +911,7 @@
         const TIMER_CIRCLE_RADIUS = 26;
         const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_CIRCLE_RADIUS;
 
-        let loadingProgressBarFill, loadingMessage, loadingTip;
+        let loadingProgressBarFill, loadingTip;
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
 
@@ -928,10 +928,7 @@
 
         function stopTimer() {
             clearInterval(timerInterval);
-            if(audioManager.sounds.timeTick) {
-                audioManager.sounds.timeTick.pause();
-                audioManager.sounds.timeTick.currentTime = 0;
-            }
+            if(audioManager.sounds.timeTick) audioManager.sounds.timeTick.pause();
         }
 
         function updateTimerVisuals() {
@@ -1000,9 +997,13 @@
             if (!screenElement) return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenElement.classList.add('active');
+
+            const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
+            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
             
-            // Scroll to top of the new screen
             screenElement.scrollTop = 0;
+            updateUI();
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
@@ -1196,7 +1197,7 @@
             }
         }
         
-        function runLoadingSequence() {
+        function simulateLoading() {
             setTimeout(() => {
                 loadingProgressBarFill.style.width = '30%';
                 loadingMessage.textContent = 'بارگذاری منابع بازی...';
@@ -1211,7 +1212,6 @@
             }, 1800);
             setTimeout(() => {
                 showScreen(mainScreen);
-                updateUI(); // IMPORTANT: Update UI after showing the main screen
             }, 2300);
         }
 
@@ -1471,7 +1471,7 @@
             backToMainBtn.addEventListener('click', () => { stopTimer(); saveUserData(); gameState.currentQuestionData = null; showScreen(mainScreen); });
         }
         
-        function initializeApp() {
+        function initializeGame() {
             // Query DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
@@ -1527,21 +1527,18 @@
             // Initialize game logic
             audioManager.init();
             userProfileArea.classList.add('hidden');
+            
+            // --- MODIFIED: Offline initialization flow ---
             loadUserData(); // Load from localStorage first
             setupEventListeners();
-        }
-
-        // --- New robust startup flow ---
-        function main() {
-            initializeApp();      // 1. Setup everything in the background
-            runLoadingSequence(); // 2. Run the visual loading animation and then transition
+            simulateLoading(); // Then show loading animation
         }
 
         // --- Start the game when the DOM is ready ---
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', main);
+            document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
-            main();
+            initializeGame();
         }
     </script>
 </body>
