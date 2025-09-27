@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی مافیا - نسخه کلش</title>
+    <title>بازی مافیا - نسخه آفلاین</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,7 +126,7 @@
         .panel-clash::before { top: 10px; left: 10px; }
         .panel-clash::after { top: 10px; right: 10px; }
         
-        #developers-panel::before, #developers-panel::after, #leaderboard-panel::before, #leaderboard-panel::after, #game-mode-panel::before, #game-mode-panel::after { top: 15px; }
+        #developers-panel::before, #developers-panel::after, #game-mode-panel::before, #game-mode-panel::after { top: 15px; }
 
 
         .panel-hidden {
@@ -477,22 +477,20 @@
         #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: auto; padding-top: 1rem; }
         #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; width: 100%; padding-bottom: 5px; }
         
-        #mafia-fact-btn { font-size: 1rem !important; padding: 10px 20px !important; }
-        
         #input-error-message, #user-id-error-message, #change-name-error-message, #login-error-message, #avatar-error-message {
             color: #ffdddd; font-size: 0.9rem; text-align: center; min-height: 1.2rem; margin-top: 0.5rem; font-weight: bold; background-color: rgba(200, 60, 60, 0.7); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--clash-red);
         }
         .hidden { display: none !important; }
 
         /* Styles for Pop-up Panels */
-        #developers-panel-container, #leaderboard-panel-container, #game-mode-panel-container { background-color: rgba(10, 10, 10, 0.85); }
-        #developers-panel, #leaderboard-panel, #game-mode-panel {
+        #developers-panel-container, #game-mode-panel-container { background-color: rgba(10, 10, 10, 0.85); }
+        #developers-panel, #game-mode-panel {
             background-color: var(--clash-panel-bg);
             border: 4px solid var(--clash-panel-border-dark);
             border-top-color: var(--clash-panel-border);
             border-left-color: var(--clash-panel-border);
         }
-        #close-developers-panel-btn, #close-leaderboard-panel-btn, #close-game-mode-panel-btn {
+        #close-developers-panel-btn, #close-game-mode-panel-btn {
             position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
             background: linear-gradient(to bottom, #e87b7c, var(--clash-red));
             border: 2px solid #7c2425;
@@ -500,8 +498,8 @@
             color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
             font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
         }
-        #close-developers-panel-btn:hover, #close-leaderboard-panel-btn:hover, #close-game-mode-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        #close-developers-panel-btn:active, #close-leaderboard-panel-btn:active, #close-game-mode-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
+        #close-developers-panel-btn:hover, #close-game-mode-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
+        #close-developers-panel-btn:active, #close-game-mode-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8f2a2b; }
 
         .developer-item {
             background-color: rgba(42, 65, 102, 0.9);
@@ -513,61 +511,6 @@
         .dev-role { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
-
-        /* Styles for Leaderboard Panel */
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            background-color: rgba(42, 65, 102, 0.9);
-            padding: 0.75rem;
-            border-radius: 12px;
-            border: 2px solid rgba(157, 194, 255, 0.4);
-            gap: 1rem;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .leaderboard-item:hover {
-            background-color: rgba(60, 85, 122, 0.9);
-            transform: scale(1.02);
-        }
-        .leaderboard-rank {
-            font-family: 'Lilita One', cursive;
-            font-size: 1.75rem;
-            color: var(--clash-gold);
-            -webkit-text-stroke: 1.5px var(--clash-brown-dark);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            width: 40px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .leaderboard-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid var(--clash-gold-dark);
-            object-fit: cover;
-            background-color: #2a4166;
-            flex-shrink: 0;
-        }
-        .leaderboard-info {
-            flex-grow: 1;
-        }
-        .leaderboard-name {
-            font-family: 'Lilita One', cursive;
-            font-size: 1.2rem;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px #000;
-        }
-        .leaderboard-stage {
-            font-size: 0.9rem;
-            color: #d0e0ff;
-            font-weight: bold;
-        }
-        .leaderboard-stage-value {
-            color: var(--clash-gold);
-            font-family: 'Lilita One', cursive;
-            font-size: 1.1em;
-            margin-right: 4px;
-        }
 
         /* --- NEW STYLES for Avatar URL Input --- */
         #avatar-preview-container {
@@ -660,7 +603,7 @@
         </div>
     </div>
 
-    <!-- MODIFIED: Professional Loading Screen -->
+    <!-- Loading Screen -->
     <div id="loading-screen" class="screen active">
         <div id="loading-content-box">
             <img id="loading-logo" src="https://up.20script.ir/file/7e7a-Copilot-20250812-110015-removebg-preview.png" alt="لوگوی بازی شهر مافیا">
@@ -672,7 +615,7 @@
             
             <p id="loading-message" class="text-lg">در حال آماده سازی...</p>
             
-            <p id="loading-tip">✨ در حال جستجو در آرشیوهای مخفی... ✨</p>
+            <p id="loading-tip">✨ به دنیای رمزآلود مافیا خوش آمدید... ✨</p>
         </div>
     </div>
 
@@ -709,10 +652,9 @@
 
             <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
                 <div id="top-action-buttons">
-                    <button id="leaderboard-btn" class="btn-clash btn-clash-secondary clash-font">🏆 رتبه‌بندی</button>
+                    <!-- MODIFIED: Removed Leaderboard and Facts buttons -->
                     <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
                     <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">👥 سازندگان</button>
-                    <button id="mafia-fact-btn" class="btn-clash btn-clash-secondary clash-font">دانستنی‌ها ✨</button>
                 </div>
             </div>
         </div>
@@ -720,7 +662,6 @@
 
     <div id="game-screen" class="screen">
         <div class="screen-content-wrapper justify-start">
-            <!-- MODIFIED: Added Timer -->
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
                 <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
                 <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
@@ -740,11 +681,6 @@
             </div>
 
             <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
-            
-            <div id="ai-thinking-indicator" class="text-center mt-4 hidden">
-                <div class="loader inline-block"></div>
-                <p class="text-base font-bold">دستیار هوش مصنوعی در حال فکر کردن است...</p>
-            </div>
         </div>
     </div>
 
@@ -834,22 +770,8 @@
             </div>
         </div>
     </div>
-
-    <!-- Leaderboard Panel -->
-    <div id="leaderboard-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="leaderboard-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-2xl w-full relative">
-            <button id="close-leaderboard-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">کاربران برتر شهر</h3>
-            <div id="leaderboard-list" class="space-y-2 max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
-                <div class="text-center py-8">
-                    <div class="loader mx-auto"></div>
-                    <p class="mt-3 font-bold">در حال بارگذاری لیست کاربران برتر...</p>
-                </div>
-            </div>
-        </div>
-    </div>
     
-    <!-- NEW: Game Mode Selection Panel -->
+    <!-- Game Mode Selection Panel -->
     <div id="game-mode-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
         <div id="game-mode-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg w-full relative">
             <button id="close-game-mode-panel-btn">×</button>
@@ -860,8 +782,7 @@
                     <span class="icon">👤</span>
                     <span>بازی تک‌نفره</span>
                 </button>
-                <!-- MODIFIED: Disabled multiplayer button -->
-                <button id="multiplayer-btn" class="btn-clash btn-clash-primary clash-font" disabled title="این قابلیت به زودی اضافه می‌شود!">
+                <button id="multiplayer-btn" class="btn-clash btn-clash-primary clash-font" disabled title="این قابلیت در نسخه آفلاین فعال نیست.">
                     <span class="icon">👥</span>
                     <span>بازی چندنفره</span>
                 </button>
@@ -880,11 +801,9 @@
         <audio id="sfx-time-tick" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-emergency-alarm-1000.mp3" preload="auto"></audio>
     </div>
 
-    <script type="module">
-        // --- JAVASCRIPT LOGIC (WITH LOCAL QUESTIONS FALLBACK TO AI) ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // --- OFFLINE JAVASCRIPT LOGIC ---
+        // --- ALL FIREBASE AND AI-API CALLS HAVE BEEN REMOVED ---
 
         // --- AUDIO MANAGER ---
         const audioManager = {
@@ -899,7 +818,7 @@
                 this.sounds.timeTick = document.getElementById('sfx-time-tick');
 
                 Object.values(this.sounds).forEach(sound => {
-                    if (sound) sound.volume = 0.4; // Adjust volume globally
+                    if (sound) sound.volume = 0.4;
                 });
                 if (this.sounds.timeTick) this.sounds.timeTick.volume = 0.2;
             },
@@ -911,31 +830,53 @@
                 }
             }
         };
-
-        const firebaseConfig = typeof __firebase_config !== 'undefined'
-            ? JSON.parse(__firebase_config)
-            : {
-                apiKey: "AIzaSyBkUfmc3_TvcR8AkepIr1eB7YEvCD-7P3s",
-                authDomain: "city-mafia.firebaseapp.com",
-                projectId: "city-mafia",
-                storageBucket: "city-mafia.appspot.com", 
-                messagingSenderId: "66458127103",
-                appId: "1:66458127103:web:8bcc2ad470f51b5db45aca",
-                measurementId: "G-8M0M6BJ0GG"
-              };
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mafia-game-default';
-
-        let app;
-        let auth;
-        let db;
-        let currentUserId = null;
-        let isAuthReady = false;
-
-        // --- NEW: Variables for local questions ---
-        let localQuestions = [];
-        let areLocalQuestionsLoaded = false;
-
+        
+        // --- NEW: Hardcoded local questions array (Replaces Questions.json) ---
+        const localQuestions = [
+            {
+                "question": "در بازی مافیا، نقش «گادفادر» استعلامش برای کارآگاه چیست؟",
+                "options": ["مافیا", "شهروند", "نامشخص", "منفی"],
+                "correctAnswerIndex": 1,
+                "explanation": "گادفادر یا پدرخوانده، قدرتمندترین عضو مافیا است که استعلامش برای کارآگاه همیشه مثبت (شهروند) است تا شناسایی نشود."
+            },
+            {
+                "question": "کدام یک از نقش‌های زیر معمولاً در دسته شهروندان قرار می‌گیرد؟",
+                "options": ["دکتر لکتر", "ناتاشا", "کارآگاه", "تروریست"],
+                "correctAnswerIndex": 2,
+                "explanation": "کارآگاه یکی از کلیدی‌ترین نقش‌های شهروندی است که هر شب استعلام یک نفر را می‌گیرد."
+            },
+            {
+                "question": "فیلم مشهور «پدرخوانده» (The Godfather) توسط کدام کارگردان ساخته شده است؟",
+                "options": ["مارتین اسکورسیزی", "کوئنتین تارانتینو", "فرانسیس فورد کوپولا", "آلفرد هیچکاک"],
+                "correctAnswerIndex": 2,
+                "explanation": "فرانسیس فورد کوپولا کارگردان سه‌گانه ماندگار پدرخوانده است که یکی از برترین آثار تاریخ سینما محسوب می‌شود."
+            },
+            {
+                "question": "اصطلاح «Omertà» در فرهنگ مافیا به چه معناست؟",
+                "options": ["قانون انتقام", "قانون سکوت", "تقسیم غنائم", "جلسه شبانه"],
+                "correctAnswerIndex": 1,
+                "explanation": "اومرتا (Omertà) قانون نانوشته‌ای است که اعضای مافیا را به سکوت و عدم همکاری با مقامات قضایی ملزم می‌کند."
+            },
+            {
+                "question": "نقش «حرفه‌ای» در سناریوی شب‌های مافیا چه قابلیتی دارد؟",
+                "options": ["دو بار می‌تواند شلیک کند", "هر شب یک نفر را می‌کشد", "فقط می‌تواند مافیا را بزند", "یک بار می‌تواند خودش را نجات دهد"],
+                "correctAnswerIndex": 0,
+                "explanation": "حرفه‌ای یا هیتمن، یک قاتل سریالی است که در طول کل بازی دو تیر دارد و می‌تواند به هرکسی شلیک کند."
+            },
+            {
+                "question": "«آل کاپون»، گنگستر معروف شیکاگو، سرانجام به چه جرمی دستگیر و زندانی شد؟",
+                "options": ["قتل", "سرقت مسلحانه", "قاچاق", "فرار مالیاتی"],
+                "correctAnswerIndex": 3,
+                "explanation": "با وجود جرایم متعدد، پلیس تنها توانست آل کاپون را به جرم فرار از پرداخت مالیات محکوم کند."
+            },
+            {
+                "question": "در بازی مافیا، اگر دکتر در شب اول خودش را نجات دهد (Save)، چه اتفاقی می‌افتد؟",
+                "options": ["هیچ اتفاقی نمی‌افتد", "از بازی حذف می‌شود", "قابلیت خود را از دست می‌دهد", "یک جان اضافه می‌گیرد"],
+                "correctAnswerIndex": 2,
+                "explanation": "در بسیاری از سناریوها، دکتر فقط یک بار می‌تواند خودش را نجات دهد و پس از آن دیگر نمی‌تواند این کار را تکرار کند."
+            }
+        ];
+        
         const gameState = {
             displayName: '',
             publicUserId: '',
@@ -947,39 +888,30 @@
             seenQuestionHashes: new Set(),
         };
         
-        // --- Variables ---
-        let loadingScreen, loadingMessage, mainScreen, gameScreen,
-            authPanel, registrationForm, displayNameInput, registerBtn, inputErrorMessage,
+        let loadingScreen, mainScreen, gameScreen,
+            authPanel, displayNameInput, registerBtn, inputErrorMessage,
             userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
             userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
-            publicUserIdOutput,
-            editNameBtn,
-            mainScreenButtonsLayout,
-            startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn,
+            publicUserIdOutput, editNameBtn, mainScreenButtonsLayout,
+            startGameBtn, developersBtn,
             stageDisplay, questionText,
             optionsContainer, questionExplanation, backToMainBtn,
-            gameFeedback, aiThinkingIndicator,
-            modalContainer, modalTitle, modalContentDynamic, modalMessage,
+            gameFeedback,
+            modalContainer, modalTitle, modalMessage,
             changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
             modalConfirmBtn, modalCancelBtn,
             developersPanelContainer, closeDevelopersPanelBtn,
-            leaderboardPanelContainer, leaderboardList, closeLeaderboardPanelBtn;
+            avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
+            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage,
+            gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn;
         
-        let avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
-            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage;
-        
-        let gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn, multiplayerBtn;
-        
-        // --- NEW: Timer variables ---
         let timerText, timerProgressCircle, timerInterval;
-        const TOTAL_TIME_PER_QUESTION = 20; // seconds
+        const TOTAL_TIME_PER_QUESTION = 20;
         let timeRemaining;
         const TIMER_CIRCLE_RADIUS = 26;
         const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_CIRCLE_RADIUS;
 
         let loadingProgressBarFill, loadingTip;
-        let tipInterval;
-        
         let modalConfirmCallback = null;
         let modalCancelCallback = null;
 
@@ -994,7 +926,6 @@
             return `h${Math.abs(hash)}`;
         }
 
-        // --- NEW: Timer Functions ---
         function stopTimer() {
             clearInterval(timerInterval);
             if(audioManager.sounds.timeTick) audioManager.sounds.timeTick.pause();
@@ -1007,7 +938,6 @@
             const offset = TIMER_CIRCUMFERENCE * (1 - progress);
             timerProgressCircle.style.strokeDashoffset = offset;
             
-            // Change color when time is low
             if (timeRemaining <= 5) {
                 timerProgressCircle.style.stroke = 'var(--clash-red)';
                 timerText.style.color = 'var(--clash-red)';
@@ -1038,19 +968,17 @@
                 questionExplanation.classList.remove('hidden');
             }
 
-            setTimeout(() => {
-                generateQuestion(); // Go to next question without increasing stage
-            }, 3000);
+            setTimeout(() => { generateQuestion(); }, 3000);
         }
 
         function startTimer() {
-            stopTimer(); // Ensure no previous timer is running
+            stopTimer();
             timeRemaining = TOTAL_TIME_PER_QUESTION;
             if (timerProgressCircle) {
-                timerProgressCircle.style.transition = 'none'; // Reset transition for instant update
+                timerProgressCircle.style.transition = 'none';
                 timerProgressCircle.style.strokeDasharray = TIMER_CIRCUMFERENCE;
                 timerProgressCircle.style.strokeDashoffset = 0;
-                void timerProgressCircle.offsetWidth; // Trigger reflow
+                void timerProgressCircle.offsetWidth;
                 timerProgressCircle.style.transition = 'stroke-dashoffset 1s linear';
             }
             
@@ -1079,10 +1007,7 @@
         }
         
         function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalTitle || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer || !modalConfirmBtn || !modalCancelBtn || !modalContainer) {
-                console.error("[showModal] Modal elements not found, cannot show modal.");
-                return;
-            }
+            if (!modalContainer) return;
 
             audioManager.play('panelOpen');
 
@@ -1101,29 +1026,27 @@
             if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
             if (avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
 
-
             const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || 
-                                      (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')) ||
                                       (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
 
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
+            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
 
             if (modalType === "changeName") {
                 changeNameInputContainer.classList.remove('hidden');
-                if(newDisplayNameInput) newDisplayNameInput.value = gameState.displayName;
-                if(changeNameErrorMessage) changeNameErrorMessage.textContent = '';
-                if(newDisplayNameInput) newDisplayNameInput.classList.remove('invalid');
+                newDisplayNameInput.value = gameState.displayName;
+                changeNameErrorMessage.textContent = '';
+                newDisplayNameInput.classList.remove('invalid');
                 if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
                     modalMessage.classList.remove('hidden');
                 }
             } else if (modalType === "avatar") {
                 avatarUploadUiContainer.classList.remove('hidden');
-                if(avatarUrlInput) avatarUrlInput.value = '';
-                if(avatarPreviewContainer) avatarPreviewContainer.classList.add('hidden');
-                if(avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
+                avatarUrlInput.value = '';
+                avatarPreviewContainer.classList.add('hidden');
+                avatarErrorMessage.classList.add('hidden');
                 
                 if (message && message.trim() !== "") {
                     modalMessage.innerHTML = message;
@@ -1149,9 +1072,7 @@
         }
 
         function hideModal() {
-            if (!modalContainer || !modalMessage || !changeNameInputContainer || !avatarUploadUiContainer) {
-                return;
-            }
+            if (!modalContainer) return;
             
             audioManager.play('panelClose');
             modalContainer.classList.add('panel-hidden');
@@ -1163,21 +1084,20 @@
             avatarUploadUiContainer.classList.add('hidden');
             modalMessage.classList.add('hidden');
 
-            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || 
-                                      (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')) ||
+            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
                                       (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
             
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
+            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
-
+        
         function handleModalConfirm() {
             if (modalConfirmCallback) {
                 try {
                     modalConfirmCallback();
                 } catch (e) {
-                    console.error("[handleModalConfirm] Error in modal confirm callback:", e);
+                    console.error("Error in modal confirm callback:", e);
                     hideModal();
                 }
             } else {
@@ -1190,7 +1110,7 @@
                 try {
                     modalCancelCallback();
                 } catch (e) {
-                    console.error("[handleModalCancel] Error in modal cancel callback:", e);
+                    console.error("Error in modal cancel callback:", e);
                 }
             }
             hideModal();
@@ -1201,7 +1121,7 @@
             audioManager.play('panelOpen');
             developersPanelContainer.classList.remove('panel-hidden');
             developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+            if(userProfileArea && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
         }
@@ -1210,33 +1130,9 @@
             if (!developersPanelContainer) return;
             audioManager.play('panelClose');
             developersPanelContainer.classList.add('panel-hidden');
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || 
-                                           (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')) ||
+            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
                                            (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-             if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-
-        function showLeaderboardPanel() {
-            if (!leaderboardPanelContainer) return;
-            audioManager.play('panelOpen');
-            leaderboardPanelContainer.classList.remove('panel-hidden');
-            leaderboardPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-            fetchAndDisplayLeaderboard();
-        }
-
-        function hideLeaderboardPanel() {
-            if (!leaderboardPanelContainer) return;
-            audioManager.play('panelClose');
-            leaderboardPanelContainer.classList.add('panel-hidden');
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || 
-                                           (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                           (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
+             if(userProfileArea && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
@@ -1246,7 +1142,7 @@
             audioManager.play('panelOpen');
             gameModePanelContainer.classList.remove('panel-hidden');
             gameModePanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active')) {
+            if(userProfileArea && mainScreen.classList.contains('active')) {
                 userProfileArea.classList.add('profile-area-hidden');
             }
         }
@@ -1256,17 +1152,16 @@
             audioManager.play('panelClose');
             gameModePanelContainer.classList.add('panel-hidden');
             const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || 
-                                           (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                           (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden'));
-            if(userProfileArea && mainScreen && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
+                                           (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
+            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
                 userProfileArea.classList.remove('profile-area-hidden');
             }
         }
 
         function updateUI() {
-            if(displayNameOutput) displayNameOutput.textContent = gameState.displayName || "مهمان";
-            if(publicUserIdOutput) publicUserIdOutput.textContent = gameState.publicUserId || "---";
-            if(stageDisplay) stageDisplay.textContent = gameState.currentStage;
+            displayNameOutput.textContent = gameState.displayName || "مهمان";
+            publicUserIdOutput.textContent = gameState.publicUserId || "---";
+            stageDisplay.textContent = gameState.currentStage;
 
             if(avatarImage && gameState.avatarUrl) {
                 avatarImage.src = gameState.avatarUrl;
@@ -1274,317 +1169,117 @@
                 avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
             }
 
-            let showAuthPanel = true;
-            let showActionButtons = false;
-            let showUserInfoAndAvatar = false;
+            let showAuthPanel = !gameState.displayName || !gameState.publicUserId;
+            let showActionButtons = !showAuthPanel;
+            let showUserInfoAndAvatar = showActionButtons && mainScreen.classList.contains('active');
 
-            if (isAuthReady && gameState.displayName && gameState.publicUserId) {
-                showAuthPanel = false;
-                showActionButtons = true;
-                if(startGameBtn) startGameBtn.classList.add('breathing');
-                if (mainScreen && mainScreen.classList.contains('active')) {
-                    showUserInfoAndAvatar = true;
-                }
-            } else if (isAuthReady && (!gameState.displayName || !gameState.publicUserId)) {
-                showAuthPanel = true;
-                showActionButtons = false;
-                showUserInfoAndAvatar = false;
-                if(startGameBtn) startGameBtn.classList.remove('breathing');
+            if (showActionButtons) {
+                startGameBtn.classList.add('breathing');
             } else {
-                showAuthPanel = true;
-                showActionButtons = false;
-                showUserInfoAndAvatar = false;
-                if(startGameBtn) startGameBtn.classList.remove('breathing');
+                startGameBtn.classList.remove('breathing');
             }
 
-            if(authPanel){
-                authPanel.classList.toggle('panel-hidden', !showAuthPanel);
-                authPanel.classList.toggle('panel-visible', showAuthPanel);
-            }
+            authPanel.classList.toggle('panel-hidden', !showAuthPanel);
+            authPanel.classList.toggle('panel-visible', showAuthPanel);
+            mainScreenButtonsLayout.classList.toggle('hidden', !showActionButtons);
 
-            if(mainScreenButtonsLayout){
-                mainScreenButtonsLayout.classList.toggle('hidden', !showActionButtons);
-            }
-
-            if(userProfileArea){
-                const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
-                                        (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                        (leaderboardPanelContainer && !leaderboardPanelContainer.classList.contains('panel-hidden')) ||
-                                        (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-                if (showUserInfoAndAvatar && !isAnyPanelVisible) {
-                    userProfileArea.classList.remove('profile-area-hidden', 'hidden');
-                    if(avatarContainer) avatarContainer.classList.remove('hidden');
-                    if(userInfoBox) userInfoBox.classList.remove('hidden');
-                } else if (!showUserInfoAndAvatar) {
-                    userProfileArea.classList.add('hidden');
-                } else if (isAnyPanelVisible) {
-                    userProfileArea.classList.add('profile-area-hidden');
-                }
+            const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
+                                    (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
+                                    (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
+            if (showUserInfoAndAvatar && !isAnyPanelVisible) {
+                userProfileArea.classList.remove('profile-area-hidden', 'hidden');
+                avatarContainer.classList.remove('hidden');
+                userInfoBox.classList.remove('hidden');
+            } else if (!showUserInfoAndAvatar) {
+                userProfileArea.classList.add('hidden');
+            } else if (isAnyPanelVisible) {
+                userProfileArea.classList.add('profile-area-hidden');
             }
         }
         
         function simulateLoading() {
-            const tips = [
-                "✨ آیا می‌دانستید نقش «گادفادر» یا «پدرخوانده» قدرتمندترین شهروند بازی است؟",
-                "✨ در سناریوی «شب‌های مافیا»، نقش «دکتر لکتر» می‌تواند خودش را فقط یک بار نجات دهد.",
-                "✨ «آل کاپون»، یکی از معروف‌ترین گنگسترهای تاریخ، سرانجام به خاطر فرار مالیاتی دستگیر شد.",
-                "✨ فیلم «رفقای خوب» (Goodfellas) بر اساس داستان واقعی «هنری هیل»، گنگستر سابق، ساخته شده است.",
-                "✨ اصطلاح «Omertà» به قانون سکوت در بین اعضای مافیا اشاره دارد."
-            ];
-            let currentTipIndex = Math.floor(Math.random() * tips.length);
-            
-            if (loadingTip) loadingTip.innerHTML = tips[currentTipIndex];
-
-            tipInterval = setInterval(() => {
-                currentTipIndex = (currentTipIndex + 1) % tips.length;
-                if (loadingTip) {
-                    loadingTip.style.animation = 'none';
-                    loadingTip.offsetHeight; // Trigger reflow
-                    loadingTip.style.animation = 'tipFadeIn 0.8s ease-out';
-                    loadingTip.innerHTML = tips[currentTipIndex];
-                }
-            }, 4000);
-
             setTimeout(() => {
-                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '30%';
-                if (loadingMessage) loadingMessage.textContent = 'در حال برقراری ارتباط با سرور...';
+                loadingProgressBarFill.style.width = '30%';
+                loadingMessage.textContent = 'بارگذاری منابع بازی...';
             }, 500);
             setTimeout(() => {
-                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '65%';
-                if (loadingMessage) loadingMessage.textContent = 'آماده‌سازی رابط کاربری...';
-            }, 1500);
+                loadingProgressBarFill.style.width = '65%';
+                loadingMessage.textContent = 'آماده‌سازی رابط کاربری...';
+            }, 1200);
+            setTimeout(() => {
+                loadingProgressBarFill.style.width = '100%';
+                loadingMessage.textContent = 'خوش آمدید!';
+            }, 1800);
+            setTimeout(() => {
+                showScreen(mainScreen);
+            }, 2300);
         }
 
-        async function initFirebase() {
+        // --- NEW: Local Storage Functions ---
+        function saveUserData() {
             try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                console.log("Firebase initialized (Auth, Firestore).");
-
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentUserId = user.uid;
-                        await loadUserData(user.uid);
-                    } else {
-                        await signInAnonymously(auth);
-                        gameState.displayName = '';
-                        gameState.publicUserId = '';
-                        gameState.avatarUrl = '';
-                        gameState.seenQuestionHashes.clear();
-                    }
-                    isAuthReady = true;
-                    updateUI();
-
-                    if (loadingScreen && loadingScreen.classList.contains('active')) {
-                        clearInterval(tipInterval);
-                        if (loadingProgressBarFill) loadingProgressBarFill.style.width = '100%';
-                        if (loadingMessage) loadingMessage.textContent = "خوش آمدید!";
-                        setTimeout(() => {
-                            if(mainScreen) showScreen(mainScreen);
-                        }, 800);
-                    }
-                });
+                const dataToSave = {
+                    ...gameState,
+                    seenQuestionHashes: Array.from(gameState.seenQuestionHashes) // Convert Set to Array for JSON
+                };
+                localStorage.setItem('mafiaGameUserData', JSON.stringify(dataToSave));
             } catch (error) {
-                console.error("Firebase initialization error:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در اتصال به سرور بازی.";
-                if(mainScreenButtonsLayout) mainScreenButtonsLayout.classList.add('hidden');
-            }
-        }
-        
-        async function loadUserData(userIdToLoad) {
-            if (!userIdToLoad || !db) return;
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userIdToLoad}/mafiaGameData/profile`);
-            try {
-                if (loadingMessage) loadingMessage.textContent = 'در حال بارگذاری اطلاعات شما...';
-                if (loadingProgressBarFill) loadingProgressBarFill.style.width = '85%';
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    gameState.displayName = data.displayName || "";
-                    gameState.publicUserId = data.publicUserId || "";
-                    gameState.currentStage = data.currentStage || 1;
-                    gameState.avatarUrl = data.avatarUrl || '';
-                    gameState.seenQuestionHashes = new Set(data.seenQuestionHashes || []);
-                    console.log(`Loaded ${gameState.seenQuestionHashes.size} seen questions.`);
-                } else {
-                    gameState.displayName = "";
-                    gameState.publicUserId = "";
-                    gameState.avatarUrl = '';
-                    gameState.seenQuestionHashes = new Set();
-                }
-            } catch (error) {
-                console.error("Error loading user data:", error);
-                showModal("خطا", "مشکلی در بارگذاری اطلاعات شما پیش آمد.", "باشه");
-            }
-        }
-
-        async function saveUserData() {
-            if (!currentUserId || !db) return;
-            
-            const userDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/mafiaGameData/profile`);
-            const privateData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                seenQuestionHashes: Array.from(gameState.seenQuestionHashes),
-                lastUpdated: serverTimestamp()
-            };
-            
-            const leaderboardDocRef = doc(db, `artifacts/${appId}/publicLeaderboard/${currentUserId}`);
-            const publicData = {
-                displayName: gameState.displayName,
-                publicUserId: gameState.publicUserId,
-                currentStage: gameState.currentStage,
-                avatarUrl: gameState.avatarUrl,
-                lastUpdated: serverTimestamp()
-            };
-
-            try {
-                await Promise.all([
-                    setDoc(userDocRef, privateData, { merge: true }),
-                    setDoc(leaderboardDocRef, publicData, { merge: true })
-                ]);
-            } catch (error) {
-                console.error("Error saving user data:", error);
+                console.error("Error saving data to localStorage:", error);
                 showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
             }
         }
-
-        async function isDisplayNameTaken(nameToCheck) {
-            if (!db) return true;
-            const usersRef = collection(db, `artifacts/${appId}/publicLeaderboard`);
-            const q = query(usersRef, where("displayName", "==", nameToCheck), limit(1));
-            
-            try {
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) return false;
-                return querySnapshot.docs[0].id !== currentUserId; 
-            } catch (error) {
-                console.error("Error checking display name uniqueness:", error);
-                showModal("خطای سرور", `امکان بررسی یکتا بودن نام وجود ندارد. <br><small>${error.message}</small>`, "باشه");
-                return true;
-            }
-        }
         
-        const GEMINI_API_KEY = "AIzaSyCNrIBm-Qfteoz9twSWCqsCpuvusaCqEfw";
-        const GEMINI_TEXT_MODEL = "gemini-1.5-flash";
-
-        async function callGeminiAPI(prompt) {
-            if(aiThinkingIndicator) aiThinkingIndicator.classList.remove('hidden');
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-            const payload = { 
-                contents: [{ role: "user", parts: [{ text: prompt }] }],
-                generationConfig: { responseMimeType: "application/json" }
-            };
-
+        function loadUserData() {
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}: ${await response.text()}`);
-                
-                const result = await response.json();
-                if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    return JSON.parse(result.candidates[0].content.parts[0].text);
-                }
-                throw new Error(`Invalid AI response (Finish Reason: ${result.candidates?.[0]?.finishReason})`);
-            } catch (error) {
-                console.error("Error calling Gemini API:", error);
-                showModal("خطای هوش مصنوعی", `مشکلی در ارتباط با دستیار هوش مصنوعی پیش آمد. لطفاً از خاموش بودن فیلترشکن خود مطمئن شوید و دوباره تلاش کنید.<br><small>${error.message}</small>`, "باشه");
-                return null;
-            } finally {
-                if(aiThinkingIndicator) aiThinkingIndicator.classList.add('hidden');
-            }
-        }
-
-        async function generateQuestionFromAI() {
-            let attempts = 0;
-            const maxAttempts = 3;
-
-            while (attempts < maxAttempts) {
-                let difficulty = "آسان";
-                if (gameState.currentStage > 20) difficulty = "بسیار سخت";
-                else if (gameState.currentStage > 10) difficulty = "سخت";
-                else if (gameState.currentStage > 5) difficulty = "متوسط";
-                
-                const prompt = `
-                شما یک طراح بازی حرفه‌ای برای یک بازی مافیایی هستید. یک سوال چند گزینه‌ای (۴ گزینه‌ای) جدید و منحصربه‌فرد به زبان فارسی با موضوع مافیا (تاریخچه، فیلم‌ها، نقش‌ها، اصطلاحات) ایجاد کن.
-                سطح دشواری سوال باید "${difficulty}" باشد چون کاربر در مرحله ${gameState.currentStage} است.
-                خروجی باید فقط یک آبجکت JSON خام با این ساختار باشد:
-                {
-                  "question": "متن سوال",
-                  "options": ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
-                  "correctAnswerIndex": 0,
-                  "explanation": "توضیح کوتاه پاسخ صحیح"
-                }
-                `;
-
-                const data = await callGeminiAPI(prompt);
-
-                if (data && data.question && data.options?.length === 4 && data.correctAnswerIndex !== undefined) {
-                    const questionHash = simpleHash(data.question);
-                    if (!gameState.seenQuestionHashes.has(questionHash)) {
-                        return data; // Unique question found
-                    } else {
-                        console.warn(`Duplicate AI question received (hash: ${questionHash}), retrying...`);
-                        attempts++;
-                    }
+                const savedData = localStorage.getItem('mafiaGameUserData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    Object.assign(gameState, parsedData);
+                    // Convert Array back to Set
+                    gameState.seenQuestionHashes = new Set(parsedData.seenQuestionHashes || []);
+                    console.log("User data loaded from localStorage.");
                 } else {
-                    console.error("Invalid question data structure from AI:", data);
-                    attempts++;
+                    console.log("No saved data found in localStorage. Starting fresh.");
                 }
+            } catch (error) {
+                console.error("Error loading data from localStorage:", error);
+                // If there's an error, just start fresh
+                localStorage.removeItem('mafiaGameUserData');
             }
-            return null; // Failed to get a unique question
         }
 
-        async function generateQuestion() {
+        function generateQuestion() {
             if (gameState.isLoadingNextQuestion) return;
             gameState.isLoadingNextQuestion = true;
-            if (questionText) questionText.textContent = "در حال آماده‌سازی سوال...";
-            if (optionsContainer) optionsContainer.innerHTML = "";
-            if (questionExplanation) questionExplanation.classList.add('hidden');
-            if (gameFeedback) gameFeedback.textContent = "";
+            questionText.textContent = "در حال آماده‌سازی سوال...";
+            optionsContainer.innerHTML = "";
+            questionExplanation.classList.add('hidden');
+            gameFeedback.textContent = "";
             
-            let questionData = null;
-
-            if (areLocalQuestionsLoaded && localQuestions.length > 0) {
-                const unseenQuestions = localQuestions.filter(q => !gameState.seenQuestionHashes.has(simpleHash(q.question)));
-                
-                if (unseenQuestions.length > 0) {
-                    console.log(`${unseenQuestions.length} unseen local questions remaining.`);
-                    const randomIndex = Math.floor(Math.random() * unseenQuestions.length);
-                    questionData = unseenQuestions[randomIndex];
-                } else {
-                    console.log("All local questions have been answered. Switching to AI generator.");
-                }
-            }
-
-            if (!questionData) {
-                if(questionText) questionText.textContent = "بانک سوالات تمام شد! در حال تولید سوال جدید توسط هوش مصنوعی...";
-                questionData = await generateQuestionFromAI();
-            }
-
-            if (questionData) {
-                gameState.currentQuestionData = questionData;
-                displayQuestion();
-            } else {
-                console.error("Failed to generate any question (local or AI).");
-                if (questionText) questionText.textContent = "خطا در بارگذاری سوال.";
-                showModal("خطا در تولید سوال", `متاسفانه نتوانستیم سوالی برای شما پیدا کنیم. لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.`, "تلاش مجدد", "صفحه اصلی",
-                    () => { hideModal(); generateQuestion(); },
-                    () => { hideModal(); if (mainScreen) showScreen(mainScreen); }
-                );
-            }
+            let unseenQuestions = localQuestions.filter(q => !gameState.seenQuestionHashes.has(simpleHash(q.question)));
             
+            // NEW: Handle running out of questions by resetting progress
+            if (unseenQuestions.length === 0) {
+                showModal("تبریک!", "شما به تمام سوالات پاسخ داده‌اید! برای شروع مجدد، لیست سوالات دیده‌شده پاک می‌شود.", "عالی!", null, () => {
+                    gameState.seenQuestionHashes.clear();
+                    saveUserData();
+                    hideModal();
+                    generateQuestion(); // Retry generating a question
+                });
+                gameState.isLoadingNextQuestion = false;
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * unseenQuestions.length);
+            const questionData = unseenQuestions[randomIndex];
+            
+            gameState.currentQuestionData = questionData;
+            displayQuestion();
             gameState.isLoadingNextQuestion = false;
         }
 
         function displayQuestion() {
-            if (!gameState.currentQuestionData || !questionText || !optionsContainer) return;
+            if (!gameState.currentQuestionData) return;
             const { question, options } = gameState.currentQuestionData;
             questionText.textContent = question;
             optionsContainer.innerHTML = "";
@@ -1596,16 +1291,16 @@
                 button.addEventListener('click', handleAnswerSelection);
                 optionsContainer.appendChild(button);
             });
-            if(questionExplanation) questionExplanation.classList.add('hidden');
-            if(gameFeedback) gameFeedback.textContent = "";
+            questionExplanation.classList.add('hidden');
+            gameFeedback.textContent = "";
             gameState.isQuestionActive = true;
-            startTimer(); // Start the timer for the new question
+            startTimer();
         }
         
-        async function handleAnswerSelection(event) {
+        function handleAnswerSelection(event) {
             if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion) return;
             
-            stopTimer(); // Stop the timer as soon as an answer is selected
+            stopTimer();
             gameState.isQuestionActive = false;
 
             const selectedOptionButton = event.target.closest('.option-btn');
@@ -1625,10 +1320,9 @@
                 gameState.seenQuestionHashes.add(simpleHash(question));
                 gameState.currentStage++;
                 
-                await saveUserData();
+                saveUserData();
                 setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
             } else {
-                // --- MODIFIED LOGIC for incorrect answer ---
                 audioManager.play('incorrect');
                 selectedOptionButton.classList.add('incorrect');
                 const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
@@ -1637,13 +1331,9 @@
                 gameFeedback.textContent = "پاسخ اشتباه!";
                 gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
                 
-                // No modal, just wait and load the next question for the same stage
-                setTimeout(() => {
-                    generateQuestion();
-                    updateUI(); // Keep UI updated
-                }, 3000);
+                setTimeout(() => { generateQuestion(); updateUI(); }, 3000);
             }
-            if (explanation && questionExplanation) {
+            if (explanation) {
                 questionExplanation.textContent = `توضیح: ${explanation}`;
                 questionExplanation.classList.remove('hidden');
             }
@@ -1656,8 +1346,6 @@
         }
 
         function previewAvatarFromUrl() {
-            if (!avatarUrlInput || !avatarPreviewImage || !avatarPreviewContainer || !avatarErrorMessage || !modalConfirmBtn) return;
-            
             const url = avatarUrlInput.value.trim();
             avatarErrorMessage.classList.add('hidden');
             modalConfirmBtn.disabled = true;
@@ -1681,34 +1369,26 @@
             };
         }
 
-        async function saveAvatarFromUrl() {
-            if (!avatarUrlInput) return;
+        function saveAvatarFromUrl() {
             const newUrl = avatarUrlInput.value.trim();
             if (!isValidImageUrl(newUrl)) {
-                if(avatarErrorMessage) avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
+                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
                 return;
             }
 
             modalConfirmBtn.disabled = true;
             modalCancelBtn.disabled = true;
 
-            try {
-                gameState.avatarUrl = newUrl;
-                await saveUserData();
-                updateUI();
-                hideModal();
-                showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!");
-            } catch(error) {
-                console.error("Error saving avatar URL:", error);
-                if(avatarErrorMessage) avatarErrorMessage.textContent = 'خطا در ذخیره سازی آواتار.';
-            } finally {
-                if(modalConfirmBtn) modalConfirmBtn.disabled = false;
-                if(modalCancelBtn) modalCancelBtn.disabled = false;
-            }
+            gameState.avatarUrl = newUrl;
+            saveUserData();
+            updateUI();
+            hideModal();
+            showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!");
+            modalConfirmBtn.disabled = false;
+            modalCancelBtn.disabled = false;
         }
         
         function validateAndSanitizeName(nameValue, errorElement, inputElement) {
-            if (!inputElement || !errorElement) return null;
             const regex = /[^a-zA-Z0-9_.-]/g;
             let sanitizedValue = nameValue.replace(regex, '');
 
@@ -1727,111 +1407,25 @@
             return trimmedName;
         }
 
-        async function handleChangeDisplayName() {
-            if(!newDisplayNameInput || !changeNameErrorMessage) return;
+        function handleChangeDisplayName() {
             const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
             if (!newName) return;
 
             if (newName === gameState.displayName) {
-               if(changeNameErrorMessage) changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
+               changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
                return;
             }
-
-            modalConfirmBtn.disabled = true;
-            modalCancelBtn.disabled = true;
-            if (await isDisplayNameTaken(newName)) {
-                changeNameErrorMessage.textContent = "این نام قبلا توسط شخص دیگری گرفته شده است.";
-                modalConfirmBtn.disabled = false;
-                modalCancelBtn.disabled = false;
-                return;
-            }
-
+            
+            // MODIFIED: No need to check if name is taken in offline mode
             gameState.displayName = newName;
-            await saveUserData();
+            saveUserData();
             updateUI();
             hideModal();
             showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!");
         }
-
-        async function generateMafiaFact() {
-            const prompt = "یک حقیقت جالب و کوتاه (۲-۴ جمله) در مورد دنیای مافیا (تاریخچه، فیلم‌ها، شخصیت‌ها) به زبان فارسی بگو.";
-            showModal("دانستنی مافیا ✨", "<div class='loader mx-auto my-3'></div>", "باشه");
-
-            // This function needs a different Gemini call format since it's not JSON
-            try {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const result = await response.json();
-                const fact = result.candidates[0].content.parts[0].text;
-                if (fact) {
-                    showModal("دانستنی مافیا ✨", fact.replace(/\n/g, '<br>'), "جالب بود!");
-                } else {
-                    throw new Error("No fact received from AI.");
-                }
-            } catch (error) {
-                console.error("Error generating fact:", error);
-                showModal("خطا", "متاسفانه نکته‌ای برای گفتن نیست.", "باشه");
-            }
-        }
         
         function generateAlphanumericPublicUserId(length = 5) {
             return Array(length).fill(0).map(() => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.random() * 36)).join('');
-        }
-
-        async function fetchAndDisplayLeaderboard() {
-            if (!db || !leaderboardList) return;
-            leaderboardList.innerHTML = `<div class="text-center py-8"><div class="loader mx-auto"></div><p class="mt-3 font-bold">در حال بارگذاری...</p></div>`;
-            try {
-                const q = query(collection(db, `artifacts/${appId}/publicLeaderboard`), orderBy("currentStage", "desc"), limit(50));
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) {
-                    leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-gray-300">هنوز کسی در لیست برترین‌ها نیست!</p>`;
-                    return;
-                }
-                renderLeaderboardList(querySnapshot.docs.map(doc => doc.data()));
-            } catch (error) {
-                console.error("Error fetching leaderboard:", error);
-                leaderboardList.innerHTML = `<p class="text-center py-8 font-bold text-red-300">خطا در دریافت اطلاعات.</p>`;
-            }
-        }
-
-        function renderLeaderboardList(users) {
-            if (!leaderboardList) return;
-            leaderboardList.innerHTML = users.map((user, index) => {
-                const rank = index + 1;
-                const avatarSrc = user.avatarUrl || 'https://placehold.co/50x50/2a4166/ffffff?text=?';
-                return `
-                    <div class="leaderboard-item">
-                        <span class="leaderboard-rank">${rank}</span>
-                        <img src="${avatarSrc}" alt="Avatar for ${user.displayName}" class="leaderboard-avatar" onerror="this.src='https://placehold.co/50x50/2a4166/ffffff?text=?'">
-                        <div class="leaderboard-info">
-                            <div class="leaderboard-name">${user.displayName || "بازیکن بی‌نام"}</div>
-                            <div class="leaderboard-stage">
-                                <span>مرحله:</span>
-                                <span class="leaderboard-stage-value">${user.currentStage || 1}</span>
-                            </div>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
-
-        async function loadLocalQuestions() {
-            try {
-                const response = await fetch('Questions.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                localQuestions = await response.json();
-                if (Array.isArray(localQuestions) && localQuestions.length > 0) {
-                    areLocalQuestionsLoaded = true;
-                    console.log(`Successfully loaded ${localQuestions.length} local questions.`);
-                } else {
-                    console.warn("Questions.json is empty or not a valid array.");
-                }
-            } catch (error) {
-                console.error("Could not load local questions from Questions.json:", error);
-            }
         }
         
         function setupEventListeners() {
@@ -1839,71 +1433,45 @@
                 if (event.target.closest('.btn-clash:not(:disabled)')) audioManager.play('click');
             });
 
-            if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', handleModalConfirm);
-            if (modalCancelBtn) modalCancelBtn.addEventListener('click', handleModalCancel);
+            modalConfirmBtn.addEventListener('click', handleModalConfirm);
+            modalCancelBtn.addEventListener('click', handleModalCancel);
 
-            if (displayNameInput) displayNameInput.addEventListener('input', () => validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput));
+            displayNameInput.addEventListener('input', () => validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput));
 
-            if (generateUserIdBtn) {
-                generateUserIdBtn.addEventListener('click', () => {
-                    if (userIdDisplayInput) userIdDisplayInput.value = generateAlphanumericPublicUserId();
-                    gameState.publicUserId = userIdDisplayInput.value;
-                    if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
-                });
-            }
-
-            if (registerBtn) {
-                registerBtn.addEventListener('click', async () => {
-                    const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                    if (!gameState.publicUserId) {
-                        if(userIdErrorMessage) userIdErrorMessage.textContent = "لطفاً شناسه بسازید.";
-                        return;
-                    }
-                    if (!validatedName) return;
-
-                    registerBtn.disabled = true;
-                    if (await isDisplayNameTaken(validatedName)) {
-                        inputErrorMessage.textContent = "این نام قبلا گرفته شده است.";
-                        registerBtn.disabled = false;
-                        return;
-                    }
-
-                    gameState.displayName = validatedName;
-                    await saveUserData();
-                    updateUI();
-                });
-            }
-
-            if (editNameBtn) editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", handleChangeDisplayName, hideModal, "changeName"));
-
-            if (avatarContainer) avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "لینک مستقیم تصویر را وارد کنید.", "ذخیره", "لغو", saveAvatarFromUrl, hideModal, "avatar"));
-            
-            if(previewAvatarBtn) previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
-            
-            [startGameBtn, mafiaFactBtn, developersBtn, leaderboardBtn].forEach(button => {
-                if(button) button.addEventListener('click', (event) => {
-                    if (!isAuthReady || !gameState.displayName) {
-                        event.stopPropagation();
-                        showModal("ثبت نام لازم است", "ابتدا ثبت نام کنید.", "باشه");
-                    }
-                }, true);
+            generateUserIdBtn.addEventListener('click', () => {
+                userIdDisplayInput.value = generateAlphanumericPublicUserId();
+                gameState.publicUserId = userIdDisplayInput.value;
+                userIdErrorMessage.classList.add('hidden');
             });
 
-            if (startGameBtn) startGameBtn.addEventListener('click', () => { if(isAuthReady && gameState.displayName) showGameModePanel(); });
-            if (closeGameModePanelBtn) closeGameModePanelBtn.addEventListener('click', hideGameModePanel);
-            if (singlePlayerBtn) singlePlayerBtn.addEventListener('click', () => { hideGameModePanel(); if(gameScreen) showScreen(gameScreen); generateQuestion(); });
-            if (multiplayerBtn) multiplayerBtn.addEventListener('click', () => { /* Now disabled */ });
+            registerBtn.addEventListener('click', () => {
+                const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
+                if (!gameState.publicUserId) {
+                    userIdErrorMessage.textContent = "لطفاً شناسه بسازید.";
+                    return;
+                }
+                if (!validatedName) return;
 
-            if (mafiaFactBtn) mafiaFactBtn.addEventListener('click', () => { if(isAuthReady && gameState.displayName) generateMafiaFact(); });
-            if (developersBtn) developersBtn.addEventListener('click', showDevelopersPanel);
-            if (closeDevelopersPanelBtn) closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
-            if (leaderboardBtn) leaderboardBtn.addEventListener('click', showLeaderboardPanel);
-            if (closeLeaderboardPanelBtn) closeLeaderboardPanelBtn.addEventListener('click', hideLeaderboardPanel);
-            if(backToMainBtn) backToMainBtn.addEventListener('click', async () => { stopTimer(); await saveUserData(); gameState.currentQuestionData = null; if(mainScreen) showScreen(mainScreen); });
+                // MODIFIED: No need to check if name is taken
+                gameState.displayName = validatedName;
+                saveUserData();
+                updateUI();
+            });
 
+            editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", handleChangeDisplayName, hideModal, "changeName"));
+            avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "لینک مستقیم تصویر را وارد کنید.", "ذخیره", "لغو", saveAvatarFromUrl, hideModal, "avatar"));
+            previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
+            
+            startGameBtn.addEventListener('click', showGameModePanel);
+            closeGameModePanelBtn.addEventListener('click', hideGameModePanel);
+            singlePlayerBtn.addEventListener('click', () => { hideGameModePanel(); showScreen(gameScreen); generateQuestion(); });
+
+            developersBtn.addEventListener('click', showDevelopersPanel);
+            closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
+            backToMainBtn.addEventListener('click', () => { stopTimer(); saveUserData(); gameState.currentQuestionData = null; showScreen(mainScreen); });
         }
         
-        async function initializeGame() {
+        function initializeGame() {
             // Query DOM elements
             loadingScreen = document.getElementById('loading-screen');
             loadingMessage = document.getElementById('loading-message');
@@ -1925,16 +1493,13 @@
             editNameBtn = document.getElementById('edit-name-btn');
             mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
             startGameBtn = document.getElementById('start-game-btn');
-            mafiaFactBtn = document.getElementById('mafia-fact-btn');
             developersBtn = document.getElementById('developers-btn');
-            leaderboardBtn = document.getElementById('leaderboard-btn');
             stageDisplay = document.getElementById('stage-display');
             questionText = document.getElementById('question-text');
             optionsContainer = document.getElementById('options-container');
             questionExplanation = document.getElementById('question-explanation');
             backToMainBtn = document.getElementById('back-to-main-btn');
             gameFeedback = document.getElementById('game-feedback');
-            aiThinkingIndicator = document.getElementById('ai-thinking-indicator');
             modalContainer = document.getElementById('modal-container');
             modalTitle = document.getElementById('modal-title');
             modalMessage = document.getElementById('modal-message');
@@ -1951,46 +1516,30 @@
             modalCancelBtn = document.getElementById('modal-cancel-btn');
             developersPanelContainer = document.getElementById('developers-panel-container');
             closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
-            leaderboardPanelContainer = document.getElementById('leaderboard-panel-container');
-            leaderboardList = document.getElementById('leaderboard-list');
-            closeLeaderboardPanelBtn = document.getElementById('close-leaderboard-panel-btn');
             gameModePanelContainer = document.getElementById('game-mode-panel-container');
             closeGameModePanelBtn = document.getElementById('close-game-mode-panel-btn');
             singlePlayerBtn = document.getElementById('single-player-btn');
-            multiplayerBtn = document.getElementById('multiplayer-btn');
             loadingProgressBarFill = document.getElementById('loading-progress-bar-fill');
             loadingTip = document.getElementById('loading-tip');
-            
-            // --- NEW: Query Timer elements ---
             timerText = document.getElementById('timer-text');
             timerProgressCircle = document.getElementById('timer-progress-circle');
 
             // Initialize game logic
             audioManager.init();
-            if(userProfileArea) userProfileArea.classList.add('hidden');
-            simulateLoading();
+            userProfileArea.classList.add('hidden');
             
-            if (!navigator.onLine) {
-                showModal("عدم اتصال به اینترنت", "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.", "تلاش مجدد", null, () => window.location.reload());
-                return;
-            }
-
-            try {
-                await loadLocalQuestions();
-                setupEventListeners();
-                await initFirebase();
-            } catch (error) {
-                console.error("Error during initializeGame:", error);
-                if(loadingMessage) loadingMessage.textContent = "خطا در راه اندازی بازی.";
-            }
+            // --- MODIFIED: Offline initialization flow ---
+            loadUserData(); // Load from localStorage first
+            setupEventListeners();
+            simulateLoading(); // Then show loading animation
         }
 
+        // --- Start the game when the DOM is ready ---
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
             initializeGame();
         }
-
     </script>
 </body>
 </html>
