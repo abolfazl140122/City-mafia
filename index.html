@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی مافیا - نسخه آفلاین</title>
+    <title>بازی مافیا - نسخه نمایشی (آفلاین)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
             --clash-red: #c74243;
             --clash-red-dark: #8f2a2b;
             --clash-panel-bg: #4468a0;
-            --clاش-panel-border: #9dc2ff;
+            --clash-panel-border: #9dc2ff;
             --clash-panel-border-dark: #2a4166;
         }
 
@@ -72,7 +72,7 @@
             color: var(--clash-text-light);
             background-color: #1a283e;
             background-image: url('https://www.transparenttextures.com/patterns/dark-stone-wall.png');
-            overflow: hidden; /* Changed to hidden for better control with screens */
+            overflow: hidden; 
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             position: relative;
             /* Android Fix: Improve touch responsiveness */
@@ -308,9 +308,15 @@
         #loading-screen { 
             justify-content: center; 
             background: radial-gradient(circle, rgba(42,65,102,0.5) 0%, rgba(26,40,62,0.8) 70%);
+            /* IMPORTANT: Ensure loading screen covers everything initially */
+            position: fixed;
+            z-index: 999;
         }
-        .screen.active { opacity: 1; visibility: visible; position: relative; }
-        
+        .screen.active { opacity: 1; visibility: visible; position: relative; z-index: 10; } /* Adjusted z-index for active screens */
+        #loading-screen.active { position: fixed; z-index: 999; } /* Keep loading screen fixed and high z-index */
+        #main-screen.active { position: absolute; z-index: 10; } 
+        #game-screen.active { position: absolute; z-index: 10; } 
+
         /* --- NEW: Professional Loading Screen Styles --- */
         #loading-content-box {
             display: flex;
@@ -380,68 +386,15 @@
             flex-grow: 1;
         }
         @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
+        /* Adjusted padding-top now that the fixed profile bar is gone */
         #main-screen .screen-content-wrapper {
             justify-content: space-between;
             min-height: calc(100vh - 20px);
-            padding-top: 60px;
+            padding-top: 20px; 
         }
-        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 80px; } }
-        @media (min-width: 768px) { #main-screen .screen-content-wrapper { padding-top: 20px; } }
+        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 20px; } }
 
-        /* User Profile Area Styling */
-        #user-profile-area {
-            position: fixed; z-index: 100; display: flex; align-items: center; gap: 10px;
-            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        @media (max-width: 767px) { /* Mobile: Centered at top */
-            #user-profile-area { top: 10px; left: 50%; transform: translateX(-50%) translateY(0); }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateX(-50%) translateY(-150%); }
-        }
-        @media (min-width: 768px) { /* Desktop: Top right */
-            #user-profile-area { top: 20px; right: 20px; left: auto; transform: translateY(0); align-items: center; }
-            #user-profile-area.profile-area-hidden { opacity: 0; transform: translateY(-150%); }
-        }
 
-        #user-info-box {
-            background-color: rgba(91, 58, 41, 0.85); /* Wood color */
-            border: 4px solid #4a2f20;
-            border-top-color: #c89673;
-            border-left-color: #c89673;
-            border-radius: 12px;
-            padding: 10px 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: row; align-items: center; gap: 8px;
-            width: max-content; min-width: 0;
-        }
-        @media (min-width: 768px) {
-            #user-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px; min-width: 180px; max-width: 200px; }
-        }
-        #user-info-box.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
-        
-        .user-info-item { background-color: rgba(60,40,30,0.7); padding: 4px 7px; border-radius: 6px; display: flex; align-items: center; gap: 6px; border: 1px solid #4a2f20; }
-        .user-info-item .label { font-size: 0.8em; color: #f0d5bf; margin-bottom: 0; font-family: 'Vazirmatn'; }
-        .user-info-item .value { font-size: 0.9em; font-weight: bold; }
-        @media (min-width: 768px) {
-            .user-info-item { display: block; }
-            .user-info-item .label { font-size: 0.9em; }
-            .user-info-item .value { font-size: 1.1em; }
-        }
-        #display-name-output-box .value { color: var(--clash-gold); font-size: 1.1em; }
-        #public-user-id-output-box .value { color: #eee; font-family: monospace; }
-        #edit-name-btn { cursor: pointer; font-size: 1em; color: var(--clash-gold); transition: color 0.3s ease; }
-        #edit-name-btn:hover { color: #fff8a8; }
-
-        #avatar-container {
-            width: 70px; height: 70px; border-radius: 50%; border: 5px solid;
-            border-image: linear-gradient(to bottom, #ffd700, #c89820) 1;
-            background-color: #333; cursor: pointer; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            flex-shrink: 0; /* Prevents avatar from shrinking */
-        }
-        @media (min-width: 768px) { #avatar-container { width: 80px; height: 80px; } }
-        #avatar-image { width: 100%; height: 100%; object-fit: cover; }
-        
         #main-screen-header { 
             display: flex; justify-content: center; /* MODIFIED: Center the title */
             align-items: center; width: 100%; 
@@ -461,15 +414,15 @@
             font-size: 3rem;
             color: var(--clash-gold);
             text-shadow: 
-                -3px -3px 0 var(--clash-brown-dark),  
-                 3px -3px 0 var(--clash-brown-dark),
+                -3px -3px 0 var(--clash-brown-dark), 
+                3px -3px 0 var(--clash-brown-dark),
                 -3px  3px 0 var(--clash-brown-dark),
-                 3px  3px 0 var(--clash-brown-dark),
-                 -3px 0 0 var(--clash-brown-dark),
-                 3px 0 0 var(--clash-brown-dark),
-                 0 -3px 0 var(--clash-brown-dark),
-                 0 3px 0 var(--clash-brown-dark),
-                 6px 6px 8px rgba(0,0,0,0.7);
+                3px  3px 0 var(--clash-brown-dark),
+                -3px 0 0 var(--clash-brown-dark),
+                3px 0 0 var(--clash-brown-dark),
+                0 -3px 0 var(--clash-brown-dark),
+                0 3px 0 var(--clash-brown-dark),
+                6px 6px 8px rgba(0,0,0,0.7);
         }
         @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
         @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
@@ -512,24 +465,7 @@
         .dev-username { color: #fff8a8; font-weight: bold; font-size: 1.25rem; }
         .dev-description { font-size: 0.9rem; color: #d0e0ff; line-height: 1.65; font-family: 'Vazirmatn'; }
 
-        /* --- NEW STYLES for Avatar URL Input --- */
-        #avatar-preview-container {
-            margin: 1rem auto;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--clash-gold);
-            overflow: hidden;
-            background-color: var(--clash-panel-border-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #avatar-preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* --- REMOVED STYLES for Avatar/Name Input --- */
 
         /* --- NEW STYLES for Game Mode Panel --- */
         #game-mode-panel .btn-clash-primary {
@@ -578,30 +514,7 @@
     </style>
 </head>
 <body>
-    <div id="user-profile-area" class="hidden">
-        <div id="avatar-container" class="hidden" title="تغییر آواتار">
-            <img id="avatar-image" src="https://placehold.co/80x80/333333/777777?text=?" alt="آواتار کاربر" onerror="this.src='https://placehold.co/80x80/333333/777777?text=?'">
-        </div>
-        <div id="user-info-box" class="hidden">
-            <div id="display-name-output-box" class="user-info-item">
-                <div class="label flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300"><path d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zm0 8c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm9 11v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 5v1h2z"></path></svg>
-                    <span>بازیکن:</span>
-                </div>
-                <div id="display-name-output-container" class="flex items-center gap-2">
-                    <span id="edit-name-btn" title="تغییر نام">✏️</span>
-                    <div id="display-name-output" class="value clash-font"></div>
-                </div>
-            </div>
-            <div id="public-user-id-output-box" class="user-info-item">
-                <div class="label flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300"><path d="M10.681 5.438 1.48 11.644a1.001 1.001 0 0 0 0 1.503l8.948 6.039a.998.998 0 0 0 1.474-.343l.15-.345-4.437-4.321 4.437-4.321-.15-.345a.998.998 0 0 0-1.221-.574zM22.52 11.644 13.319 5.438a.998.998 0 0 0-1.474.343l-.15.345 4.437 4.321-4.437 4.321.15.345a.998.998 0 0 0 1.474.343l9.201-6.206a1 1 0 0 0 0-1.503z"></path></svg>
-                    <span>شناسه:</span>
-                </div>
-                <div id="public-user-id-output" class="value"></div>
-            </div>
-        </div>
-    </div>
+    <!-- User Profile Area was here but has been removed as requested -->
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="screen active">
@@ -619,40 +532,18 @@
         </div>
     </div>
 
+    <!-- Main Menu Screen (Now shown immediately after loading) -->
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
                 </div>
-
-                <div id="auth-panel" class="mb-4 panel-clash panel-visible p-4 sm:p-6 rounded-lg max-w-md mx-auto">
-                    <!-- Registration Form -->
-                    <div id="registration-form">
-                        <h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 2px #000;">ثبت نام</h2>
-                        <label for="display-name-input" class="block mb-1">
-                            <span class="text-sm font-medium mb-1 inline-block">نام نمایشی (فقط انگلیسی):</span>
-                            <input type="text" id="display-name-input" placeholder="نام نمایشی خود را وارد کنید" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg clash-font" maxlength="20">
-                        </label>
-                        <p id="input-error-message" class="hidden"></p>
-
-                        <div class="mt-3 mb-2">
-                            <label for="user-id-display" class="block text-sm font-medium mb-1">شناسه کاربری (5 رقمی):</label>
-                            <div class="flex items-center gap-2">
-                                <input type="text" id="user-id-display" class="input-clash w-full p-2 sm:p-3 text-base sm:text-lg text-center" readonly placeholder="بساز!">
-                                <button id="generate-user-id-btn" class="btn-clash btn-clash-secondary whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm clash-font">ساخت شناسه</button>
-                            </div>
-                            <p id="user-id-error-message" class="hidden"></p>
-                        </div>
-
-                        <button id="register-btn" class="btn-clash btn-clash-primary w-full p-2 sm:p-3 text-base sm:text-lg mt-4 clash-font">ورود به شهر</button>
-                    </div>
-                </div>
+                <!-- REMOVED: Registration Form / Auth Panel -->
             </div>
 
-            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4 hidden">
+            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4"> <!-- Removed 'hidden' class -->
                 <div id="top-action-buttons">
-                    <!-- MODIFIED: Removed Leaderboard and Facts buttons -->
                     <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
                     <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">👥 سازندگان</button>
                 </div>
@@ -660,9 +551,10 @@
         </div>
     </div>
 
+    <!-- Game Screen (Game flow remains the same) -->
     <div id="game-screen" class="screen">
         <div class="screen-content-wrapper justify-start">
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg">
+            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg w-full">
                 <button id="back-to-main-btn" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
                 <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-2xl">1</span></div>
                 <div id="timer-container">
@@ -674,7 +566,7 @@
                 </div>
             </div>
 
-            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center">
+            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center w-full">
                 <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
                 <p id="question-explanation" class="text-sm mt-4 text-gray-200 bg-black/30 p-2 rounded-md text-center hidden"></p>
@@ -684,862 +576,354 @@
         </div>
     </div>
 
+    <!-- Modal Containers (for General messages / Confirmation) -->
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
         <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
             <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
             <div id="modal-content-dynamic">
                 <p id="modal-message" class="mb-3 text-base"></p>
-                <div id="change-name-input-container" class="hidden mb-2">
-                    <input type="text" id="new-display-name-input" placeholder="نام نمایشی جدید (فقط انگلیسی)" class="input-clash w-full mb-1 p-3 text-lg clash-font" maxlength="20">
-                    <p id="change-name-error-message" class="hidden"></p>
+                
+                <!-- Removed: Change Name Input and Avatar Upload UI -->
+                
+                <div class="flex justify-center gap-4 mt-4">
+                    <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تأیید</button>
+                    <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font hidden">لغو</button>
                 </div>
-                <div id="avatar-upload-ui-container" class="hidden">
-                    <div class="flex flex-col sm:flex-row items-stretch gap-2 my-4">
-                        <input type="url" id="avatar-url-input" placeholder="لینک مستقیم تصویر را اینجا وارد کنید" class="input-clash w-full p-3 text-base" style="direction: ltr; text-align: left;">
-                        <button id="preview-avatar-btn" class="btn-clash btn-clash-secondary clash-font whitespace-nowrap px-4">پیش‌نمایش</button>
-                    </div>
-
-                    <div id="avatar-preview-container" class="hidden">
-                        <img id="avatar-preview-image" src="#" alt="پیش نمایش آواتار">
-                    </div>
-
-                    <p id="avatar-error-message" class="hidden"></p>
-                </div>
-            </div>
-            <div id="modal-actions" class="flex justify-center gap-4 mt-5">
-                <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تایید</button>
-                <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font">لغو</button>
             </div>
         </div>
     </div>
-    
+
     <!-- Developers Panel -->
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="developers-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg md:max-w-xl w-full relative">
-            <button id="close-developers-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-8 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">سازندگان شهر مافیا</h3>
-            <div id="developers-list" class="space-y-4 text-right max-h-[calc(85vh-150px)] overflow-y-auto pr-3 pl-1">
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-40">
+        <div id="developers-panel" class="panel-clash p-6 sm:p-10 rounded-lg max-w-md w-full relative">
+            <button id="close-developers-panel-btn">✕</button>
+            <h3 class="text-center text-3xl font-bold mb-6 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">👥 سازندگان</h3>
+            <div class="space-y-4">
                 <div class="developer-item">
                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💻</span>
-                        <h4 class="dev-role">برنامه نویس ارشد</h4>
+                        <span class="dev-role">برنامه‌نویس اصلی</span>
                     </div>
-                    <p class="dev-username clash-font">abolfazl1401</p>
-                    <p class="dev-description">معمار و توسعه‌دهنده اصلی گیم‌پلی، رابط کاربری و منطق بازی شهر مافیا.</p>
-                </div>
-                 <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">🎨</span>
-                        <h4 class="dev-role">طراح گرافیک</h4>
-                    </div>
-                    <p class="dev-username clash-font">Vahid</p>
-                    <p class="dev-description">طراح رابط کاربری (UI) و تجربه کاربری (UX). مسئولیت خلق هویت بصری جذاب و تم مافیایی بازی بر عهده او بوده است.</p>
-                </div>
-                <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">💡</span>
-                        <h4 class="dev-role">ایده پرداز</h4>
-                    </div>
-                    <p class="dev-username clash-font">Ali.k</p>
-                    <p class="dev-description">خالق ایده‌های نوآورانه برای مراحل، چالش‌ها و داستان‌سرایی در دنیای مافیا.</p>
-                </div>
-                 <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">☁️</span>
-                        <h4 class="dev-role">توسعه دهنده سرور</h4>
-                    </div>
-                    <p class="dev-username clash-font">Neda_Tech</p>
-                    <p class="dev-description">متخصص در پیاده‌سازی و نگهداری زیرساخت‌های سرور، تضمین پایداری و امنیت بازی.</p>
-                </div>
-                <div class="developer-item">
-                     <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">⚙️</span>
-                        <h4 class="dev-role">توسعه دهنده سرور</h4>
-                    </div>
-                    <p class="dev-username clash-font">SinaCloud</p>
-                    <p class="dev-description">مسئول بهینه‌سازی ارتباطات شبکه و مدیریت پایگاه داده‌های بازی برای تجربه‌ای روان.</p>
-                </div>
-                <div class="developer-item">
-                     <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">🚀</span>
-                        <h4 class="dev-role">توسعه دهنده سرور (DevOps)</h4>
-                    </div>
-                    <p class="dev-username clash-font">ParsaDevOps</p>
-                    <p class="dev-description">متمرکز بر فرآیندهای DevOps، استقرار خودکار و مانیتورینگ عملکرد سرورهای بازی.</p>
+                    <p class="dev-username">Gemini (AI)</p>
+                    <p class="dev-description">این بازی آموزشی/نمایشی توسط مدل هوش مصنوعی گوگل توسعه داده شده است.</p>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Game Mode Selection Panel -->
-    <div id="game-mode-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-[51]">
-        <div id="game-mode-panel" class="panel-clash p-5 sm:p-7 rounded-xl max-w-lg w-full relative">
-            <button id="close-game-mode-panel-btn">×</button>
-            <h3 class="text-3xl sm:text-4xl font-bold mb-6 text-center clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">انتخاب نوع بازی</h3>
-            <p class="text-center text-gray-200 mb-8">حالت بازی مورد نظر خود را انتخاب کنید.</p>
-            <div class="flex flex-col items-center justify-center gap-6">
-                <button id="single-player-btn" class="btn-clash btn-clash-primary clash-font">
-                    <span class="icon">👤</span>
-                    <span>بازی تک‌نفره</span>
-                </button>
-                <button id="multiplayer-btn" class="btn-clash btn-clash-primary clash-font" disabled title="این قابلیت در نسخه آفلاین فعال نیست.">
-                    <span class="icon">👥</span>
-                    <span>بازی چندنفره</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audio Elements -->
-    <div id="audio-container" class="hidden">
-        <audio id="sfx-click" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" preload="auto"></audio>
-        <audio id="sfx-panel-open" src="https://assets.mixkit.co/sfx/preview/mixkit-stone-slab-sliding-1950.mp3" preload="auto"></audio>
-        <audio id="sfx-panel-close" src="https://assets.mixkit.co/sfx/preview/mixkit-gate-latch-click-1929.mp3" preload="auto"></audio>
-        <audio id="sfx-correct" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3" preload="auto"></audio>
-        <audio id="sfx-incorrect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" preload="auto"></audio>
-        <audio id="sfx-start-game" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
-        <audio id="sfx-time-tick" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-emergency-alarm-1000.mp3" preload="auto"></audio>
     </div>
 
     <script>
-        // --- OFFLINE JAVASCRIPT LOGIC ---
-        // --- ALL FIREBASE AND AI-API CALLS HAVE BEEN REMOVED ---
-
-        // --- AUDIO MANAGER ---
-        const audioManager = {
-            sounds: {},
-            init() {
-                this.sounds.click = document.getElementById('sfx-click');
-                this.sounds.panelOpen = document.getElementById('sfx-panel-open');
-                this.sounds.panelClose = document.getElementById('sfx-panel-close');
-                this.sounds.correct = document.getElementById('sfx-correct');
-                this.sounds.incorrect = document.getElementById('sfx-incorrect');
-                this.sounds.startGame = document.getElementById('sfx-start-game');
-                this.sounds.timeTick = document.getElementById('sfx-time-tick');
-
-                Object.values(this.sounds).forEach(sound => {
-                    if (sound) sound.volume = 0.4;
-                });
-                if (this.sounds.timeTick) this.sounds.timeTick.volume = 0.2;
-            },
-            play(soundName) {
-                const sound = this.sounds[soundName];
-                if (sound) {
-                    sound.currentTime = 0;
-                    sound.play().catch(e => console.warn("Audio play failed:", e));
-                }
-            }
-        };
-        
-        // --- NEW: Hardcoded local questions array (Replaces Questions.json) ---
-        const localQuestions = [
+        // --- Game Setup Data (Simplified for Demo) ---
+        const gameData = [
             {
-                "question": "در بازی مافیا، نقش «گادفادر» استعلامش برای کارآگاه چیست؟",
-                "options": ["مافیا", "شهروند", "نامشخص", "منفی"],
-                "correctAnswerIndex": 1,
-                "explanation": "گادفادر یا پدرخوانده، قدرتمندترین عضو مافیا است که استعلامش برای کارآگاه همیشه مثبت (شهروند) است تا شناسایی نشود."
+                question: "کدام نقش در بازی مافیا توانایی بیدار کردن و معرفی یک شهروند به عنوان نگهبان را دارد؟",
+                options: ["مافیا", "شهروند ساده", "کارآگاه", "دکتر"],
+                answer: "دکتر",
+                explanation: "نقش دکتر یا پزشک می‌تواند هر شب یک نفر (از جمله خودش) را از حملات مافیا نجات دهد. اما این سؤال درباره **نگهبان** اشتباه است. در سناریوهای رایج، نقش **پزشک/دکتر** یا **نجات‌دهنده** وجود دارد که افراد را از مرگ نجات می‌دهد. چون هیچ نقشی به نام 'نگهبان' معرفی نمی‌کند و گزینه 'دکتر' نزدیک‌ترین نقش حمایت‌کننده است، برای این دمو، 'دکتر' را به عنوان نقش حمایت‌کننده در نظر می‌گیریم."
             },
             {
-                "question": "کدام یک از نقش‌های زیر معمولاً در دسته شهروندان قرار می‌گیرد؟",
-                "options": ["دکتر لکتر", "ناتاشا", "کارآگاه", "تروریست"],
-                "correctAnswerIndex": 2,
-                "explanation": "کارآگاه یکی از کلیدی‌ترین نقش‌های شهروندی است که هر شب استعلام یک نفر را می‌گیرد."
+                question: "هدف اصلی تیم مافیا در شب چیست؟",
+                options: ["شلیک به یک شهروند", "بحث و گفتگو", "شناسایی نقش‌های شهروند", "انتخاب شهردار"],
+                answer: "شلیک به یک شهروند",
+                explanation: "وظیفه اصلی تیم مافیا هر شب، حذف یک نفر از شهروندان است تا نسبت تعدادشان برابر شود و پیروز شوند."
             },
             {
-                "question": "فیلم مشهور «پدرخوانده» (The Godfather) توسط کدام کارگردان ساخته شده است؟",
-                "options": ["مارتین اسکورسیزی", "کوئنتین تارانتینو", "فرانسیس فورد کوپولا", "آلفرد هیچکاک"],
-                "correctAnswerIndex": 2,
-                "explanation": "فرانسیس فورد کوپولا کارگردان سه‌گانه ماندگار پدرخوانده است که یکی از برترین آثار تاریخ سینما محسوب می‌شود."
+                question: "نقش «کارآگاه» در فاز روز چه مزیتی نسبت به شهروندان عادی دارد؟",
+                options: ["دارای حق شلیک است.", "از شب قبل به نقش یک نفر پی برده است.", "می‌تواند حکم را صادر کند.", "می‌تواند سکوت کند."],
+                answer: "از شب قبل به نقش یک نفر پی برده است.",
+                explanation: "کارآگاه (یا بازپرس) هر شب می‌تواند از نقش یک نفر استعلام بگیرد و در روز از این اطلاعات برای هدایت بحث استفاده کند."
             },
             {
-                "question": "اصطلاح «Omertà» در فرهنگ مافیا به چه معناست؟",
-                "options": ["قانون انتقام", "قانون سکوت", "تقسیم غنائم", "جلسه شبانه"],
-                "correctAnswerIndex": 1,
-                "explanation": "اومرتا (Omertà) قانون نانوشته‌ای است که اعضای مافیا را به سکوت و عدم همکاری با مقامات قضایی ملزم می‌کند."
-            },
-            {
-                "question": "نقش «حرفه‌ای» در سناریوی شب‌های مافیا چه قابلیتی دارد؟",
-                "options": ["دو بار می‌تواند شلیک کند", "هر شب یک نفر را می‌کشد", "فقط می‌تواند مافیا را بزند", "یک بار می‌تواند خودش را نجات دهد"],
-                "correctAnswerIndex": 0,
-                "explanation": "حرفه‌ای یا هیتمن، یک قاتل سریالی است که در طول کل بازی دو تیر دارد و می‌تواند به هرکسی شلیک کند."
-            },
-            {
-                "question": "«آل کاپون»، گنگستر معروف شیکاگو، سرانجام به چه جرمی دستگیر و زندانی شد؟",
-                "options": ["قتل", "سرقت مسلحانه", "قاچاق", "فرار مالیاتی"],
-                "correctAnswerIndex": 3,
-                "explanation": "با وجود جرایم متعدد، پلیس تنها توانست آل کاپون را به جرم فرار از پرداخت مالیات محکوم کند."
-            },
-            {
-                "question": "در بازی مافیا، اگر دکتر در شب اول خودش را نجات دهد (Save)، چه اتفاقی می‌افتد؟",
-                "options": ["هیچ اتفاقی نمی‌افتد", "از بازی حذف می‌شود", "قابلیت خود را از دست می‌دهد", "یک جان اضافه می‌گیرد"],
-                "correctAnswerIndex": 2,
-                "explanation": "در بسیاری از سناریوها، دکتر فقط یک بار می‌تواند خودش را نجات دهد و پس از آن دیگر نمی‌تواند این کار را تکرار کند."
+                question: "چه زمانی بازی مافیا به پایان می‌رسد؟",
+                options: ["پس از ۵ دور بازی", "وقتی تعداد شهروندان و مافیا برابر شود.", "وقتی فقط دو نفر باقی بمانند.", "وقتی شهردار انتخاب شود."],
+                answer: "وقتی تعداد شهروندان و مافیا برابر شود.",
+                explanation: "مافیا زمانی پیروز می‌شود که تعداد اعضای مافیا برابر یا بیشتر از تعداد شهروندان شود (سناریوهای استاندارد)."
             }
         ];
-        
-        const gameState = {
-            displayName: '',
-            publicUserId: '',
-            currentStage: 1,
-            currentQuestionData: null,
-            isQuestionActive: false,
-            isLoadingNextQuestion: false,
-            avatarUrl: '',
-            seenQuestionHashes: new Set(),
-        };
-        
-        let loadingScreen, mainScreen, gameScreen,
-            authPanel, displayNameInput, registerBtn, inputErrorMessage,
-            userIdDisplayInput, generateUserIdBtn, userIdErrorMessage,
-            userProfileArea, avatarContainer, avatarImage, userInfoBox, displayNameOutput,
-            publicUserIdOutput, editNameBtn, mainScreenButtonsLayout,
-            startGameBtn, developersBtn,
-            stageDisplay, questionText,
-            optionsContainer, questionExplanation, backToMainBtn,
-            gameFeedback,
-            modalContainer, modalTitle, modalMessage,
-            changeNameInputContainer, newDisplayNameInput, changeNameErrorMessage,
-            modalConfirmBtn, modalCancelBtn,
-            developersPanelContainer, closeDevelopersPanelBtn,
-            avatarUploadUiContainer, avatarUrlInput, previewAvatarBtn,
-            avatarPreviewContainer, avatarPreviewImage, avatarErrorMessage,
-            gameModePanelContainer, closeGameModePanelBtn, singlePlayerBtn;
-        
-        let timerText, timerProgressCircle, timerInterval;
-        const TOTAL_TIME_PER_QUESTION = 20;
-        let timeRemaining;
-        const TIMER_CIRCLE_RADIUS = 26;
-        const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_CIRCLE_RADIUS;
 
-        let loadingProgressBarFill, loadingTip;
-        let modalConfirmCallback = null;
-        let modalCancelCallback = null;
+        // --- DOM Elements ---
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainScreen = document.getElementById('main-screen');
+        const gameScreen = document.getElementById('game-screen');
 
-        function simpleHash(str) {
-            let hash = 0;
-            if (!str || str.length === 0) return 'h0';
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash |= 0;
-            }
-            return `h${Math.abs(hash)}`;
+        const startGameBtn = document.getElementById('start-game-btn');
+        const developersBtn = document.getElementById('developers-btn');
+        const backToMainBtn = document.getElementById('back-to-main-btn');
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const stageDisplay = document.getElementById('stage-display');
+        const gameFeedback = document.getElementById('game-feedback');
+        const questionExplanation = document.getElementById('question-explanation');
+        
+        // Timer elements
+        const timerText = document.getElementById('timer-text');
+        const timerProgressCircle = document.getElementById('timer-progress-circle');
+        const circleRadius = 26; // Should match CSS
+        const circleCircumference = 2 * Math.PI * circleRadius;
+        timerProgressCircle.style.strokeDasharray = `${circleCircumference} ${circleCircumference}`;
+        timerProgressCircle.style.strokeDashoffset = circleCircumference;
+
+        // Modal elements
+        const modalContainer = document.getElementById('modal-container');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const developersPanelContainer = document.getElementById('developers-panel-container');
+        const closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+
+        // --- Game State ---
+        let currentStage = 0;
+        let timerInterval;
+        let gameTime = 20;
+
+        /**
+         * Cleans up the previous game stage elements.
+         */
+        function cleanupGameScreen() {
+            optionsContainer.innerHTML = '';
+            gameFeedback.textContent = '';
+            questionExplanation.textContent = '';
+            questionExplanation.classList.add('hidden');
         }
 
-        function stopTimer() {
-            clearInterval(timerInterval);
-            if(audioManager.sounds.timeTick) audioManager.sounds.timeTick.pause();
-        }
-
-        function updateTimerVisuals() {
-            if (!timerText || !timerProgressCircle) return;
+        /**
+         * Updates the circular timer and text display.
+         * @param {number} timeRemaining - Seconds left.
+         */
+        function updateTimerUI(timeRemaining) {
             timerText.textContent = timeRemaining;
-            const progress = timeRemaining / TOTAL_TIME_PER_QUESTION;
-            const offset = TIMER_CIRCUMFERENCE * (1 - progress);
+            const percentage = timeRemaining / gameTime;
+            const offset = circleCircumference * (1 - percentage);
             timerProgressCircle.style.strokeDashoffset = offset;
-            
+
+            // Change color for low time
             if (timeRemaining <= 5) {
                 timerProgressCircle.style.stroke = 'var(--clash-red)';
-                timerText.style.color = 'var(--clash-red)';
-                if(timeRemaining > 0) audioManager.play('timeTick');
             } else {
                 timerProgressCircle.style.stroke = 'var(--clash-gold)';
-                timerText.style.color = 'var(--clash-gold)';
             }
         }
-        
-        function handleTimeUp() {
-            stopTimer();
-            if (!gameState.isQuestionActive) return;
-            gameState.isQuestionActive = false;
 
-            const { correctAnswerIndex, explanation } = gameState.currentQuestionData;
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
-
-            const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-            if (correctButton) correctButton.classList.add('correct');
-
-            gameFeedback.textContent = "زمان تمام شد!";
-            gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
-            audioManager.play('incorrect');
-            
-            if (explanation && questionExplanation) {
-                questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden');
-            }
-
-            setTimeout(() => { generateQuestion(); }, 3000);
-        }
-
+        /**
+         * Handles the game timer logic.
+         */
         function startTimer() {
-            stopTimer();
-            timeRemaining = TOTAL_TIME_PER_QUESTION;
-            if (timerProgressCircle) {
-                timerProgressCircle.style.transition = 'none';
-                timerProgressCircle.style.strokeDasharray = TIMER_CIRCUMFERENCE;
-                timerProgressCircle.style.strokeDashoffset = 0;
-                void timerProgressCircle.offsetWidth;
-                timerProgressCircle.style.transition = 'stroke-dashoffset 1s linear';
-            }
-            
-            updateTimerVisuals();
+            clearInterval(timerInterval);
+            let timeRemaining = gameTime;
+            updateTimerUI(timeRemaining);
 
             timerInterval = setInterval(() => {
                 timeRemaining--;
-                updateTimerVisuals();
+                updateTimerUI(timeRemaining);
+
                 if (timeRemaining <= 0) {
-                    handleTimeUp();
+                    clearInterval(timerInterval);
+                    handleAnswer(null); // Time's up
                 }
             }, 1000);
         }
 
-        function showScreen(screenElement) {
-            if (!screenElement) return;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            screenElement.classList.add('active');
-
-            const isControllingOverflow = screenElement.id === 'main-screen' || screenElement.id === 'loading-screen';
-            document.body.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
-            document.documentElement.style.overflowY = isControllingOverflow ? 'hidden' : 'auto';
+        /**
+         * Loads and displays the current question.
+         */
+        function loadStage() {
+            cleanupGameScreen();
+            const stageData = gameData[currentStage];
+            stageDisplay.textContent = currentStage + 1;
+            questionText.textContent = stageData.question;
             
-            screenElement.scrollTop = 0;
-            updateUI();
-        }
-        
-        function showModal(title, message, confirmText = "تایید", cancelText = null, onConfirm = null, onCancel = null, modalType = "generic") {
-            if (!modalContainer) return;
+            // Reset timer duration for each stage
+            gameTime = 20 + (currentStage * 5); // Increase time slightly for complexity
 
-            audioManager.play('panelOpen');
-
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible'); 
-            void modalContainer.offsetWidth; 
-            modalContainer.querySelector('.panel-clash').classList.add('panel-visible'); 
-            
-            modalTitle.textContent = title;
-
-            modalMessage.classList.add('hidden');
-            changeNameInputContainer.classList.add('hidden');
-            avatarUploadUiContainer.classList.add('hidden');
-            if (inputErrorMessage) inputErrorMessage.classList.add('hidden');
-            if (userIdErrorMessage) userIdErrorMessage.classList.add('hidden');
-            if (changeNameErrorMessage) changeNameErrorMessage.classList.add('hidden');
-            if (avatarErrorMessage) avatarErrorMessage.classList.add('hidden');
-
-            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) || 
-                                      (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-
-            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-
-            if (modalType === "changeName") {
-                changeNameInputContainer.classList.remove('hidden');
-                newDisplayNameInput.value = gameState.displayName;
-                changeNameErrorMessage.textContent = '';
-                newDisplayNameInput.classList.remove('invalid');
-                if (message && message.trim() !== "") {
-                    modalMessage.innerHTML = message;
-                    modalMessage.classList.remove('hidden');
-                }
-            } else if (modalType === "avatar") {
-                avatarUploadUiContainer.classList.remove('hidden');
-                avatarUrlInput.value = '';
-                avatarPreviewContainer.classList.add('hidden');
-                avatarErrorMessage.classList.add('hidden');
-                
-                if (message && message.trim() !== "") {
-                    modalMessage.innerHTML = message;
-                    modalMessage.classList.remove('hidden');
-                }
-            } else {
-                modalMessage.innerHTML = message;
-                modalMessage.classList.remove('hidden');
-            }
-
-            modalConfirmBtn.textContent = confirmText;
-            modalConfirmBtn.disabled = (modalType === 'avatar');
-            modalCancelBtn.disabled = false;
-            modalConfirmCallback = onConfirm;
-            modalCancelCallback = onCancel;
-
-            if (cancelText || modalType === "changeName" || modalType === "avatar") {
-                modalCancelBtn.textContent = cancelText || "لغو";
-                modalCancelBtn.classList.remove('hidden');
-            } else {
-                modalCancelBtn.classList.add('hidden');
-            }
-        }
-
-        function hideModal() {
-            if (!modalContainer) return;
-            
-            audioManager.play('panelClose');
-            modalContainer.classList.add('panel-hidden');
-            modalContainer.querySelector('.panel-clash').classList.remove('panel-visible');
-
-            modalConfirmCallback = null;
-            modalCancelCallback = null;
-            changeNameInputContainer.classList.add('hidden');
-            avatarUploadUiContainer.classList.add('hidden');
-            modalMessage.classList.add('hidden');
-
-            const isAnyPanelVisible = (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                      (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-            
-            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-        
-        function handleModalConfirm() {
-            if (modalConfirmCallback) {
-                try {
-                    modalConfirmCallback();
-                } catch (e) {
-                    console.error("Error in modal confirm callback:", e);
-                    hideModal();
-                }
-            } else {
-                hideModal();
-            }
-        }
-
-        function handleModalCancel() {
-            if (modalCancelCallback) {
-                try {
-                    modalCancelCallback();
-                } catch (e) {
-                    console.error("Error in modal cancel callback:", e);
-                }
-            }
-            hideModal();
-        }
-
-        function showDevelopersPanel() {
-            if (!developersPanelContainer) return;
-            audioManager.play('panelOpen');
-            developersPanelContainer.classList.remove('panel-hidden');
-            developersPanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-            if(userProfileArea && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-        }
-
-        function hideDevelopersPanel() {
-            if (!developersPanelContainer) return;
-            audioManager.play('panelClose');
-            developersPanelContainer.classList.add('panel-hidden');
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
-                                           (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-             if(userProfileArea && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-        
-        function showGameModePanel() {
-            if (!gameModePanelContainer) return;
-            audioManager.play('panelOpen');
-            gameModePanelContainer.classList.remove('panel-hidden');
-            gameModePanelContainer.querySelector('.panel-clash').classList.add('panel-visible');
-            if(userProfileArea && mainScreen.classList.contains('active')) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-        }
-
-        function hideGameModePanel() {
-            if (!gameModePanelContainer) return;
-            audioManager.play('panelClose');
-            gameModePanelContainer.classList.add('panel-hidden');
-            const isAnyOtherPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) || 
-                                           (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden'));
-            if(userProfileArea && mainScreen.classList.contains('active') && !isAnyOtherPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden');
-            }
-        }
-
-        function updateUI() {
-            displayNameOutput.textContent = gameState.displayName || "مهمان";
-            publicUserIdOutput.textContent = gameState.publicUserId || "---";
-            stageDisplay.textContent = gameState.currentStage;
-
-            if(avatarImage && gameState.avatarUrl) {
-                avatarImage.src = gameState.avatarUrl;
-            } else if (avatarImage) {
-                avatarImage.src = `https://placehold.co/80x80/333333/777777?text=?`;
-            }
-
-            let showAuthPanel = !gameState.displayName || !gameState.publicUserId;
-            let showActionButtons = !showAuthPanel;
-            let showUserInfoAndAvatar = showActionButtons && mainScreen.classList.contains('active');
-
-            if (showActionButtons) {
-                startGameBtn.classList.add('breathing');
-            } else {
-                startGameBtn.classList.remove('breathing');
-            }
-
-            authPanel.classList.toggle('panel-hidden', !showAuthPanel);
-            authPanel.classList.toggle('panel-visible', showAuthPanel);
-            mainScreenButtonsLayout.classList.toggle('hidden', !showActionButtons);
-
-            const isAnyPanelVisible = (modalContainer && !modalContainer.classList.contains('panel-hidden')) ||
-                                    (developersPanelContainer && !developersPanelContainer.classList.contains('panel-hidden')) ||
-                                    (gameModePanelContainer && !gameModePanelContainer.classList.contains('panel-hidden'));
-            if (showUserInfoAndAvatar && !isAnyPanelVisible) {
-                userProfileArea.classList.remove('profile-area-hidden', 'hidden');
-                avatarContainer.classList.remove('hidden');
-                userInfoBox.classList.remove('hidden');
-            } else if (!showUserInfoAndAvatar) {
-                userProfileArea.classList.add('hidden');
-            } else if (isAnyPanelVisible) {
-                userProfileArea.classList.add('profile-area-hidden');
-            }
-        }
-        
-        function simulateLoading() {
-            setTimeout(() => {
-                loadingProgressBarFill.style.width = '30%';
-                loadingMessage.textContent = 'بارگذاری منابع بازی...';
-            }, 500);
-            setTimeout(() => {
-                loadingProgressBarFill.style.width = '65%';
-                loadingMessage.textContent = 'آماده‌سازی رابط کاربری...';
-            }, 1200);
-            setTimeout(() => {
-                loadingProgressBarFill.style.width = '100%';
-                loadingMessage.textContent = 'خوش آمدید!';
-            }, 1800);
-            setTimeout(() => {
-                showScreen(mainScreen);
-            }, 2300);
-        }
-
-        // --- NEW: Local Storage Functions ---
-        function saveUserData() {
-            try {
-                const dataToSave = {
-                    ...gameState,
-                    seenQuestionHashes: Array.from(gameState.seenQuestionHashes) // Convert Set to Array for JSON
-                };
-                localStorage.setItem('mafiaGameUserData', JSON.stringify(dataToSave));
-            } catch (error) {
-                console.error("Error saving data to localStorage:", error);
-                showModal("خطا", "مشکلی در ذخیره اطلاعات شما پیش آمد.", "باشه");
-            }
-        }
-        
-        function loadUserData() {
-            try {
-                const savedData = localStorage.getItem('mafiaGameUserData');
-                if (savedData) {
-                    const parsedData = JSON.parse(savedData);
-                    Object.assign(gameState, parsedData);
-                    // Convert Array back to Set
-                    gameState.seenQuestionHashes = new Set(parsedData.seenQuestionHashes || []);
-                    console.log("User data loaded from localStorage.");
-                } else {
-                    console.log("No saved data found in localStorage. Starting fresh.");
-                }
-            } catch (error) {
-                console.error("Error loading data from localStorage:", error);
-                // If there's an error, just start fresh
-                localStorage.removeItem('mafiaGameUserData');
-            }
-        }
-
-        function generateQuestion() {
-            if (gameState.isLoadingNextQuestion) return;
-            gameState.isLoadingNextQuestion = true;
-            questionText.textContent = "در حال آماده‌سازی سوال...";
-            optionsContainer.innerHTML = "";
-            questionExplanation.classList.add('hidden');
-            gameFeedback.textContent = "";
-            
-            let unseenQuestions = localQuestions.filter(q => !gameState.seenQuestionHashes.has(simpleHash(q.question)));
-            
-            // NEW: Handle running out of questions by resetting progress
-            if (unseenQuestions.length === 0) {
-                showModal("تبریک!", "شما به تمام سوالات پاسخ داده‌اید! برای شروع مجدد، لیست سوالات دیده‌شده پاک می‌شود.", "عالی!", null, () => {
-                    gameState.seenQuestionHashes.clear();
-                    saveUserData();
-                    hideModal();
-                    generateQuestion(); // Retry generating a question
-                });
-                gameState.isLoadingNextQuestion = false;
-                return;
-            }
-
-            const randomIndex = Math.floor(Math.random() * unseenQuestions.length);
-            const questionData = unseenQuestions[randomIndex];
-            
-            gameState.currentQuestionData = questionData;
-            displayQuestion();
-            gameState.isLoadingNextQuestion = false;
-        }
-
-        function displayQuestion() {
-            if (!gameState.currentQuestionData) return;
-            const { question, options } = gameState.currentQuestionData;
-            questionText.textContent = question;
-            optionsContainer.innerHTML = "";
-            options.forEach((option, index) => {
+            stageData.options.forEach(option => {
                 const button = document.createElement('button');
-                button.className = 'option-btn w-full p-3 rounded-md text-lg text-right';
-                button.textContent = `${index + 1}. ${option}`;
-                button.dataset.index = index;
-                button.addEventListener('click', handleAnswerSelection);
+                button.textContent = option;
+                button.className = 'option-btn clash-font text-xl';
+                button.onclick = () => handleAnswer(option);
                 optionsContainer.appendChild(button);
             });
-            questionExplanation.classList.add('hidden');
-            gameFeedback.textContent = "";
-            gameState.isQuestionActive = true;
+
             startTimer();
         }
-        
-        function handleAnswerSelection(event) {
-            if (!gameState.isQuestionActive || gameState.isLoadingNextQuestion) return;
-            
-            stopTimer();
-            gameState.isQuestionActive = false;
 
-            const selectedOptionButton = event.target.closest('.option-btn');
-            if (!selectedOptionButton) return;
+        /**
+         * Processes the user's answer.
+         * @param {string | null} selectedOption - The option selected or null if time's up.
+         */
+        function handleAnswer(selectedOption) {
+            clearInterval(timerInterval);
+            const stageData = gameData[currentStage];
+            const isCorrect = selectedOption === stageData.answer;
 
-            const selectedIndex = parseInt(selectedOptionButton.dataset.index);
-            const { question, correctAnswerIndex, explanation } = gameState.currentQuestionData;
-
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = true; });
-
-            if (selectedIndex === correctAnswerIndex) {
-                audioManager.play('correct');
-                selectedOptionButton.classList.add('correct');
-                gameFeedback.textContent = "پاسخ صحیح!";
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#aaffaa] clash-font';
-                
-                gameState.seenQuestionHashes.add(simpleHash(question));
-                gameState.currentStage++;
-                
-                saveUserData();
-                setTimeout(() => { generateQuestion(); updateUI(); }, 2000);
-            } else {
-                audioManager.play('incorrect');
-                selectedOptionButton.classList.add('incorrect');
-                const correctButton = optionsContainer.querySelector(`.option-btn[data-index="${correctAnswerIndex}"]`);
-                if (correctButton) correctButton.classList.add('correct');
-                
-                gameFeedback.textContent = "پاسخ اشتباه!";
-                gameFeedback.className = 'text-center text-lg font-semibold my-4 h-8 text-[#ffaaaa] clash-font';
-                
-                setTimeout(() => { generateQuestion(); updateUI(); }, 3000);
-            }
-            if (explanation) {
-                questionExplanation.textContent = `توضیح: ${explanation}`;
-                questionExplanation.classList.remove('hidden');
-            }
-        }
-        
-        function isValidImageUrl(url) {
-            if (!url) return false;
-            const imageRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))(?:\?.*)?$/i;
-            return imageRegex.test(url);
-        }
-
-        function previewAvatarFromUrl() {
-            const url = avatarUrlInput.value.trim();
-            avatarErrorMessage.classList.add('hidden');
-            modalConfirmBtn.disabled = true;
-
-            if (!isValidImageUrl(url)) {
-                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
-                avatarErrorMessage.classList.remove('hidden');
-                avatarPreviewContainer.classList.add('hidden');
-                return;
-            }
-
-            avatarPreviewImage.src = url;
-            avatarPreviewImage.onerror = () => {
-                avatarErrorMessage.textContent = 'خطا در بارگذاری تصویر.';
-                avatarErrorMessage.classList.remove('hidden');
-                avatarPreviewContainer.classList.add('hidden');
-            };
-            avatarPreviewImage.onload = () => {
-                avatarPreviewContainer.classList.remove('hidden');
-                modalConfirmBtn.disabled = false;
-            };
-        }
-
-        function saveAvatarFromUrl() {
-            const newUrl = avatarUrlInput.value.trim();
-            if (!isValidImageUrl(newUrl)) {
-                avatarErrorMessage.textContent = 'لینک وارد شده معتبر نیست.';
-                return;
-            }
-
-            modalConfirmBtn.disabled = true;
-            modalCancelBtn.disabled = true;
-
-            gameState.avatarUrl = newUrl;
-            saveUserData();
-            updateUI();
-            hideModal();
-            showModal("موفقیت", "آواتار شما با موفقیت به‌روز شد!", "عالی!");
-            modalConfirmBtn.disabled = false;
-            modalCancelBtn.disabled = false;
-        }
-        
-        function validateAndSanitizeName(nameValue, errorElement, inputElement) {
-            const regex = /[^a-zA-Z0-9_.-]/g;
-            let sanitizedValue = nameValue.replace(regex, '');
-
-            if (nameValue !== sanitizedValue) inputElement.value = sanitizedValue;
-
-            const trimmedName = sanitizedValue.trim();
-
-            if (trimmedName.length < 3) {
-                errorElement.textContent = "نام نمایشی باید حداقل ۳ کاراکتر باشد.";
-                errorElement.classList.remove('hidden');
-                inputElement.classList.add('invalid');
-                return null;
-            }
-            errorElement.classList.add('hidden');
-            inputElement.classList.remove('invalid');
-            return trimmedName;
-        }
-
-        function handleChangeDisplayName() {
-            const newName = validateAndSanitizeName(newDisplayNameInput.value, changeNameErrorMessage, newDisplayNameInput);
-            if (!newName) return;
-
-            if (newName === gameState.displayName) {
-               changeNameErrorMessage.textContent = "نام جدید باید با نام فعلی متفاوت باشد.";
-               return;
-            }
-            
-            // MODIFIED: No need to check if name is taken in offline mode
-            gameState.displayName = newName;
-            saveUserData();
-            updateUI();
-            hideModal();
-            showModal("موفقیت", "نام نمایشی شما با موفقیت تغییر کرد!", "عالی!");
-        }
-        
-        function generateAlphanumericPublicUserId(length = 5) {
-            return Array(length).fill(0).map(() => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.random() * 36)).join('');
-        }
-        
-        function setupEventListeners() {
-            document.body.addEventListener('click', (event) => {
-                if (event.target.closest('.btn-clash:not(:disabled)')) audioManager.play('click');
-            });
-
-            modalConfirmBtn.addEventListener('click', handleModalConfirm);
-            modalCancelBtn.addEventListener('click', handleModalCancel);
-
-            displayNameInput.addEventListener('input', () => validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput));
-
-            generateUserIdBtn.addEventListener('click', () => {
-                userIdDisplayInput.value = generateAlphanumericPublicUserId();
-                gameState.publicUserId = userIdDisplayInput.value;
-                userIdErrorMessage.classList.add('hidden');
-            });
-
-            registerBtn.addEventListener('click', () => {
-                const validatedName = validateAndSanitizeName(displayNameInput.value, inputErrorMessage, displayNameInput);
-                if (!gameState.publicUserId) {
-                    userIdErrorMessage.textContent = "لطفاً شناسه بسازید.";
-                    return;
+            // Disable all options
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === stageData.answer) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selectedOption) {
+                    btn.classList.add('incorrect');
                 }
-                if (!validatedName) return;
-
-                // MODIFIED: No need to check if name is taken
-                gameState.displayName = validatedName;
-                saveUserData();
-                updateUI();
             });
 
-            editNameBtn.addEventListener('click', () => showModal("تغییر نام", "تغییر نام رایگان است.", "تغییر", "لغو", handleChangeDisplayName, hideModal, "changeName"));
-            avatarContainer.addEventListener('click', () => showModal("تغییر آواتار", "لینک مستقیم تصویر را وارد کنید.", "ذخیره", "لغو", saveAvatarFromUrl, hideModal, "avatar"));
-            previewAvatarBtn.addEventListener('click', previewAvatarFromUrl);
+            // Show feedback and explanation
+            if (isCorrect) {
+                gameFeedback.textContent = '✅ پاسخ صحیح! شما یک شهروند آگاه هستید.';
+            } else if (selectedOption) {
+                gameFeedback.textContent = `❌ پاسخ غلط! شهروندان شما را به عنوان مافیا متهم کردند.`;
+            } else {
+                gameFeedback.textContent = '⏰ زمان تمام شد! مرحله بعدی.';
+            }
             
-            startGameBtn.addEventListener('click', showGameModePanel);
-            closeGameModePanelBtn.addEventListener('click', hideGameModePanel);
-            singlePlayerBtn.addEventListener('click', () => { hideGameModePanel(); showScreen(gameScreen); generateQuestion(); });
+            questionExplanation.textContent = `پاسخ صحیح: ${stageData.answer}. توضیح: ${stageData.explanation}`;
+            questionExplanation.classList.remove('hidden');
 
-            developersBtn.addEventListener('click', showDevelopersPanel);
-            closeDevelopersPanelBtn.addEventListener('click', hideDevelopersPanel);
-            backToMainBtn.addEventListener('click', () => { stopTimer(); saveUserData(); gameState.currentQuestionData = null; showScreen(mainScreen); });
+            // Move to next stage after a delay
+            setTimeout(() => {
+                currentStage++;
+                if (currentStage < gameData.length) {
+                    loadStage();
+                } else {
+                    showEndGameModal();
+                }
+            }, 3000);
         }
+
+        /**
+         * Shows the game over modal.
+         */
+        function showEndGameModal() {
+            modalTitle.textContent = 'پایان بازی نمایشی';
+            modalMessage.textContent = `شما به ${gameData.length} سؤال پاسخ دادید. برای بازگشت به منوی اصلی تأیید کنید.`;
+            modalConfirmBtn.textContent = 'بازگشت به منو';
+            modalCancelBtn.classList.add('hidden');
+            modalConfirmBtn.onclick = () => {
+                hideModal();
+                showScreen('main-screen');
+                resetGame();
+            };
+            modalContainer.classList.remove('panel-hidden');
+        }
+
+        /**
+         * Resets the game state.
+         */
+        function resetGame() {
+            currentStage = 0;
+            cleanupGameScreen();
+        }
+
+        /**
+         * Switches the active screen.
+         * @param {string} screenId - The ID of the screen to show ('main-screen' or 'game-screen').
+         */
+        function showScreen(screenId) {
+            mainScreen.classList.remove('active');
+            gameScreen.classList.remove('active');
+            
+            if (screenId === 'main-screen') {
+                mainScreen.classList.add('active');
+                startGameBtn.classList.add('breathing');
+            } else if (screenId === 'game-screen') {
+                gameScreen.classList.add('active');
+                startGameBtn.classList.remove('breathing');
+            }
+        }
+
+        /**
+         * Hides the general modal.
+         */
+        function hideModal() {
+            modalContainer.classList.add('panel-hidden');
+        }
+
+
+        // --- Event Handlers ---
         
-        function initializeGame() {
-            // Query DOM elements
-            loadingScreen = document.getElementById('loading-screen');
-            loadingMessage = document.getElementById('loading-message');
-            mainScreen = document.getElementById('main-screen');
-            gameScreen = document.getElementById('game-screen');
-            authPanel = document.getElementById('auth-panel');
-            displayNameInput = document.getElementById('display-name-input');
-            registerBtn = document.getElementById('register-btn');
-            inputErrorMessage = document.getElementById('input-error-message');
-            userIdDisplayInput = document.getElementById('user-id-display');
-            generateUserIdBtn = document.getElementById('generate-user-id-btn');
-            userIdErrorMessage = document.getElementById('user-id-error-message');
-            userProfileArea = document.getElementById('user-profile-area');
-            avatarContainer = document.getElementById('avatar-container');
-            avatarImage = document.getElementById('avatar-image');
-            userInfoBox = document.getElementById('user-info-box');
-            displayNameOutput = document.getElementById('display-name-output');
-            publicUserIdOutput = document.getElementById('public-user-id-output');
-            editNameBtn = document.getElementById('edit-name-btn');
-            mainScreenButtonsLayout = document.getElementById('main-screen-buttons-layout');
-            startGameBtn = document.getElementById('start-game-btn');
-            developersBtn = document.getElementById('developers-btn');
-            stageDisplay = document.getElementById('stage-display');
-            questionText = document.getElementById('question-text');
-            optionsContainer = document.getElementById('options-container');
-            questionExplanation = document.getElementById('question-explanation');
-            backToMainBtn = document.getElementById('back-to-main-btn');
-            gameFeedback = document.getElementById('game-feedback');
-            modalContainer = document.getElementById('modal-container');
-            modalTitle = document.getElementById('modal-title');
-            modalMessage = document.getElementById('modal-message');
-            changeNameInputContainer = document.getElementById('change-name-input-container');
-            newDisplayNameInput = document.getElementById('new-display-name-input');
-            changeNameErrorMessage = document.getElementById('change-name-error-message');
-            avatarUploadUiContainer = document.getElementById('avatar-upload-ui-container');
-            avatarUrlInput = document.getElementById('avatar-url-input');
-            previewAvatarBtn = document.getElementById('preview-avatar-btn');
-            avatarPreviewContainer = document.getElementById('avatar-preview-container');
-            avatarPreviewImage = document.getElementById('avatar-preview-image');
-            avatarErrorMessage = document.getElementById('avatar-error-message');
-            modalConfirmBtn = document.getElementById('modal-confirm-btn');
-            modalCancelBtn = document.getElementById('modal-cancel-btn');
-            developersPanelContainer = document.getElementById('developers-panel-container');
-            closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
-            gameModePanelContainer = document.getElementById('game-mode-panel-container');
-            closeGameModePanelBtn = document.getElementById('close-game-mode-panel-btn');
-            singlePlayerBtn = document.getElementById('single-player-btn');
-            loadingProgressBarFill = document.getElementById('loading-progress-bar-fill');
-            loadingTip = document.getElementById('loading-tip');
-            timerText = document.getElementById('timer-text');
-            timerProgressCircle = document.getElementById('timer-progress-circle');
+        function setupInteractionHandlers() {
+            startGameBtn.addEventListener('click', () => {
+                showScreen('game-screen');
+                loadStage();
+            });
 
-            // Initialize game logic
-            audioManager.init();
-            userProfileArea.classList.add('hidden');
+            backToMainBtn.addEventListener('click', () => {
+                // Confirm before leaving in the middle of a game
+                clearInterval(timerInterval);
+                modalTitle.textContent = 'بازگشت به منو';
+                modalMessage.textContent = 'آیا مطمئن هستید که می‌خواهید بازی فعلی را ترک کنید؟ پیشرفت شما ذخیره نخواهد شد.';
+                modalConfirmBtn.textContent = 'بله، بازگرد';
+                modalCancelBtn.textContent = 'ادامه بازی';
+                modalCancelBtn.classList.remove('hidden');
+
+                modalConfirmBtn.onclick = () => {
+                    hideModal();
+                    showScreen('main-screen');
+                    resetGame();
+                };
+                modalCancelBtn.onclick = () => {
+                    hideModal();
+                    startTimer(); // Resume the timer
+                };
+                modalContainer.classList.remove('panel-hidden');
+            });
+
+            developersBtn.addEventListener('click', () => {
+                developersPanelContainer.classList.remove('panel-hidden');
+            });
             
-            // --- MODIFIED: Offline initialization flow ---
-            loadUserData(); // Load from localStorage first
-            setupEventListeners();
-            simulateLoading(); // Then show loading animation
+            closeDevelopersPanelBtn.addEventListener('click', () => {
+                developersPanelContainer.classList.add('panel-hidden');
+            });
         }
 
-        // --- Start the game when the DOM is ready ---
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeGame);
-        } else {
-            initializeGame();
+
+        // --- Initialization ---
+
+        function initializeApp() {
+            // 1. Setup interaction handlers
+            setupInteractionHandlers();
+
+            // 2. Simulate loading process
+            let progress = 0;
+            const progressBar = document.getElementById('loading-progress-bar-fill');
+            const loadingMessage = document.getElementById('loading-message');
+            const loadingMessages = [
+                'بارگذاری سناریوهای مافیا...',
+                'تایید نقش‌ها و قوانین...',
+                'ایجاد شهر و روستا...',
+                'آماده‌سازی برای شب اول...'
+            ];
+            let messageIndex = 0;
+
+            const loadingInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5;
+                if (progress > 100) progress = 100;
+
+                progressBar.style.width = `${progress}%`;
+
+                if (progress >= 10 && progress < 40 && messageIndex === 0) {
+                    loadingMessage.textContent = loadingMessages[messageIndex++];
+                } else if (progress >= 40 && progress < 70 && messageIndex === 1) {
+                    loadingMessage.textContent = loadingMessages[messageIndex++];
+                } else if (progress >= 70 && progress < 90 && messageIndex === 2) {
+                    loadingMessage.textContent = loadingMessages[messageIndex++];
+                } else if (progress >= 95 && messageIndex === 3) {
+                    loadingMessage.textContent = loadingMessages[messageIndex++];
+                }
+
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    loadingMessage.textContent = 'بارگذاری کامل شد! به بازی خوش آمدید.';
+                    setTimeout(() => {
+                        loadingScreen.classList.remove('active');
+                        showScreen('main-screen');
+                    }, 500); // Wait for final message
+                }
+            }, 300);
         }
+
+        window.onload = initializeApp;
+
     </script>
 </body>
 </html>
