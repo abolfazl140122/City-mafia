@@ -514,9 +514,6 @@
     </style>
 </head>
 <body>
-    <!-- User Profile Area was here but has been removed as requested -->
-
-    <!-- Loading Screen -->
     <div id="loading-screen" class="screen active">
         <div id="loading-content-box">
             <img id="loading-logo" src="https://up.20script.ir/file/7e7a-Copilot-20250812-110015-removebg-preview.png" alt="لوگوی بازی شهر مافیا">
@@ -532,18 +529,15 @@
         </div>
     </div>
 
-    <!-- Main Menu Screen (Now shown immediately after loading) -->
     <div id="main-screen" class="screen">
         <div class="screen-content-wrapper">
             <div>
                 <div id="main-screen-header">
                     <h1 id="main-title" class="clash-font">شهر مافیا</h1>
                 </div>
-                <!-- REMOVED: Registration Form / Auth Panel -->
-            </div>
+                </div>
 
-            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4"> <!-- Removed 'hidden' class -->
-                <div id="top-action-buttons">
+            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4"> <div id="top-action-buttons">
                     <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font">شروع بازی</button>
                     <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">👥 سازندگان</button>
                 </div>
@@ -551,7 +545,6 @@
         </div>
     </div>
 
-    <!-- Game Screen (Game flow remains the same) -->
     <div id="game-screen" class="screen">
         <div class="screen-content-wrapper justify-start">
             <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.3)] rounded-lg text-lg w-full">
@@ -576,14 +569,11 @@
         </div>
     </div>
 
-    <!-- Modal Containers (for General messages / Confirmation) -->
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
-        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-w-lg w-full text-center">
+        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-lg w-full text-center">
             <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--clash-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
             <div id="modal-content-dynamic">
                 <p id="modal-message" class="mb-3 text-base"></p>
-                
-                <!-- Removed: Change Name Input and Avatar Upload UI -->
                 
                 <div class="flex justify-center gap-4 mt-4">
                     <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تأیید</button>
@@ -593,7 +583,6 @@
         </div>
     </div>
 
-    <!-- Developers Panel -->
     <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-40">
         <div id="developers-panel" class="panel-clash p-6 sm:p-10 rounded-lg max-w-md w-full relative">
             <button id="close-developers-panel-btn">✕</button>
@@ -602,11 +591,21 @@
                 <div class="developer-item">
                     <div class="dev-header flex items-center mb-2 pb-2">
                         <span class="dev-role-icon">💻</span>
-                        <span class="dev-role">برنامه‌نویس اصلی</span>
+                        <span class="dev-role">برنامه‌نویسان</span>
                     </div>
-                    <p class="dev-username">Gemini (AI)</p>
-                    <p class="dev-description">این بازی آموزشی/نمایشی توسط مدل هوش مصنوعی گوگل توسعه داده شده است.</p>
+                    <p class="dev-username">سید عباس سجادی و علی بابایی</p>
+                    <p class="dev-description">پیاده‌سازی منطق و توسعه سمت کاربر (HTML, CSS, JavaScript).</p>
                 </div>
+
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-2 pb-2">
+                        <span class="dev-role-icon">🎨</span>
+                        <span class="dev-role">طراح رابط کاربری</span>
+                    </div>
+                    <p class="dev-username">وحید فریدونی</p>
+                    <p class="dev-description">طراحی بصری، استایل‌های Clash و تجربه کاربری (UI/UX).</p>
+                </div>
+
             </div>
         </div>
     </div>
@@ -740,7 +739,7 @@
                 const button = document.createElement('button');
                 button.textContent = option;
                 button.className = 'option-btn clash-font text-xl';
-                button.onclick = () => handleAnswer(option);
+                button.onclick = () => handleAnswer(option, button);
                 optionsContainer.appendChild(button);
             });
 
@@ -748,181 +747,172 @@
         }
 
         /**
-         * Processes the user's answer.
-         * @param {string | null} selectedOption - The option selected or null if time's up.
+         * پاسخ انتخاب شده توسط کاربر یا اتمام زمان را مدیریت می‌کند.
+         * @param {string | null} selectedAnswer - متن گزینه انتخاب شده، یا null در صورت اتمام زمان.
+         * @param {HTMLElement | null} selectedButton - المان دکمه انتخاب شده.
          */
-        function handleAnswer(selectedOption) {
+        function handleAnswer(selectedAnswer, selectedButton = null) {
             clearInterval(timerInterval);
             const stageData = gameData[currentStage];
-            const isCorrect = selectedOption === stageData.answer;
+            const isCorrect = selectedAnswer === stageData.answer;
 
-            // Disable all options
+            // غیرفعال کردن همه دکمه‌ها و نمایش پاسخ صحیح/غلط
             Array.from(optionsContainer.children).forEach(btn => {
                 btn.disabled = true;
                 if (btn.textContent === stageData.answer) {
                     btn.classList.add('correct');
-                } else if (btn.textContent === selectedOption) {
+                } else if (btn === selectedButton) {
                     btn.classList.add('incorrect');
                 }
             });
 
-            // Show feedback and explanation
-            if (isCorrect) {
-                gameFeedback.textContent = '✅ پاسخ صحیح! شما یک شهروند آگاه هستید.';
-            } else if (selectedOption) {
-                gameFeedback.textContent = `❌ پاسخ غلط! شهروندان شما را به عنوان مافیا متهم کردند.`;
+            // نمایش بازخورد و توضیح
+            if (selectedAnswer === null) {
+                gameFeedback.textContent = '❌ زمان به پایان رسید! ❌';
+            } else if (isCorrect) {
+                gameFeedback.textContent = '✅ پاسخ صحیح است!';
             } else {
-                gameFeedback.textContent = '⏰ زمان تمام شد! مرحله بعدی.';
+                gameFeedback.textContent = '❌ پاسخ اشتباه است. پاسخ صحیح مشخص شد.';
             }
             
-            questionExplanation.textContent = `پاسخ صحیح: ${stageData.answer}. توضیح: ${stageData.explanation}`;
+            questionExplanation.textContent = 'توضیح: ' + stageData.explanation;
             questionExplanation.classList.remove('hidden');
 
-            // Move to next stage after a delay
+            // رفتن به مرحله بعد با تأخیر
             setTimeout(() => {
                 currentStage++;
                 if (currentStage < gameData.length) {
                     loadStage();
                 } else {
-                    showEndGameModal();
+                    showGameOver();
                 }
-            }, 3000);
+            }, 4000); // 4 ثانیه برای خواندن توضیح
         }
 
         /**
-         * Shows the game over modal.
+         * صفحه پایان بازی را نمایش می‌دهد (با استفاده از مدال).
          */
-        function showEndGameModal() {
-            modalTitle.textContent = 'پایان بازی نمایشی';
-            modalMessage.textContent = `شما به ${gameData.length} سؤال پاسخ دادید. برای بازگشت به منوی اصلی تأیید کنید.`;
-            modalConfirmBtn.textContent = 'بازگشت به منو';
+        function showGameOver() {
+            showModal({
+                title: 'پایان بازی! 🏁',
+                message: 'شما به تمام سوالات پاسخ دادید. برای شروع دوباره به منوی اصلی بازگردید.',
+                onConfirm: () => {
+                    currentStage = 0; // بازنشانی وضعیت بازی
+                    navigateTo('main-screen');
+                }
+            });
+        }
+
+        /**
+         * مدیریت جابجایی بین صفحات.
+         * @param {string} screenId - شناسه صفحه‌ای که باید فعال شود ('loading-screen', 'main-screen', 'game-screen').
+         */
+        function navigateTo(screenId) {
+            Array.from(document.querySelectorAll('.screen')).forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        /**
+         * نمایش یک مدال (پاپ‌آپ) سفارشی.
+         * @param {object} options - تنظیمات مدال.
+         * @param {string} options.title - عنوان مدال.
+         * @param {string} options.message - پیام مدال.
+         * @param {function} options.onConfirm - تابعی که هنگام تأیید اجرا می‌شود.
+         * @param {function} [options.onCancel] - تابعی که هنگام لغو اجرا می‌شود (دکمه لغو را نمایش می‌دهد).
+         */
+        function showModal({ title, message, onConfirm, onCancel }) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
             modalCancelBtn.classList.add('hidden');
+            
+            // بازنشانی شنونده‌های رویداد قبل از تنظیم مجدد
+            modalConfirmBtn.onclick = null;
+            modalCancelBtn.onclick = null;
+
             modalConfirmBtn.onclick = () => {
                 hideModal();
-                showScreen('main-screen');
-                resetGame();
+                if (onConfirm) onConfirm();
             };
-            modalContainer.classList.remove('panel-hidden');
-        }
 
-        /**
-         * Resets the game state.
-         */
-        function resetGame() {
-            currentStage = 0;
-            cleanupGameScreen();
-        }
-
-        /**
-         * Switches the active screen.
-         * @param {string} screenId - The ID of the screen to show ('main-screen' or 'game-screen').
-         */
-        function showScreen(screenId) {
-            mainScreen.classList.remove('active');
-            gameScreen.classList.remove('active');
-            
-            if (screenId === 'main-screen') {
-                mainScreen.classList.add('active');
-                startGameBtn.classList.add('breathing');
-            } else if (screenId === 'game-screen') {
-                gameScreen.classList.add('active');
-                startGameBtn.classList.remove('breathing');
+            if (onCancel) {
+                modalCancelBtn.classList.remove('hidden');
+                modalCancelBtn.onclick = hideModal;
             }
+
+            modalContainer.classList.remove('panel-hidden');
+            modalContainer.classList.add('panel-visible');
         }
 
-        /**
-         * Hides the general modal.
-         */
         function hideModal() {
+            modalContainer.classList.remove('panel-visible');
             modalContainer.classList.add('panel-hidden');
         }
 
-
-        // --- Event Handlers ---
+        // --- شنونده‌های رویداد و بارگذاری اولیه ---
+        startGameBtn.addEventListener('click', () => {
+            navigateTo('game-screen');
+            currentStage = 0;
+            loadStage();
+        });
         
-        function setupInteractionHandlers() {
-            startGameBtn.addEventListener('click', () => {
-                showScreen('game-screen');
-                loadStage();
+        backToMainBtn.addEventListener('click', () => {
+            // درخواست تأیید قبل از ترک بازی
+            showModal({
+                title: 'ترک بازی؟',
+                message: 'آیا مطمئن هستید که می‌خواهید بازی را ترک کنید؟ پیشرفت شما ذخیره نخواهد شد.',
+                onConfirm: () => {
+                    clearInterval(timerInterval); // توقف زمان‌سنج
+                    currentStage = 0; // بازنشانی وضعیت بازی
+                    navigateTo('main-screen');
+                },
+                onCancel: () => {}
             });
+        });
 
-            backToMainBtn.addEventListener('click', () => {
-                // Confirm before leaving in the middle of a game
-                clearInterval(timerInterval);
-                modalTitle.textContent = 'بازگشت به منو';
-                modalMessage.textContent = 'آیا مطمئن هستید که می‌خواهید بازی فعلی را ترک کنید؟ پیشرفت شما ذخیره نخواهد شد.';
-                modalConfirmBtn.textContent = 'بله، بازگرد';
-                modalCancelBtn.textContent = 'ادامه بازی';
-                modalCancelBtn.classList.remove('hidden');
+        // مدیریت پنل سازندگان
+        developersBtn.addEventListener('click', () => {
+            developersPanelContainer.classList.remove('panel-hidden');
+            developersPanelContainer.classList.add('panel-visible');
+        });
+        closeDevelopersPanelBtn.addEventListener('click', () => {
+            developersPanelContainer.classList.remove('panel-visible');
+            developersPanelContainer.classList.add('panel-hidden');
+        });
 
-                modalConfirmBtn.onclick = () => {
-                    hideModal();
-                    showScreen('main-screen');
-                    resetGame();
-                };
-                modalCancelBtn.onclick = () => {
-                    hideModal();
-                    startTimer(); // Resume the timer
-                };
-                modalContainer.classList.remove('panel-hidden');
-            });
+        // توالی بارگذاری اولیه
+        const progressBarFill = document.getElementById('loading-progress-bar-fill');
+        const loadingMessage = document.getElementById('loading-message');
+        const loadingTips = [
+            "شهروندان باید با استدلال مافیا را شناسایی کنند.",
+            "سکوت مافیا می‌تواند خطرناک‌تر از حرف زدن باشد.",
+            "دکتر فقط یک بار می‌تواند خودش را نجات دهد.",
+            "بیش از حد مطمئن بودن می‌تواند نشانه مافیا باشد!"
+        ];
+        let loadProgress = 0;
+        const loadingInterval = setInterval(() => {
+            loadProgress += 10;
+            progressBarFill.style.width = `${loadProgress}%`;
 
-            developersBtn.addEventListener('click', () => {
-                developersPanelContainer.classList.remove('panel-hidden');
-            });
-            
-            closeDevelopersPanelBtn.addEventListener('click', () => {
-                developersPanelContainer.classList.add('panel-hidden');
-            });
-        }
+            if (loadProgress >= 100) {
+                clearInterval(loadingInterval);
+                loadingMessage.textContent = 'آماده ورود به شهر!';
+                setTimeout(() => {
+                    loadingScreen.classList.remove('active');
+                    mainScreen.classList.add('active');
+                    startGameBtn.classList.add('breathing'); // اضافه کردن انیمیشن تنفس
+                }, 500);
+            } else if (loadProgress > 50 && loadProgress < 70) {
+                loadingMessage.textContent = 'بارگذاری منابع بازی...';
+            } else if (loadProgress > 80) {
+                loadingMessage.textContent = 'اعمال تنظیمات نهایی...';
+            }
 
+            // به‌روزرسانی نکته به صورت دوره‌ای
+            document.getElementById('loading-tip').textContent = `💡 نکته: ${loadingTips[Math.floor(Math.random() * loadingTips.length)]}`;
 
-        // --- Initialization ---
-
-        function initializeApp() {
-            // 1. Setup interaction handlers
-            setupInteractionHandlers();
-
-            // 2. Simulate loading process
-            let progress = 0;
-            const progressBar = document.getElementById('loading-progress-bar-fill');
-            const loadingMessage = document.getElementById('loading-message');
-            const loadingMessages = [
-                'بارگذاری سناریوهای مافیا...',
-                'تایید نقش‌ها و قوانین...',
-                'ایجاد شهر و روستا...',
-                'آماده‌سازی برای شب اول...'
-            ];
-            let messageIndex = 0;
-
-            const loadingInterval = setInterval(() => {
-                progress += Math.floor(Math.random() * 10) + 5;
-                if (progress > 100) progress = 100;
-
-                progressBar.style.width = `${progress}%`;
-
-                if (progress >= 10 && progress < 40 && messageIndex === 0) {
-                    loadingMessage.textContent = loadingMessages[messageIndex++];
-                } else if (progress >= 40 && progress < 70 && messageIndex === 1) {
-                    loadingMessage.textContent = loadingMessages[messageIndex++];
-                } else if (progress >= 70 && progress < 90 && messageIndex === 2) {
-                    loadingMessage.textContent = loadingMessages[messageIndex++];
-                } else if (progress >= 95 && messageIndex === 3) {
-                    loadingMessage.textContent = loadingMessages[messageIndex++];
-                }
-
-                if (progress >= 100) {
-                    clearInterval(loadingInterval);
-                    loadingMessage.textContent = 'بارگذاری کامل شد! به بازی خوش آمدید.';
-                    setTimeout(() => {
-                        loadingScreen.classList.remove('active');
-                        showScreen('main-screen');
-                    }, 500); // Wait for final message
-                }
-            }, 300);
-        }
-
-        window.onload = initializeApp;
+        }, 500);
 
     </script>
 </body>
