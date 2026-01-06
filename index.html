@@ -2,820 +2,1027 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شهر مافیا - نسخه نهایی (Escort Game)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شهر مافیا - نسخه حرفه‌ای</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CORE THEME & VARIABLES --- */
+        /* --- IMPROVED CLASH THEME WITH PROFESSIONAL ENHANCEMENTS --- */
         :root {
-            --bg-deep: #0f172a;
-            --bg-panel: #1e293b;
-            --accent-gold: #fbbf24;
-            --accent-gold-hover: #d97706;
-            --accent-red: #ef4444;
-            --accent-green: #22c55e;
-            --accent-blue: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --shadow-glow: 0 0 15px rgba(251, 191, 36, 0.3);
+            --clash-blue-dark: #2c4a7a;
+            --clash-blue-light: #4a78b8;
+            --clash-gold: #ffd700;
+            --clash-gold-dark: #d4af37;
+            --clash-brown-dark: #4a2f20;
+            --clash-text-light: #f5f5f5;
+            --clash-text-dark: #1e1e1e;
+            --clash-green: #4caf50;
+            --clash-green-dark: #388e3c;
+            --clash-red: #f44336;
+            --clash-red-dark: #d32f2f;
+            --clash-panel-bg: #3a5b8a;
+            --clash-panel-border: #7da8e8;
+            --clash-panel-border-dark: #1e3a5e;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* --- ADVANCED ANIMATIONS --- */
+        @keyframes clash-panel-intro {
+            0% { opacity: 0; transform: scale(0.95) translateY(-20px); }
+            60% { opacity: 1; transform: scale(1.02) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes breathe-glow {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 10px 20px rgba(255, 215, 0, 0.6); }
+        }
+
+        @keyframes background-drift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 150% 150%; }
+        }
+
+        @keyframes spin-smooth {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInBounce {
+            0% { opacity: 0; transform: translateY(-50px); }
+            60% { opacity: 1; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-shadow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+        }
+
+        @keyframes tip-slide-in {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- IMPROVED MIND GAME ANIMATIONS --- */
+        @keyframes fall-smooth-fade {
+            0% { transform: translateY(-150%); opacity: 0; }
+            20% { transform: translateY(0); opacity: 1; }
+            80% { transform: translateY(120px); opacity: 1; }
+            100% { transform: translateY(180px); opacity: 0; }
         }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            overflow: hidden; /* App-like feel */
-            height: 100vh;
-            width: 100vw;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(30, 41, 59, 0.8) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 25%);
-        }
-
-        /* --- FONTS --- */
-        .font-lalezar { font-family: 'Lalezar', cursive; }
-        
-        /* --- UTILITIES --- */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .btn-press {
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-            position: relative;
+            color: var(--clash-text-light);
+            background-color: #162447;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
             overflow: hidden;
-        }
-        .btn-press:active { transform: scale(0.96); }
-        .btn-press::after {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 5px; height: 5px;
-            background: rgba(255, 255, 255, 0.5); opacity: 0; border-radius: 100%;
-            transform: scale(1, 1) translate(-50%); transform-origin: 50% 50%;
-        }
-
-        /* --- SCREENS TRANSITIONS --- */
-        .screen {
-            position: absolute; inset: 0;
-            opacity: 0; visibility: hidden;
-            transform: scale(0.98);
-            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-            display: flex; flex-direction: column;
-            padding: 1rem;
-            z-index: 10;
-            overflow-y: auto;
-        }
-        .screen.active {
-            opacity: 1; visibility: visible;
-            transform: scale(1);
-            z-index: 20;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            position: relative;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .animate-float { animation: float 6s ease-in-out infinite; }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 300%; height: 300%;
+            background-image: url('https://www.transparenttextures.com/patterns/noise.png');
+            opacity: 0.1;
+            z-index: -1;
+            animation: background-drift 180s linear infinite;
+        }
 
-        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); } }
-        .pulse-effect { animation: pulse-gold 2s infinite; }
+        .clash-font {
+            font-family: 'Lilita One', cursive;
+            letter-spacing: 1.5px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-        /* --- CUSTOM COMPONENTS --- */
-        .role-card {
-            perspective: 1000px;
-            height: 280px;
+        .panel-clash {
+            background-color: var(--clash-panel-bg);
+            border: 5px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 3px 6px rgba(255, 255, 255, 0.15);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            position: relative;
+        }
+
+        .panel-clash::before, .panel-clash::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--clash-gold);
+            border-radius: 50%;
+            border: 3px solid var(--clash-brown-dark);
+            box-shadow: 0 0 5px #000;
+        }
+        .panel-clash::before { top: 12px; left: 12px; }
+        .panel-clash::after { top: 12px; right: 12px; }
+
+        .panel-hidden {
+            opacity: 0;
+            transform: scale(0.95) translateY(-30px);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .panel-visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            visibility: visible;
+            animation: clash-panel-intro 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .btn-clash {
+            border-radius: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s ease-out;
             cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--clash-text-dark);
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
-        .role-card-inner {
-            position: relative; width: 100%; height: 100%;
-            text-align: center; transition: transform 0.8s;
-            transform-style: preserve-3d;
+        .btn-clash:disabled {
+            filter: grayscale(90%);
+            cursor: not-allowed;
+            box-shadow: 0 5px 0 #444 !important;
+            transform: translateY(0) !important;
         }
-        .role-card.flipped .role-card-inner { transform: rotateY(180deg); }
-        .role-front, .role-back {
-            position: absolute; width: 100%; height: 100%;
-            -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            border-radius: 1rem; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            border: 2px solid var(--accent-gold);
-            box-shadow: var(--shadow-glow);
-        }
-        .role-front { background: var(--bg-panel); }
-        .role-back {
-            background: linear-gradient(135deg, #4b1f1f, #000);
-            transform: rotateY(180deg);
-        }
-        .role-back.citizen { background: linear-gradient(135deg, #1e3a8a, #000); }
 
-        /* Loader */
-        .loader-ring {
-            display: inline-block; width: 64px; height: 64px;
+        .btn-clash-primary {
+            background: linear-gradient(to bottom, #ffeb99, var(--clash-gold));
+            border: 3px solid var(--clash-brown-dark);
+            box-shadow: 0 8px 0 #b8860b;
+            padding: 12px 28px;
+            font-size: 1.2rem;
         }
-        .loader-ring:after {
-            content: " "; display: block; width: 46px; height: 46px; margin: 8px;
-            border-radius: 50%; border: 5px solid var(--accent-gold);
-            border-color: var(--accent-gold) transparent var(--accent-gold) transparent;
-            animation: ring 1.2s linear infinite;
-        }
-        @keyframes ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (min-width: 640px) { .btn-clash-primary { padding: 14px 36px; font-size: 1.4rem; } }
 
-        /* Toast Notification */
-        #toast-container {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 100; pointer-events: none;
+        .btn-clash-primary:hover {
+            background: linear-gradient(to bottom, #fff5cc, #ffcc00);
+            transform: translateY(-3px);
+            box-shadow: 0 11px 0 #b8860b;
         }
-        .toast {
-            background: rgba(0,0,0,0.9); color: white; padding: 12px 24px;
-            border-radius: 50px; margin-top: 10px; font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            animation: slideUp 0.3s ease-out forwards;
+        .btn-clash-primary:active {
+            transform: translateY(5px) !important;
+            box-shadow: 0 3px 0 #b8860b !important;
+            transition-duration: 0.1s;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        #start-game-btn.breathing {
+            animation: breathe-glow 3s ease-in-out infinite;
+        }
+
+        .btn-clash-secondary {
+            background: linear-gradient(to bottom, #8ab6f2, var(--clash-blue-light));
+            border: 3px solid var(--clash-panel-border-dark);
+            box-shadow: 0 6px 0 #1e3a5e;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        @media (min-width: 640px) { .btn-clash-secondary { padding: 12px 24px; font-size: 1.1rem; } }
+
+        .btn-clash-secondary:hover {
+            background: linear-gradient(to bottom, #a8c9ff, #7a98d8);
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #1e3a5e;
+        }
+        .btn-clash-secondary:active {
+            transform: translateY(4px) !important;
+            box-shadow: 0 2px 0 #1e3a5e !important;
+            transition-duration: 0.1s;
+        }
+
+        .input-clash {
+            background-color: var(--clash-panel-border-dark);
+            border: 3px solid #1e3a5e;
+            color: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1.1rem;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5);
+            -webkit-user-select: auto;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: auto;
+            touch-action: manipulation;
+        }
+        .input-clash:focus {
+            outline: none;
+            border-color: var(--clash-gold);
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 0 12px var(--clash-gold);
+        }
+        .input-clash.invalid {
+            border-color: var(--clash-red);
+        }
+        .input-clash:read-only {
+            background-color: #2a4a70;
+            cursor: default;
+        }
+
+        .option-btn {
+            background: linear-gradient(to bottom, #8ab6f2, #4a78b8);
+            border: 3px solid #1e3a5e;
+            box-shadow: 0 5px 0 #1e3a5e;
+            color: white;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+        .option-btn:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #a8c9ff, #6a88c8);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #1e3a5e;
+        }
+        .option-btn.correct {
+            background: linear-gradient(to bottom, #81c784, var(--clash-green)) !important;
+            border-color: #2e7d32 !important;
+            box-shadow: 0 5px 0 var(--clash-green-dark) !important;
+            transform: translateY(0) !important;
+        }
+        .option-btn.incorrect {
+            background: linear-gradient(to bottom, #e57373, var(--clash-red)) !important;
+            border-color: #c62828 !important;
+            box-shadow: 0 5px 0 var(--clash-red-dark) !important;
+            transform: translateY(0) !important;
+        }
+        .option-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .loader {
+            border: 10px solid #2c4a7a;
+            border-top: 10px solid var(--clash-gold);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin-smooth 1.2s linear infinite;
+        }
+
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--clash-gold); border-radius: 6px; border: 3px solid var(--clash-blue-dark); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--clash-gold-dark); }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            padding: 12px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            z-index: 1;
+        }
+        @media (min-width: 640px) { .screen { padding: 24px; } }
+        #main-screen { justify-content: flex-start; }
+        #loading-screen { 
+            justify-content: center; 
+            background: radial-gradient(circle, rgba(30,58,94,0.6) 0%, rgba(22,36,71,0.9) 70%);
+            position: fixed;
+            z-index: 999;
+        }
+        .screen.active { opacity: 1; visibility: visible; position: relative; z-index: 10; }
+        #loading-screen.active { position: fixed; z-index: 999; }
+        #main-screen.active { position: absolute; z-index: 10; } 
+        #game-screen.active { position: absolute; z-index: 10; } 
+        #mind-game-screen.active { position: absolute; z-index: 10; }
+
+        #loading-content-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        #loading-logo {
+            max-width: 320px;
+            width: 75%;
+            margin-bottom: 2rem;
+            animation: fadeInBounce 1.2s ease-out, pulse-shadow 3.5s infinite 1.2s;
+        }
+        #loading-progress-bar-container {
+            width: 100%;
+            background-color: var(--clash-panel-border-dark);
+            border: 4px solid #1e3a5e;
+            border-radius: 16px;
+            padding: 5px;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        #loading-progress-bar-fill {
+            height: 20px;
+            width: 0%;
+            background: linear-gradient(to right, var(--clash-gold-dark), var(--clash-gold));
+            border-radius: 10px;
+            transition: width 0.6s ease-out;
+            box-shadow: 0 0 12px var(--clash-gold);
+        }
+        #loading-message {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--clash-text-light);
+            text-shadow: 1px 1px 3px #000;
+            min-height: 32px;
+        }
+        #loading-tip {
+            margin-top: 2.5rem;
+            font-size: 1rem;
+            color: #e0f7ff;
+            font-style: italic;
+            background-color: rgba(0,0,0,0.3);
+            padding: 10px 14px;
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: tip-slide-in 1s ease-out;
+        }
+
+        .screen-content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 12px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 24px; } }
+        #main-screen .screen-content-wrapper {
+            justify-content: space-between;
+            min-height: calc(100vh - 24px);
+            padding-top: 24px; 
+        }
+        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 48px); padding-top: 24px; } }
+
+        #main-screen-header { 
+            display: flex; justify-content: center;
+            align-items: center; width: 100%; 
+            padding: 0.75rem; margin-bottom: 2rem;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            background-color: #5d4037;
+            border-radius: 16px;
+            border: 5px solid #3e2723;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 10;
+        }
+
+        #main-title {
+            text-align: center;
+            flex-grow: 1;
+            font-size: 3.5rem;
+            color: var(--clash-gold);
+            text-shadow: 
+                -4px -4px 0 var(--clash-brown-dark), 
+                4px -4px 0 var(--clash-brown-dark),
+                -4px  4px 0 var(--clash-brown-dark),
+                4px  4px 0 var(--clash-brown-dark),
+                -4px 0 0 var(--clash-brown-dark),
+                4px 0 0 var(--clash-brown-dark),
+                0 -4px 0 var(--clash-brown-dark),
+                0 4px 0 var(--clash-brown-dark),
+                8px 8px 10px rgba(0,0,0,0.8);
+        }
+        @media (min-width: 640px) { #main-title { font-size: 5rem; } }
+        @media (min-width: 768px) { #main-title { font-size: 6rem; } }
+
+        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin: auto 0; padding-top: 1.5rem; }
+        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem; width: 100%; padding-bottom: 8px; margin-top: 2.5rem; }
+
+        .hidden { display: none !important; }
+
+        /* --- Improved Pop-up Panels --- */
+        #developers-panel-container, #game-mode-panel-container { background-color: rgba(10, 10, 10, 0.9); }
+        #developers-panel, #game-mode-panel {
+            background-color: var(--clash-panel-bg);
+            border: 5px solid var(--clash-panel-border-dark);
+            border-top-color: var(--clash-panel-border);
+            border-left-color: var(--clash-panel-border);
+        }
+        #close-developers-panel-btn, #close-game-mode-panel-btn {
+            position: absolute; top: 14px; right: 14px; width: 45px; height: 45px;
+            background: linear-gradient(to bottom, #e57373, var(--clash-red));
+            border: 3px solid #c62828;
+            box-shadow: 0 5px 0 #d32f2f;
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px;
+            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.3s ease;
+        }
+        #close-developers-panel-btn:hover, #close-game-mode-panel-btn:hover { transform: scale(1.15) rotate(180deg); }
+        #close-developers-panel-btn:active, #close-game-mode-panel-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #d32f2f; }
+
+        .developer-item {
+            background-color: rgba(30,58,94,0.95);
+            padding: 1.2rem 1.4rem; border-radius: 16px;
+            border: 3px solid rgba(125,168,232,0.5);
+        }
+        .dev-header { border-bottom: 3px solid rgba(125,168,232,0.4); }
+        .dev-role-icon { font-size: 1.9em; color: var(--clash-gold); margin-left: 12px; }
+        .dev-role { font-size: 1.25rem; font-weight: 700; color: #fff; font-family: 'Vazirmatn'; }
+        .dev-username { color: #fff59d; font-weight: bold; font-size: 1.35rem; }
+        .dev-description { font-size: 1rem; color: #e0f7ff; line-height: 1.7; font-family: 'Vazirmatn'; }
+
+        #game-mode-panel .btn-clash-primary {
+            padding: 18px 36px;
+            font-size: 1.6rem;
+            width: 100%;
+            max-width: 350px;
+        }
+        #game-mode-panel .btn-clash-primary .icon {
+            font-size: 2.2rem;
+            margin-left: 14px;
+        }
+
+        #timer-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
+        }
+        #timer-svg {
+            transform: rotate(-90deg);
+        }
+        .timer-circle {
+            fill: none;
+            stroke-width: 10;
+        }
+        .timer-bg {
+            stroke: var(--clash-panel-border-dark);
+        }
+        .timer-progress {
+            stroke: var(--clash-gold);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+        #timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Lilita One', cursive;
+            font-size: 2rem;
+            color: var(--clash-gold);
+            text-shadow: 3px 3px 3px #000;
+        }
+
+        /* --- IMPROVED MIND GAME STYLES --- */
+        #mind-game-screen .screen-content-wrapper {
+            justify-content: center;
+        }
+        #falling-sentence-container {
+            height: 250px;
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+        }
+        .falling-sentence {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--clash-gold);
+            text-shadow: 3px 3px 5px #000;
+            animation: fall-smooth-fade 5s ease-in-out forwards;
+        }
+        #mind-game-input-area {
+            width: 100%;
+            max-width: 600px;
+        }
     </style>
 </head>
 <body>
-
-    <!-- LOADING SCREEN -->
-    <div id="loading-screen" class="screen active justify-center items-center bg-slate-900 z-50">
-        <div class="text-center relative">
-            <div class="loader-ring mb-4"></div>
-            <h1 class="font-lalezar text-5xl text-[var(--accent-gold)] mb-2" style="text-shadow: 0 0 20px black;">شهر مافیا</h1>
-            <p class="text-[var(--text-muted)] text-sm animate-pulse">تیم اسکورت گیم تقدیم می‌کند...</p>
-            <p id="loading-status" class="mt-8 text-xs text-slate-500 font-mono">در حال آماده‌سازی ابزارها...</p>
+    <div id="loading-screen" class="screen active">
+        <div id="loading-content-box">
+            <img id="loading-logo" src="https://up.20script.ir/file/7e7a-Copilot-20250812-110015-removebg-preview.png" alt="لوگوی بازی شهر مافیا">
+            <h1 class="text-4xl sm:text-6xl font-bold clash-font text-[var(--clash-gold)]" style="text-shadow: 4px 4px 5px #000;">شهر مافیا</h1>
+            <div id="loading-progress-bar-container">
+                <div id="loading-progress-bar-fill"></div>
+            </div>
+            <p id="loading-message" class="text-xl">در حال بارگذاری جهان مافیا...</p>
+            <p id="loading-tip">🔍 رازها در سایه‌ها پنهان هستند... 🔍</p>
         </div>
     </div>
 
-    <!-- MAIN MENU -->
-    <div id="main-menu" class="screen">
-        <header class="flex justify-between items-center mb-6 pt-2">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center shadow-lg">
-                    <span class="font-bold text-white text-xl">M</span>
-                </div>
-                <div>
-                    <h2 class="font-lalezar text-2xl text-white leading-none">شهر مافیا</h2>
-                    <span class="text-[10px] text-yellow-500 font-bold uppercase tracking-wider">نسخه حرفه‌ای</span>
-                </div>
-            </div>
-            <button onclick="openPanel('dev-panel')" class="p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </button>
-        </header>
-
-        <main class="grid grid-cols-1 gap-4 pb-20">
-            <!-- Hero Card: God Tools -->
-            <div onclick="navigateTo('god-tools-screen')" class="panel p-6 rounded-2xl relative overflow-hidden group btn-press cursor-pointer border-l-4 border-yellow-500">
-                <div class="absolute right-0 top-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                <h3 class="font-lalezar text-3xl text-white mb-1 relative z-10">ابزار گرداننده (God)</h3>
-                <p class="text-slate-400 text-sm mb-4 relative z-10 w-3/4">مدیریت کامل بازی واقعی! پخش نقش تصادفی و تایمر صحبت.</p>
-                <div class="flex items-center gap-2 text-yellow-400 text-sm font-bold">
-                    <span>ورود به پنل</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+    <div id="main-screen" class="screen">
+        <div class="screen-content-wrapper">
+            <div>
+                <div id="main-screen-header">
+                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Training -->
-                <div onclick="startAcademy()" class="panel p-4 rounded-2xl btn-press cursor-pointer flex flex-col items-center justify-center text-center h-40 border-b-4 border-blue-600">
-                    <span class="text-4xl mb-2">🎓</span>
-                    <h3 class="font-bold text-white">آکادمی مافیا</h3>
-                    <p class="text-xs text-slate-400 mt-1">آموزش و آزمون</p>
-                </div>
-                <!-- Logic Puzzles -->
-                <div onclick="startDetective()" class="panel p-4 rounded-2xl btn-press cursor-pointer flex flex-col items-center justify-center text-center h-40 border-b-4 border-red-600">
-                    <span class="text-4xl mb-2">🕵️‍♂️</span>
-                    <h3 class="font-bold text-white">کارآگاه ویژه</h3>
-                    <p class="text-xs text-slate-400 mt-1">حل پرونده قتل</p>
+            <div id="main-screen-buttons-layout" class="pb-3 sm:pb-6">
+                <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font py-5 px-10 text-3xl">شروع ماجراجویی</button>
+                <button id="online-game-btn" class="btn-clash btn-clash-secondary clash-font mt-5">نبرد آنلاین</button>
+                <div id="top-action-buttons">
+                    <button id="challenge-btn" class="btn-clash btn-clash-secondary clash-font">ماموریت‌های ویژه</button>
+                    <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">👥 تیم سازنده</button>
+                    <button id="coordination-btn" class="btn-clash btn-clash-secondary clash-font">استراتژی‌ها</button>
                 </div>
             </div>
-
-            <!-- Mind Game -->
-            <div onclick="startMindGame()" class="panel p-5 rounded-2xl btn-press cursor-pointer flex items-center justify-between border-r-4 border-green-500">
-                <div>
-                    <h3 class="font-bold text-white text-lg">چالش ذهن برتر</h3>
-                    <p class="text-xs text-slate-400">حافظه خود را تقویت کنید</p>
-                </div>
-                <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 font-bold text-xl">
-                    🧠
-                </div>
-            </div>
-
-             <!-- Coming Soon Replacement: Shop/Score -->
-            <div class="panel p-4 rounded-xl flex justify-between items-center opacity-75">
-                <div class="flex items-center gap-3">
-                    <div class="bg-slate-700 p-2 rounded-lg">🏆</div>
-                    <div class="flex flex-col">
-                        <span class="text-xs text-slate-400">امتیاز کل شما</span>
-                        <span class="font-bold text-xl font-mono text-yellow-400" id="total-score-display">0</span>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
-    <!-- GOD TOOLS SCREEN -->
-    <div id="god-tools-screen" class="screen bg-slate-900">
-        <header class="flex items-center gap-3 mb-6">
-            <button onclick="navigateTo('main-menu')" class="p-2 bg-slate-800 rounded-lg text-white">⬅</button>
-            <h2 class="font-lalezar text-2xl text-yellow-500">جعبه ابزار گرداننده</h2>
-        </header>
+    <div id="game-screen" class="screen">
+        <div class="screen-content-wrapper justify-start">
+            <div class="flex justify-between items-center mb-5 sm:mb-7 p-4 bg-[rgba(0,0,0,0.4)] rounded-xl text-xl w-full">
+                <button id="back-to-main-btn-mafia" class="btn-clash btn-clash-secondary clash-font text-base">بازگشت به شهر</button>
+                <div class="font-bold">سطح: <span id="stage-display" class="clash-font text-[var(--clash-gold)] text-3xl">1</span></div>
+                <div id="timer-container">
+                    <svg id="timer-svg" width="70" height="70" viewBox="0 0 70 70">
+                        <circle class="timer-circle timer-bg" cx="35" cy="35" r="30"></circle>
+                        <circle id="timer-progress-circle" class="timer-circle timer-progress" cx="35" cy="35" r="30"></circle>
+                    </svg>
+                    <span id="timer-text">25</span>
+                </div>
+            </div>
+            <div id="question-container" class="panel-clash panel-visible p-5 sm:p-7 rounded-xl mb-5 sm:mb-7 min-h-[250px] flex flex-col justify-center w-full">
+                <p id="question-text" class="text-2xl md:text-3xl mb-7 text-center leading-loose font-bold">سوال در حال بارگذاری...</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5"></div>
+                <p id="question-explanation" class="text-base mt-5 text-gray-100 bg-black/40 p-3 rounded-lg text-center hidden"></p>
+            </div>
+            <div id="game-feedback" class="text-center text-xl font-semibold my-5 h-10 clash-font"></div>
+        </div>
+    </div>
 
-        <div class="flex flex-col gap-6 h-full">
-            <!-- Role Distributor -->
-            <div class="panel p-5 rounded-xl">
-                <h3 class="font-bold text-white mb-4 flex items-center gap-2">
-                    🃏 پخش کننده نقش
-                </h3>
-                <div class="space-y-4" id="role-setup-area">
-                    <div class="flex justify-between items-center">
-                        <span>تعداد مافیا:</span>
-                        <div class="flex items-center bg-slate-800 rounded-lg">
-                            <button class="px-3 py-1 text-xl text-red-400" onclick="adjustRole('mafia', -1)">-</button>
-                            <span id="count-mafia" class="px-3 font-mono font-bold">1</span>
-                            <button class="px-3 py-1 text-xl text-green-400" onclick="adjustRole('mafia', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span>تعداد شهروند:</span>
-                        <div class="flex items-center bg-slate-800 rounded-lg">
-                            <button class="px-3 py-1 text-xl text-red-400" onclick="adjustRole('citizen', -1)">-</button>
-                            <span id="count-citizen" class="px-3 font-mono font-bold">3</span>
-                            <button class="px-3 py-1 text-xl text-green-400" onclick="adjustRole('citizen', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span>پزشک / کارآگاه:</span>
-                        <div class="flex items-center bg-slate-800 rounded-lg">
-                            <button class="px-3 py-1 text-xl text-red-400" onclick="adjustRole('special', -1)">-</button>
-                            <span id="count-special" class="px-3 font-mono font-bold">0</span>
-                            <button class="px-3 py-1 text-xl text-green-400" onclick="adjustRole('special', 1)">+</button>
-                        </div>
-                    </div>
-                    <button onclick="distributeRoles()" class="w-full py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold rounded-xl btn-press shadow-lg shadow-yellow-500/20">
-                        شروع پخش کارت‌ها
-                    </button>
+    <div id="mind-game-screen" class="screen">
+        <div class="screen-content-wrapper justify-start">
+            <div class="flex justify-between items-center mb-5 sm:mb-7 p-4 bg-[rgba(0,0,0,0.4)] rounded-xl text-xl w-full">
+                <button id="back-to-main-btn-mind" class="btn-clash btn-clash-secondary clash-font text-base">بازگشت به شهر</button>
+                <div class="font-bold">سطح: <span id="mind-game-stage-display" class="clash-font text-[var(--clash-gold)] text-3xl">1</span></div>
+                <div class="font-bold">امتیازات: <span id="mind-game-score-display" class="clash-font text-[var(--clash-gold)] text-3xl">0</span></div>
+            </div>
+            
+            <div class="panel-clash p-7 w-full text-center">
+                <h2 id="mind-game-instruction" class="text-3xl font-bold mb-5">رمز را حفظ کن!</h2>
+                <div id="falling-sentence-container">
+                    <!-- Falling text injected by JS -->
                 </div>
                 
-                <!-- Card Reveal Area (Hidden initially) -->
-                <div id="card-reveal-area" class="hidden flex-col items-center">
-                    <p class="text-center text-sm text-slate-400 mb-4">گوشی را دست به دست کنید. روی کارت بزنید تا نقش را ببینید.</p>
-                    <div class="role-card w-full max-w-[240px]" onclick="flipCard(this)">
-                        <div class="role-card-inner">
-                            <div class="role-front">
-                                <span class="text-6xl mb-2">👁️</span>
-                                <h3 class="text-xl font-bold">کارت شماره <span id="current-card-num">1</span></h3>
-                                <p class="text-xs text-slate-400 mt-2">برای دیدن نقش ضربه بزنید</p>
-                            </div>
-                            <div class="role-back" id="role-back-face">
-                                <span class="text-5xl mb-2" id="role-icon">🎭</span>
-                                <h3 class="text-2xl font-lalezar text-white" id="role-name">مافیا</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="nextCard()" id="next-card-btn" class="mt-6 px-8 py-2 bg-slate-700 rounded-full text-white font-bold hidden">نفر بعدی ➡</button>
-                    <button onclick="resetDistributor()" id="finish-card-btn" class="mt-6 px-8 py-2 bg-red-600 rounded-full text-white font-bold hidden">پایان توزیع</button>
+                <div id="mind-game-input-area" class="hidden mx-auto">
+                    <p class="mb-5">رمز را وارد کن:</p>
+                    <input type="text" id="mind-game-input" class="input-clash w-full text-center text-xl mb-5" dir="rtl">
+                    <button id="mind-game-submit-btn" class="btn-clash btn-clash-primary">ارسال رمز</button>
                 </div>
+                
+                <div id="mind-game-feedback" class="text-center text-xl font-semibold my-5 h-10 clash-font"></div>
             </div>
+        </div>
+    </div>
 
-            <!-- Timer -->
-            <div class="panel p-5 rounded-xl flex-grow">
-                <h3 class="font-bold text-white mb-2 flex items-center gap-2">⏱️ تایمر صحبت</h3>
-                <div class="flex flex-col items-center justify-center h-full pb-4">
-                    <div class="text-6xl font-mono font-bold text-yellow-400 mb-4 tracking-wider" id="god-timer-display">00:30</div>
-                    <div class="flex gap-4 w-full justify-center">
-                        <button onclick="toggleTimer()" id="timer-toggle-btn" class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-2xl shadow-lg">▶</button>
-                        <button onclick="resetTimer()" class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl shadow-lg">↺</button>
-                    </div>
-                    <input type="range" min="10" max="180" value="30" class="w-full mt-6 accent-yellow-500" oninput="setTimerDuration(this.value)">
-                    <p class="text-xs text-slate-500 mt-2">زمان پیش‌فرض: <span id="timer-setting-display">30</span> ثانیه</p>
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-85 flex items-center justify-center p-5 panel-hidden z-50">
+        <div class="panel-clash p-7 sm:p-9 rounded-xl max-w-lg w-full text-center">
+            <h3 id="modal-title" class="text-3xl sm:text-4xl font-bold mb-5 clash-font text-[var(--clash-gold)]" style="text-shadow: 3px 3px 4px #000;">هشدار</h3>
+            <div id="modal-content-dynamic">
+                <p id="modal-message" class="mb-4 text-lg"></p>
+                <div class="flex justify-center gap-5 mt-5">
+                    <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">قبول</button>
+                    <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font hidden">انصراف</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- DETECTIVE PUZZLE SCREEN -->
-    <div id="detective-screen" class="screen bg-slate-900">
-         <header class="flex items-center justify-between mb-4">
-            <button onclick="navigateTo('main-menu')" class="p-2 bg-slate-800 rounded-lg">🏠</button>
-            <div class="font-bold text-red-400">پرونده: <span id="case-id">001</span></div>
-        </header>
-        
-        <div class="panel p-6 rounded-xl border border-red-900/50 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 text-6xl opacity-10 rotate-12">🩸</div>
-            <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2">گزارش صحنه جرم</h3>
-            <p id="scenario-text" class="text-slate-300 leading-8 text-justify mb-6">
-                در حال بارگذاری پرونده...
-            </p>
-            
-            <div class="bg-black/30 p-4 rounded-lg mb-4">
-                <p class="text-yellow-500 text-sm font-bold mb-2">💡 سوال:</p>
-                <p id="scenario-question" class="text-white font-bold">قاتل کیست؟</p>
-            </div>
-
-            <div id="scenario-options" class="grid grid-cols-1 gap-3">
-                <!-- Options injected by JS -->
-            </div>
-        </div>
-        <div id="scenario-feedback" class="mt-4 text-center font-bold text-lg h-8"></div>
-    </div>
-
-    <!-- ACADEMY/QUIZ SCREEN -->
-    <div id="academy-screen" class="screen">
-        <header class="flex justify-between items-center mb-6">
-            <button onclick="navigateTo('main-menu')" class="p-2 bg-slate-800 rounded-lg">❌ انصراف</button>
-            <div class="bg-blue-900 px-4 py-1 rounded-full text-blue-200 text-sm">سوال <span id="quiz-progress">1/10</span></div>
-        </header>
-
-        <div class="flex-grow flex flex-col justify-center">
-            <div class="panel p-6 rounded-2xl mb-6 shadow-xl border-t-4 border-blue-500">
-                <p id="quiz-question" class="text-xl font-bold text-center leading-loose">...</p>
-            </div>
-
-            <div id="quiz-options" class="grid grid-cols-1 gap-4">
-                <!-- Quiz options injected here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MIND GAME SCREEN -->
-    <div id="mind-screen" class="screen">
-        <header class="flex justify-between items-center mb-6">
-            <button onclick="navigateTo('main-menu')" class="p-2 bg-slate-800 rounded-lg">🏠</button>
-            <div class="text-green-400 font-mono text-xl" id="mind-score">0</div>
-        </header>
-        
-        <div class="flex flex-col items-center justify-center flex-grow text-center">
-            <h2 class="text-2xl font-bold text-white mb-2">رمز گاوصندوق</h2>
-            <p class="text-slate-400 mb-8 text-sm">اعداد را به خاطر بسپار و معکوس وارد کن!</p>
-            
-            <div id="mind-display" class="text-6xl font-mono font-bold text-yellow-400 tracking-[10px] mb-12 min-h-[80px] flex items-center justify-center">
-                <!-- Numbers appear here -->
-            </div>
-
-            <div id="mind-input-area" class="w-full max-w-xs hidden opacity-0 transition-opacity duration-500">
-                <input type="number" id="mind-input" placeholder="رمز را وارد کن..." class="w-full bg-slate-800 text-white text-center text-2xl p-4 rounded-xl border-2 border-slate-600 focus:border-green-500 outline-none mb-4 font-mono">
-                <button onclick="checkMindAnswer()" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl btn-press">باز کردن قفل 🔓</button>
-            </div>
-
-            <button id="start-mind-round-btn" onclick="nextMindRound()" class="bg-yellow-500 text-black font-bold px-8 py-3 rounded-xl btn-press">شروع مرحله 1</button>
-        </div>
-    </div>
-
-    <!-- DEVELOPERS PANEL (OVERLAY) -->
-    <div id="dev-panel" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300 opacity-0">
-        <div class="bg-slate-800 p-8 rounded-2xl max-w-sm w-full text-center border border-slate-700 relative shadow-2xl transform scale-95 transition-transform duration-300">
-            <button onclick="closePanel('dev-panel')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">✕</button>
-            
-            <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                <span class="text-3xl">🚀</span>
-            </div>
-            
-            <h2 class="text-2xl font-bold text-white mb-1">تیم اسکورت گیم</h2>
-            <p class="text-blue-400 text-sm font-bold mb-6">Escort Game Team</p>
-            
-            <div class="text-right space-y-4 text-slate-300 text-sm bg-slate-900/50 p-4 rounded-xl">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">💎</span>
-                    <div>
-                        <p class="text-white font-bold">طراحی و توسعه یکپارچه</p>
-                        <p class="text-xs text-slate-500">بهینه‌سازی شده برای عملکرد بالا</p>
+    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-5 panel-hidden z-40">
+        <div id="developers-panel" class="panel-clash p-7 sm:p-11 rounded-xl max-w-lg w-full relative">
+            <button id="close-developers-panel-btn">✕</button>
+            <h3 class="text-center text-4xl font-bold mb-7 clash-font text-[var(--clash-gold)]" style="text-shadow: 3px 3px 4px #000;">👥 تیم سازنده</h3>
+            <div class="space-y-5">
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-3 pb-3">
+                        <span class="dev-role-icon">🛠️</span>
+                        <span class="dev-role">توسعه‌دهندگان</span>
                     </div>
+                    <p class="dev-username">امیر رضایی و سارا محمدی</p>
+                    <p class="dev-description">طراحی سیستم و پیاده‌سازی کدها با تمرکز بر کارایی و امنیت.</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">🎨</span>
-                    <div>
-                        <p class="text-white font-bold">رابط کاربری حرفه‌ای</p>
-                        <p class="text-xs text-slate-500">تجربه کاربری روان و مدرن</p>
+                <div class="developer-item">
+                    <div class="dev-header flex items-center mb-3 pb-3">
+                        <span class="dev-role-icon">🖌️</span>
+                        <span class="dev-role">طراح گرافیک</span>
                     </div>
+                    <p class="dev-username">رضا کریمی</p>
+                    <p class="dev-description">خلق تم‌های حرفه‌ای و انیمیشن‌های روان برای تجربه کاربری برتر.</p>
                 </div>
             </div>
-            
-            <p class="mt-6 text-xs text-slate-600">نسخه 3.0.0 (Build Final)</p>
         </div>
     </div>
-
-    <!-- TOAST CONTAINER -->
-    <div id="toast-container"></div>
+    
+    <div id="game-mode-panel-container" class="fixed inset-0 flex items-center justify-center p-5 panel-hidden z-40">
+        <div id="game-mode-panel" class="panel-clash p-7 sm:p-11 rounded-xl max-w-lg w-full relative text-center">
+            <button id="close-game-mode-panel-btn">✕</button>
+            <h3 class="text-center text-4xl font-bold mb-9 clash-font text-[var(--clash-gold)]" style="text-shadow: 3px 3px 4px #000;">انتخاب مود</h3>
+            <div class="space-y-7 flex flex-col items-center">
+                <button id="mafia-mode-btn" class="btn-clash btn-clash-primary clash-font">
+                    عملیات مافیا
+                </button>
+                <button id="mind-game-mode-btn" class="btn-clash btn-clash-primary clash-font">
+                    چالش ذهنی
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- GLOBAL STATE ---
-        const state = {
-            totalScore: 0,
-            god: {
-                roles: [],
-                currentCardIndex: 0,
-                timer: 30,
-                timerInterval: null,
-                timerRunning: false
-            },
-            quiz: {
-                currentQuestion: 0,
-                score: 0
-            },
-            mind: {
-                level: 1,
-                currentCode: "",
-                showing: false
-            },
-            detective: {
-                currentCase: 0
-            }
-        };
-
-        // --- NAVIGATION ---
-        function navigateTo(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            
-            // Cleanups
-            if (screenId !== 'god-tools-screen') resetTimer();
-        }
-
-        function openPanel(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('hidden');
-            // Small delay for CSS transition
-            setTimeout(() => {
-                el.classList.remove('opacity-0');
-                el.querySelector('div').classList.remove('scale-95');
-                el.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closePanel(id) {
-            const el = document.getElementById(id);
-            el.classList.add('opacity-0');
-            el.querySelector('div').classList.remove('scale-100');
-            el.querySelector('div').classList.add('scale-95');
-            setTimeout(() => el.classList.add('hidden'), 300);
-        }
-
-        function showToast(msg, type = 'normal') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = msg;
-            if(type === 'error') toast.style.background = '#b91c1c';
-            if(type === 'success') toast.style.background = '#15803d';
-            
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 2500);
-        }
-
-        // --- GOD TOOLS LOGIC ---
-        function adjustRole(type, delta) {
-            const el = document.getElementById(`count-${type}`);
-            let val = parseInt(el.textContent);
-            if (val + delta >= 0) {
-                el.textContent = val + delta;
-            }
-        }
-
-        function distributeRoles() {
-            const mafias = parseInt(document.getElementById('count-mafia').textContent);
-            const citizens = parseInt(document.getElementById('count-citizen').textContent);
-            const specials = parseInt(document.getElementById('count-special').textContent);
-            const total = mafias + citizens + specials;
-
-            if (total < 3) {
-                showToast('حداقل ۳ بازیکن لازم است!', 'error');
-                return;
-            }
-
-            // Create pool
-            let pool = [];
-            for(let i=0; i<mafias; i++) pool.push({name: 'مافیا', icon: '🔫', type: 'mafia'});
-            for(let i=0; i<citizens; i++) pool.push({name: 'شهروند ساده', icon: '👤', type: 'citizen'});
-            // Simple special assignment logic for demo
-            if (specials > 0) pool.push({name: 'پزشک', icon: '💉', type: 'citizen'});
-            if (specials > 1) pool.push({name: 'کارآگاه', icon: '🔍', type: 'citizen'});
-            for(let i=2; i<specials; i++) pool.push({name: 'تک‌تیرانداز', icon: '🎯', type: 'citizen'});
-
-            // Shuffle (Fisher-Yates)
-            for (let i = pool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-
-            state.god.roles = pool;
-            state.god.currentCardIndex = 0;
-
-            document.getElementById('role-setup-area').classList.add('hidden');
-            document.getElementById('card-reveal-area').classList.remove('hidden');
-            document.getElementById('card-reveal-area').classList.add('flex');
-            updateCardDisplay();
-        }
-
-        function updateCardDisplay() {
-            const card = document.querySelector('.role-card');
-            card.classList.remove('flipped'); // Reset flip
-            
-            setTimeout(() => {
-                const role = state.god.roles[state.god.currentCardIndex];
-                document.getElementById('current-card-num').textContent = state.god.currentCardIndex + 1;
-                document.getElementById('role-name').textContent = role.name;
-                document.getElementById('role-icon').textContent = role.icon;
-                
-                const backFace = document.getElementById('role-back-face');
-                if (role.type === 'mafia') {
-                    backFace.classList.remove('citizen');
-                } else {
-                    backFace.classList.add('citizen');
-                }
-            }, 300);
-
-            document.getElementById('next-card-btn').classList.add('hidden');
-            
-            // Check if last
-            if (state.god.currentCardIndex >= state.god.roles.length - 1) {
-                document.getElementById('finish-card-btn').classList.remove('hidden');
-            }
-        }
-
-        function flipCard(el) {
-            if (!el.classList.contains('flipped')) {
-                el.classList.add('flipped');
-                if (state.god.currentCardIndex < state.god.roles.length - 1) {
-                    setTimeout(() => {
-                         document.getElementById('next-card-btn').classList.remove('hidden');
-                    }, 500);
-                }
-            }
-        }
-
-        function nextCard() {
-            state.god.currentCardIndex++;
-            updateCardDisplay();
-        }
-
-        function resetDistributor() {
-            document.getElementById('role-setup-area').classList.remove('hidden');
-            document.getElementById('card-reveal-area').classList.add('hidden');
-            document.getElementById('card-reveal-area').classList.remove('flex');
-            document.getElementById('finish-card-btn').classList.add('hidden');
-            showToast('کارت‌ها پخش شد! بازی شروع شد.');
-        }
-
-        // God Timer
-        function setTimerDuration(val) {
-            if (!state.god.timerRunning) {
-                state.god.timer = parseInt(val);
-                document.getElementById('timer-setting-display').textContent = val;
-                updateTimerDisplay();
-            }
-        }
-        
-        function updateTimerDisplay() {
-            const min = Math.floor(state.god.timer / 60);
-            const sec = state.god.timer % 60;
-            document.getElementById('god-timer-display').textContent = 
-                `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-        }
-
-        function toggleTimer() {
-            const btn = document.getElementById('timer-toggle-btn');
-            if (state.god.timerRunning) {
-                clearInterval(state.god.timerInterval);
-                state.god.timerRunning = false;
-                btn.textContent = '▶';
-                btn.classList.replace('bg-red-600', 'bg-green-600');
-            } else {
-                if (state.god.timer <= 0) return;
-                state.god.timerRunning = true;
-                btn.textContent = '⏸';
-                btn.classList.replace('bg-green-600', 'bg-red-600');
-                state.god.timerInterval = setInterval(() => {
-                    state.god.timer--;
-                    updateTimerDisplay();
-                    if (state.god.timer <= 0) {
-                        clearInterval(state.god.timerInterval);
-                        state.god.timerRunning = false;
-                        btn.textContent = '▶';
-                        btn.classList.replace('bg-red-600', 'bg-green-600');
-                        // Play beep logic here (if audio existed)
-                        document.getElementById('god-timer-display').classList.add('text-red-500');
-                        setTimeout(() => document.getElementById('god-timer-display').classList.remove('text-red-500'), 500);
-                    }
-                }, 1000);
-            }
-        }
-
-        function resetTimer() {
-            clearInterval(state.god.timerInterval);
-            state.god.timerRunning = false;
-            document.getElementById('timer-toggle-btn').textContent = '▶';
-            document.getElementById('timer-toggle-btn').classList.remove('bg-red-600');
-            document.getElementById('timer-toggle-btn').classList.add('bg-green-600');
-            state.god.timer = parseInt(document.getElementById('timer-setting-display').textContent);
-            updateTimerDisplay();
-        }
-
-        // --- ACADEMY LOGIC ---
-        const quizData = [
-            { q: "در صورت تساوی آرا در مرحله دوم رای‌گیری، چه اتفاقی می‌افتد؟", opts: ["قرعه کشی مرگ", "هیچکس خارج نمی‌شود", "رای‌گیری مجدد", "پادشاه تصمیم می‌گیرد"], a: 1 },
-            { q: "نقش 'ناتاشا' در سناریوی کلاسیک معادل کدام نقش است؟", opts: ["سایلنسر", "مذاکره‌کننده", "پدرخوانده", "تروریست"], a: 0 },
-            { q: "اگر دکتر در شب به خودش شلیک شود (توسط مافیا) و خودش را سیو دهد:", opts: ["میمیرد", "زنده می‌ماند", "بستگی به سناریو دارد", "فقط یکبار می‌تواند"], a: 3 }, // Common rule: usually once
-            { q: "استعلام کارآگاه برای پدرخوانده چیست؟", opts: ["مثبت", "منفی", "نامشخص", "بستگی به زره دارد"], a: 1 }
-        ];
-
-        function startAcademy() {
-            state.quiz.currentQuestion = 0;
-            state.quiz.score = 0;
-            navigateTo('academy-screen');
-            loadQuestion();
-        }
-
-        function loadQuestion() {
-            if (state.quiz.currentQuestion >= quizData.length) {
-                showToast(`آزمون تمام شد! امتیاز: ${state.quiz.score}`, 'success');
-                state.totalScore += state.quiz.score * 10;
-                document.getElementById('total-score-display').textContent = state.totalScore;
-                setTimeout(() => navigateTo('main-menu'), 2000);
-                return;
-            }
-            const data = quizData[state.quiz.currentQuestion];
-            document.getElementById('quiz-progress').textContent = `${state.quiz.currentQuestion + 1}/${quizData.length}`;
-            document.getElementById('quiz-question').textContent = data.q;
-            
-            const cont = document.getElementById('quiz-options');
-            cont.innerHTML = '';
-            data.opts.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full p-4 bg-slate-800 rounded-xl text-right hover:bg-slate-700 transition-colors border-2 border-transparent";
-                btn.textContent = opt;
-                btn.onclick = () => checkQuizAnswer(idx, btn, data.a);
-                cont.appendChild(btn);
-            });
-        }
-
-        function checkQuizAnswer(selected, btn, correct) {
-            // Disable all buttons
-            const btns = document.getElementById('quiz-options').children;
-            for(let b of btns) b.disabled = true;
-
-            if (selected === correct) {
-                btn.classList.add('border-green-500', 'bg-green-900/20');
-                state.quiz.score++;
-                showToast('صحیح! ✅', 'success');
-            } else {
-                btn.classList.add('border-red-500', 'bg-red-900/20');
-                btns[correct].classList.add('border-green-500'); // Show correct
-                showToast('اشتباه ❌', 'error');
-            }
-
-            setTimeout(() => {
-                state.quiz.currentQuestion++;
-                loadQuestion();
-            }, 1500);
-        }
-
-        // --- DETECTIVE PUZZLE ---
-        const scenarios = [
+        // --- NEW MAFIA GAME DATA WITH DIFFERENT QUESTIONS ---
+        const mafiaGameData = [
             {
-                text: "در شب سوم، دکتر شهر نجات پیدا نکرده است. کارآگاه استعلام آقای الف را گرفته و منفی بوده. آقای ب ادعای اسنایپر بودن دارد و می‌گوید دیشب تیر زده اما کسی بیرون نرفته. آقای ج سکوت کرده.",
-                q: "آقای ب راست می‌گوید یا مافیاست؟",
-                opts: ["راست می‌گوید (تیرش به رویین‌تن خورده)", "دروغ می‌گوید (مافیاست)"],
-                a: 0, // Simplified logic for demo
-                reason: "اگر تیر اسنایپر به رویین تن بخورد، کسی بیرون نمیرود."
+                question: "در بازی مافیا، نقش 'شاهزاده' چه توانایی ویژه‌ای دارد؟",
+                options: ["نجات دو نفر در شب", "شناسایی مافیا با احتمال 50%", "حق وتو در رای‌گیری روز", "معرفی خود به عنوان شهروند"],
+                answer: "حق وتو در رای‌گیری روز",
+                explanation: "شاهزاده می‌تواند یک بار در بازی، رای‌گیری روز را وتو کند و فرد دیگری را برای حذف انتخاب کند."
+            },
+            {
+                question: "تیم شهروندان چگونه می‌توانند مافیا را شکست دهند؟",
+                options: ["با حذف تمام مافیا", "با تساوی تعداد", "با انتخاب رهبر جدید", "با مذاکره شبانه"],
+                answer: "با حذف تمام مافیا",
+                explanation: "شهروندان پیروز می‌شوند اگر تمام اعضای مافیا را از بازی خارج کنند."
+            },
+            {
+                question: "نقش 'جاسوس' در تیم مافیا چه مزیتی ایجاد می‌کند؟",
+                options: ["شنود مکالمات شهروندان", "تغییر نقش یک نفر", "استعلام نقش در روز", "حمایت از یک مافیا"],
+                answer: "شنود مکالمات شهروندان",
+                explanation: "جاسوس می‌تواند نقش‌های شهروندان را جاسوسی کند و اطلاعات به تیم مافیا بدهد."
+            },
+            {
+                question: "بازی زمانی تمام می‌شود که؟",
+                options: ["تمام شهروندان حذف شوند", "مافیا اکثریت را بگیرد", "پس از ۷ دور", "با انتخاب پادشاه"],
+                answer: "مافیا اکثریت را بگیرد",
+                explanation: "اگر مافیا تعداد برابر یا بیشتری نسبت به شهروندان داشته باشد، پیروز می‌شود."
             }
         ];
 
-        function startDetective() {
-            navigateTo('detective-screen');
-            loadScenario(0);
+        // --- NEW MIND GAME DATA WITH DIFFERENT SENTENCES ---
+        const mindGameSentences = [
+            "پشت هر موفقیت بزرگ، شکست‌های زیادی نهفته است",
+            "زمان بهترین معلم است اما شاگردانش را می‌کشد",
+            "رویاها بدون اقدام فقط خیال هستند",
+            "قدرت واقعی در کنترل خویشتن است",
+            "تغییر جهان از تغییر خود شروع می‌شود"
+        ];
+
+        // --- DOM Elements (unchanged structure, improved selectors) ---
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainScreen = document.getElementById('main-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const mindGameScreen = document.getElementById('mind-game-screen');
+
+        const startGameBtn = document.getElementById('start-game-btn');
+        const developersBtn = document.getElementById('developers-btn');
+        const onlineGameBtn = document.getElementById('online-game-btn');
+        const challengeBtn = document.getElementById('challenge-btn');
+        const coordinationBtn = document.getElementById('coordination-btn');
+
+        // Mafia Game Elements
+        const backToMainBtnMafia = document.getElementById('back-to-main-btn-mafia');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const stageDisplay = document.getElementById('stage-display');
+        const gameFeedback = document.getElementById('game-feedback');
+        const questionExplanation = document.getElementById('question-explanation');
+        const timerText = document.getElementById('timer-text');
+        const timerProgressCircle = document.getElementById('timer-progress-circle');
+        const circleRadius = 30;
+        const circleCircumference = 2 * Math.PI * circleRadius;
+        timerProgressCircle.style.strokeDasharray = `${circleCircumference} ${circleCircumference}`;
+        timerProgressCircle.style.strokeDashoffset = circleCircumference;
+
+        // Mind Game Elements
+        const backToMainBtnMind = document.getElementById('back-to-main-btn-mind');
+        const mindGameInstruction = document.getElementById('mind-game-instruction');
+        const fallingSentenceContainer = document.getElementById('falling-sentence-container');
+        const mindGameInputArea = document.getElementById('mind-game-input-area');
+        const mindGameInput = document.getElementById('mind-game-input');
+        const mindGameSubmitBtn = document.getElementById('mind-game-submit-btn');
+        const mindGameFeedback = document.getElementById('mind-game-feedback');
+        const mindGameStageDisplay = document.getElementById('mind-game-stage-display');
+        const mindGameScoreDisplay = document.getElementById('mind-game-score-display');
+
+        // Modal & Panels
+        const modalContainer = document.getElementById('modal-container');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const developersPanelContainer = document.getElementById('developers-panel-container');
+        const closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
+        const gameModePanelContainer = document.getElementById('game-mode-panel-container');
+        const closeGameModePanelBtn = document.getElementById('close-game-mode-panel-btn');
+        const mafiaModeBtn = document.getElementById('mafia-mode-btn');
+        const mindGameModeBtn = document.getElementById('mind-game-mode-btn');
+
+        // --- Game State ---
+        let currentMafiaStage = 0;
+        let mafiaTimerInterval;
+        let mafiaGameTime = 25; // Increased time for better pace
+
+        let currentMindGameStage = 0;
+        let mindGameScore = 0;
+        let currentMindGameSentence = '';
+
+        // --- Navigation & Modals ---
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
         }
 
-        function loadScenario(idx) {
-            const s = scenarios[idx];
-            document.getElementById('scenario-text').textContent = s.text;
-            document.getElementById('scenario-question').textContent = s.q;
-            const cont = document.getElementById('scenario-options');
-            cont.innerHTML = '';
-            document.getElementById('scenario-feedback').textContent = '';
-            
-            s.opts.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full p-3 bg-slate-700 rounded-lg text-white hover:bg-slate-600";
-                btn.textContent = opt;
-                btn.onclick = () => {
-                    if (i === s.a) {
-                        document.getElementById('scenario-feedback').textContent = "استدلال صحیح بود! 🕵️‍♂️";
-                        document.getElementById('scenario-feedback').className = "mt-4 text-center font-bold text-lg h-8 text-green-400";
-                        state.totalScore += 50;
-                        document.getElementById('total-score-display').textContent = state.totalScore;
-                    } else {
-                        document.getElementById('scenario-feedback').textContent = "استدلال غلط! 💀";
-                        document.getElementById('scenario-feedback').className = "mt-4 text-center font-bold text-lg h-8 text-red-400";
-                    }
-                }
-                cont.appendChild(btn);
+        function showModal({ title, message, onConfirm, onCancel }) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalCancelBtn.classList.add('hidden');
+            modalConfirmBtn.onclick = () => { hideModal(); if (onConfirm) onConfirm(); };
+            if (onCancel) {
+                modalCancelBtn.classList.remove('hidden');
+                modalCancelBtn.onclick = () => { hideModal(); onCancel(); };
+            }
+            modalContainer.classList.remove('panel-hidden');
+            modalContainer.classList.add('panel-visible');
+        }
+
+        function hideModal() {
+            modalContainer.classList.remove('panel-visible');
+            modalContainer.classList.add('panel-hidden');
+        }
+
+        function createBackToMainConfirmation(onConfirm) {
+            showModal({
+                title: 'خروج از ماجراجویی؟',
+                message: 'آیا واقعاً می‌خواهید بازی را ترک کنید؟ تمام پیشرفت‌ها از بین خواهد رفت.',
+                onConfirm,
+                onCancel: () => {}
             });
         }
 
-        // --- MIND GAME ---
+        // --- MAFIA GAME LOGIC (Improved with smoother transitions) ---
+        function cleanupMafiaScreen() {
+            optionsContainer.innerHTML = '';
+            gameFeedback.textContent = '';
+            questionExplanation.textContent = '';
+            questionExplanation.classList.add('hidden');
+        }
+
+        function updateMafiaTimerUI(timeRemaining) {
+            timerText.textContent = timeRemaining;
+            const percentage = timeRemaining / mafiaGameTime;
+            const offset = circleCircumference * (1 - percentage);
+            timerProgressCircle.style.strokeDashoffset = offset;
+            timerProgressCircle.style.stroke = timeRemaining <= 7 ? 'var(--clash-red)' : 'var(--clash-gold)';
+        }
+
+        function startMafiaTimer() {
+            clearInterval(mafiaTimerInterval);
+            let timeRemaining = mafiaGameTime;
+            updateMafiaTimerUI(timeRemaining);
+            mafiaTimerInterval = setInterval(() => {
+                timeRemaining--;
+                updateMafiaTimerUI(timeRemaining);
+                if (timeRemaining <= 0) {
+                    clearInterval(mafiaTimerInterval);
+                    handleMafiaAnswer(null);
+                }
+            }, 1000);
+        }
+
+        function loadMafiaStage() {
+            cleanupMafiaScreen();
+            const stageData = mafiaGameData[currentMafiaStage];
+            stageDisplay.textContent = currentMafiaStage + 1;
+            questionText.textContent = stageData.question;
+            mafiaGameTime = 25;
+
+            stageData.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'option-btn clash-font text-2xl';
+                button.onclick = () => handleMafiaAnswer(option, button);
+                optionsContainer.appendChild(button);
+            });
+            startMafiaTimer();
+        }
+
+        function handleMafiaAnswer(selectedAnswer, selectedButton = null) {
+            clearInterval(mafiaTimerInterval);
+            const stageData = mafiaGameData[currentMafiaStage];
+            const isCorrect = selectedAnswer === stageData.answer;
+
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === stageData.answer) btn.classList.add('correct');
+                else if (btn === selectedButton) btn.classList.add('incorrect');
+            });
+
+            if (selectedAnswer === null) gameFeedback.textContent = '⏰ زمان تمام شد! ⏰';
+            else if (isCorrect) gameFeedback.textContent = '👍 درست بود!';
+            else gameFeedback.textContent = '👎 نادرست بود.';
+
+            questionExplanation.textContent = 'جزئیات: ' + stageData.explanation;
+            questionExplanation.classList.remove('hidden');
+
+            setTimeout(() => {
+                currentMafiaStage++;
+                if (currentMafiaStage < mafiaGameData.length) {
+                    loadMafiaStage();
+                } else {
+                    showMafiaGameOver();
+                }
+            }, 5000); // Increased delay for better reading
+        }
+
+        function showMafiaGameOver() {
+            showModal({
+                title: 'پایان عملیات! 🎉',
+                message: 'شما تمام مراحل عملیات مافیا را پشت سر گذاشتید. برای تکرار به شهر بازگردید.',
+                onConfirm: () => navigateTo('main-screen')
+            });
+        }
+
+        function startMafiaGame() {
+            currentMafiaStage = 0;
+            navigateTo('game-screen');
+            loadMafiaStage();
+        }
+
+        // --- MIND GAME LOGIC (Improved with longer animation) ---
         function startMindGame() {
-            state.mind.level = 1;
-            state.mind.score = 0;
-            document.getElementById('mind-score').textContent = 0;
-            navigateTo('mind-screen');
-            document.getElementById('mind-input-area').classList.add('hidden');
-            document.getElementById('mind-input-area').classList.remove('opacity-100');
-            document.getElementById('start-mind-round-btn').classList.remove('hidden');
-            document.getElementById('start-mind-round-btn').textContent = "شروع مرحله ۱";
-            document.getElementById('mind-display').textContent = "";
+            currentMindGameStage = 0;
+            mindGameScore = 0;
+            mindGameScoreDisplay.textContent = mindGameScore;
+            navigateTo('mind-game-screen');
+            loadMindGameRound();
         }
 
-        function nextMindRound() {
-            document.getElementById('start-mind-round-btn').classList.add('hidden');
-            document.getElementById('mind-input-area').classList.add('hidden');
-            document.getElementById('mind-input-area').classList.remove('opacity-100');
-            
-            // Generate Code based on level
-            let digits = 2 + state.mind.level; 
-            let code = "";
-            for(let i=0; i<digits; i++) code += Math.floor(Math.random()*10);
-            state.mind.currentCode = code;
+        function loadMindGameRound() {
+            mindGameFeedback.textContent = '';
+            mindGameInput.value = '';
+            mindGameInput.classList.remove('correct', 'incorrect');
+            fallingSentenceContainer.innerHTML = '';
 
-            const display = document.getElementById('mind-display');
-            display.textContent = code;
-            display.classList.add('pulse-effect');
-
-            // Hide after time
-            let timeToShow = 2000 + (state.mind.level * 500);
-            setTimeout(() => {
-                display.textContent = "؟";
-                display.classList.remove('pulse-effect');
-                
-                const inputArea = document.getElementById('mind-input-area');
-                inputArea.classList.remove('hidden');
-                // Allow reflow
-                void inputArea.offsetWidth;
-                inputArea.classList.add('opacity-100');
-                
-                const input = document.getElementById('mind-input');
-                input.value = '';
-                input.focus();
-            }, timeToShow);
-        }
-
-        function checkMindAnswer() {
-            const input = document.getElementById('mind-input').value;
-            // The trick: User must enter it REVERSED (as per instructions "معکوس وارد کن") 
-            // OR simple match for now to keep it playable
-            // Let's stick to simple match for user friendliness unless they read carefully. 
-            // Wait, UI said "به خاطر بسپار". Let's do simple match. 
-            // Wait, I put "معکوس وارد کن" in HTML. Okay, let's enforce reverse.
-            
-            const reversedInput = input; // If user types 123, logic expects 321? 
-            // Actually, let's make it standard memory: Input what you saw.
-            // I'll remove "reverse" text from HTML to avoid confusion or keep it simple.
-            // *Self-Correction*: The HTML says "معکوس وارد کن". I should check logic.
-            const correctReverse = state.mind.currentCode.split('').reverse().join('');
-            
-            if (input === correctReverse) {
-                state.mind.level++;
-                state.mind.score += 10;
-                document.getElementById('mind-score').textContent = state.mind.score;
-                showToast('عالی! مرحله بعدی', 'success');
-                document.getElementById('start-mind-round-btn').textContent = `شروع مرحله ${state.mind.level}`;
-                document.getElementById('start-mind-round-btn').classList.remove('hidden');
-                document.getElementById('mind-input-area').classList.add('hidden');
-                document.getElementById('mind-input-area').classList.remove('opacity-100');
-            } else {
-                showToast(`غلط! رمز: ${state.mind.currentCode}`, 'error');
-                // Game Over logic or retry
-                setTimeout(() => {
-                    startMindGame(); // Reset
-                }, 2000);
+            if (currentMindGameStage >= mindGameSentences.length) {
+                showMindGameOver();
+                return;
             }
+
+            mindGameStageDisplay.textContent = currentMindGameStage + 1;
+            currentMindGameSentence = mindGameSentences[currentMindGameStage];
+
+            mindGameInstruction.textContent = 'رمز را حفظ کن!';
+            mindGameInputArea.classList.add('hidden');
+            const sentenceEl = document.createElement('div');
+            sentenceEl.textContent = currentMindGameSentence;
+            sentenceEl.className = 'falling-sentence';
+            fallingSentenceContainer.appendChild(sentenceEl);
+
+            setTimeout(() => {
+                mindGameInstruction.textContent = 'رمز را وارد کن!';
+                fallingSentenceContainer.innerHTML = '';
+                mindGameInputArea.classList.remove('hidden');
+                mindGameInput.focus();
+            }, 5000); // Matches new animation duration
         }
 
-        // --- INIT ---
-        window.onload = () => {
-            // Fake loading progress
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.remove('active');
-                document.getElementById('main-menu').classList.add('active');
-            }, 2500);
-        };
+        function handleMindGameAnswer() {
+            const userAnswer = mindGameInput.value.trim();
+            const isCorrect = userAnswer === currentMindGameSentence;
 
+            if (isCorrect) {
+                mindGameScore++;
+                mindGameScoreDisplay.textContent = mindGameScore;
+                mindGameFeedback.textContent = '👍 عالی!';
+                mindGameFeedback.style.color = 'var(--clash-green)';
+            } else {
+                mindGameFeedback.textContent = '👎 اشتباه! رمز صحیح: ' + currentMindGameSentence;
+                mindGameFeedback.style.color = 'var(--clash-red)';
+            }
+
+            currentMindGameStage++;
+
+            setTimeout(loadMindGameRound, 4000); // Longer wait for feedback
+        }
+
+        function showMindGameOver() {
+            showModal({
+                title: 'پایان چالش ذهنی! 🎉',
+                message: `امتیاز نهایی: ${mindGameScore} از ${mindGameSentences.length}. برای تکرار به شهر بازگردید.`,
+                onConfirm: () => navigateTo('main-screen')
+            });
+        }
+
+        // --- Event Listeners ---
+        startGameBtn.addEventListener('click', () => {
+            gameModePanelContainer.classList.remove('panel-hidden');
+            gameModePanelContainer.classList.add('panel-visible');
+        });
+
+        developersBtn.addEventListener('click', () => {
+            developersPanelContainer.classList.remove('panel-hidden');
+            developersPanelContainer.classList.add('panel-visible');
+        });
+
+        closeGameModePanelBtn.addEventListener('click', () => {
+            gameModePanelContainer.classList.remove('panel-visible');
+            gameModePanelContainer.classList.add('panel-hidden');
+        });
+
+        mafiaModeBtn.addEventListener('click', () => {
+            gameModePanelContainer.classList.remove('panel-visible');
+            gameModePanelContainer.classList.add('panel-hidden');
+            startMafiaGame();
+        });
+
+        mindGameModeBtn.addEventListener('click', () => {
+            gameModePanelContainer.classList.remove('panel-visible');
+            gameModePanelContainer.classList.add('panel-hidden');
+            startMindGame();
+        });
+
+        backToMainBtnMafia.addEventListener('click', () => createBackToMainConfirmation(() => {
+            clearInterval(mafiaTimerInterval);
+            navigateTo('main-screen');
+        }));
+
+        backToMainBtnMind.addEventListener('click', () => createBackToMainConfirmation(() => navigateTo('main-screen')));
+
+        mindGameSubmitBtn.addEventListener('click', handleMindGameAnswer);
+        mindGameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleMindGameAnswer(); });
+
+        closeDevelopersPanelBtn.addEventListener('click', () => {
+            developersPanelContainer.classList.remove('panel-visible');
+            developersPanelContainer.classList.add('panel-hidden');
+        });
+
+        function showComingSoonModal() {
+            showModal({
+                title: 'در حال ساخت...',
+                message: 'این ویژگی به زودی اضافه خواهد شد. منتظر به‌روزرسانی باشید!',
+                onConfirm: () => {}
+            });
+        }
+        onlineGameBtn.addEventListener('click', showComingSoonModal);
+        challengeBtn.addEventListener('click', showComingSoonModal);
+        coordinationBtn.addEventListener('click', showComingSoonModal);
+
+        // --- Loading Sequence (Improved with more tips) ---
+        const progressBarFill = document.getElementById('loading-progress-bar-fill');
+        const loadingMessage = document.getElementById('loading-message');
+        const loadingTips = [
+            "مافیا همیشه در سایه عمل می‌کند.",
+            "اعتماد بیش از حد می‌تواند کشنده باشد.",
+            "جاسوس‌ها کلید پیروزی هستند.",
+            "زمان‌بندی در چالش ذهنی حیاتی است!"
+        ];
+        let loadProgress = 0;
+        const loadingInterval = setInterval(() => {
+            loadProgress += 8;
+            progressBarFill.style.width = `${loadProgress}%`;
+
+            if (loadProgress >= 100) {
+                clearInterval(loadingInterval);
+                loadingMessage.textContent = 'ورود به جهان مافیا!';
+                setTimeout(() => {
+                    loadingScreen.classList.remove('active');
+                    mainScreen.classList.add('active');
+                    startGameBtn.classList.add('breathing');
+                }, 600);
+            } else if (loadProgress > 40 && loadProgress < 60) {
+                loadingMessage.textContent = 'بارگذاری نقشه شهر...';
+            } else if (loadProgress > 70) {
+                loadingMessage.textContent = 'تنظیم قوانین نهایی...';
+            }
+
+            document.getElementById('loading-tip').textContent = `💡 راز: ${loadingTips[Math.floor(Math.random() * loadingTips.length)]}`;
+        }, 250);
     </script>
 </body>
 </html>
